@@ -8,6 +8,7 @@
 <link rel="stylesheet" href="w3.css">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Rubik">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
 <style>
 body,h1,h2,h3,h4,h5,h6 {font-family: "Rubik", sans-serif}
 h1,h2,h3,h4,h5,h6 {font-family: "Rubik", sans-serif; color:#563d2d}
@@ -183,7 +184,106 @@ systems.
 
 <h3>Sample Dataset</h3>
 
-<p>The provided dataset (zip file) contains example queries, ground truth SQLs, APIs, and the database schema. Participants can use this dataset to build and refine their systems.</p>
+<h4>Illustration Examples</h4>
+
+<p>
+<a href="https://github.com/dashsys-workshop-vldb/dashsys-workshop-vldb.github.io/blob/master/data/data.json" style="color:#1a73e8; text-decoration:none;">
+<i class="fa fa-download" style="margin-right:5px"></i>data.json</a>
+&mdash; 35 labeled examples. Each example provides the <b>gold final answer</b> (ground truth) for a natural language query — use these to build and validate your system.
+Each entry has four fields:
+</p>
+
+<details style="margin-bottom:8px">
+<summary style="cursor:pointer; color:#563d2d; font-weight:bold">Single entry format (gold ground truth)</summary>
+<pre style="margin-top:8px"><code class="language-json">{
+  "query":    "&lt;user query&gt;",
+  "reasoning": "&lt;how the result was derived&gt;",
+  "gold_sql": "&lt;SQL query against the KG database&gt;",
+  "gold_api": ["&lt;API endpoint(s) called&gt;"]
+}</code></pre>
+</details>
+
+<p>
+The illustration examples show only the <b>final answer</b>. Participants must submit the <b>full agent trajectory</b> —
+a list of JSON objects in the same format, one per reasoning step, with the last entry being the final answer.
+For example, the agent may explore multiple approaches before converging:
+</p>
+
+<details style="margin-bottom:12px">
+<summary style="cursor:pointer; color:#563d2d; font-weight:bold">Trajectory format (submission)</summary>
+<pre style="margin-top:8px"><code class="language-json">[
+  {
+    "query":    "&lt;user query&gt;",
+    "reasoning": "&lt;intermediate reasoning step&gt;",
+    "gold_sql": "&lt;intermediate SQL attempt&gt;",
+    "gold_api": ["&lt;intermediate API call&gt;"]
+  },
+  {
+    "query":    "&lt;user query&gt;",
+    "reasoning": "&lt;how the final result was derived&gt;",
+    "gold_sql": "&lt;final SQL query&gt;",
+    "gold_api": ["&lt;final API endpoint(s)&gt;"]
+  }
+]</code></pre>
+</details>
+
+<p>See the <a href="#evaluation">Evaluation</a> section for how trajectories are scored.</p>
+
+<h4>Knowledge Graph Database</h4>
+
+<p>
+<a href="https://github.com/dashsys-workshop-vldb/dashsys-workshop-vldb.github.io/tree/master/data/DBSnapshot" style="color:#1a73e8; text-decoration:none;">
+<i class="fa fa-database" style="margin-right:5px"></i>DBSnapshot</a>
+&mdash; a self-contained set of 18 parquet files representing entities and relationships in the sandbox.
+</p>
+
+<ul>
+<li><b>Dimension tables</b> (<code>dim_*</code>) — one row per entity</li>
+<li><b>Bridge tables</b> (<code>hkg_br_*</code>) — relationships between entities</li>
+</ul>
+
+<table class="w3-table w3-bordered w3-small" style="max-width:400px; margin-bottom:12px">
+<tr class="w3-light-grey"><th>Table</th><th>Represents</th></tr>
+<tr><td><code>dim_campaign</code></td><td>Campaigns</td></tr>
+<tr><td><code>dim_segment</code></td><td>Segments</td></tr>
+<tr><td><code>dim_collection</code></td><td>Collections</td></tr>
+<tr><td><code>dim_blueprint</code></td><td>Blueprints</td></tr>
+<tr><td><code>dim_connector</code></td><td>Source connectors</td></tr>
+<tr><td><code>dim_target</code></td><td>Targets</td></tr>
+<tr><td><code>dim_property</code></td><td>Properties</td></tr>
+</table>
+
+<h3>Querying the Dataset</h3>
+
+<p>There are two ways to retrieve answers for a given query:</p>
+
+<details style="margin-bottom:8px">
+<summary style="cursor:pointer; font-weight:bold">SQL &mdash; run locally, no credentials needed</summary>
+<pre style="margin-top:8px"><code class="language-python">import duckdb
+
+# Load all KG snapshot parquet files as queryable views
+con = duckdb.connect()
+# register each .parquet file as a table ...
+
+# Run your SQL against the registered tables
+result = con.execute("&lt;your SQL query&gt;").df()</code></pre>
+</details>
+
+<details style="margin-bottom:16px">
+<summary style="cursor:pointer; font-weight:bold">API &mdash; provisioned sandbox (credentials provided upon registration)</summary>
+<pre style="margin-top:8px"><code class="language-python">import requests
+
+# Credentials provided upon registration
+token = get_bearer_token(client_id, client_secret)
+
+headers = {
+    "Authorization": f"Bearer {token}",
+    "x-sandbox-name": sandbox_name,
+    # ...
+}
+
+response = requests.get("https://platform.adobe.io/&lt;endpoint&gt;", headers=headers)</code></pre>
+</details>
 
 <h3>API Specifications</h3>
 
@@ -219,7 +319,7 @@ systems.
 
 <div class="w3-container" style="padding:0px 16px">
 
-<h2>Evaluation</h2>
+<h2 id="evaluation">Evaluation</h2>
 
 <p>
 Organizers will execute each participant's system prompt using the
@@ -428,5 +528,7 @@ https://dashsys-workshop-vldb.github.io/
 
 <div style="padding-top:50px"></div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script>hljs.highlightAll();</script>
 </body>
 </html>

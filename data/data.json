@@ -1,0 +1,286 @@
+[
+  {
+    "query": "When was the journey 'Birthday Message' published?",
+    "reasoning": "The SQL query is a straightforward filter on the hkg_dim_journey table by journey name, selecting the published time (lastdeployedtime). There are no JOINs, aggregations, or complex logic involved. The question's intent is clear and maps directly to a simple lookup.",
+    "gold_sql": "SELECT name AS campaign_name,\n       lastdeployedtime AS published_time\nFROM dim_campaign\nWHERE name IN ('Birthday Message', 'Gold Tier Welcome Email')\nLIMIT 50",
+    "gold_api": [
+      "GET /ajo/journey?filter=name==Birthday Message"
+    ]
+  },
+  {
+    "query": "Give me inactive journeys",
+    "reasoning": "The SQL query is a straightforward single-table filter on hkg_dim_journey with a simple WHERE clause to exclude 'deployed' and 'redeployed' states, effectively selecting inactive journeys. There are no JOINs or aggregations. The question is clear and unambiguous.",
+    "gold_sql": "SELECT J.CAMPAIGNID AS campaign_id,\n       J.NAME AS campaign_name,\n       J.STATE AS campaign_state,\n       J.UPDATEDTIME AS updated_time\nFROM DIM_CAMPAIGN AS J\nWHERE LOWER(J.STATE) NOT IN ('deployed', 'redeployed')\nLIMIT 50",
+    "gold_api": [
+      "GET /ajo/journey?filter=status!=live"
+    ]
+  },
+  {
+    "query": "List all journeys",
+    "reasoning": "The SQL query performs a simple single-table select on the journey dimension table with only a LIMIT clause and no filters or JOINs. The question is straightforward, asking to list all journeys without additional conditions or aggregations.",
+    "gold_sql": "SELECT CAMPAIGN.NAME AS CAMPAIGNNAME,\n       CAMPAIGN.CAMPAIGNID\nFROM DIM_CAMPAIGN AS CAMPAIGN\nLIMIT 10",
+    "gold_api": [
+      "GET /ajo/journey?pageSize=10"
+    ]
+  },
+  {
+    "query": "List all segment audiences connected to the destination named 'SMS Opt-In', showing audienceId, name, totalProfiles, createdTime, updatedTime, and used in other audience count for each audience. Remove any row limit from the results.",
+    "reasoning": "Step 1: use the Flow Service API to find the destination dataflow named 'SMS Opt-In' and extract the audience IDs from its metadata. Step 2: pass those audience IDs to the SQL WHERE audienceid IN (...) to get audience metadata from the HKG snapshot. The used_in_other_audience_count is obtained per audience via the API 'dependents' array length \u2014 no bridge table JOIN is needed.",
+    "gold_sql": "SELECT \n    a.segmentid AS segment_id,\n    a.name AS segment_name,\n    a.totalmembers AS total_profiles,\n    a.createdTime AS created_time,\n    a.updatedTime AS updated_time\nFROM dim_segment a\nJOIN hkg_br_segment_target ad ON a.segmentid = ad.segmentid\nJOIN dim_target d ON ad.targetId = d.targetId\nWHERE d.dataflowName = 'SMS Opt-In'\nORDER BY a.name",
+    "gold_api": [
+      "GET /data/core/ups/audiences?property=destinationId==<destination_id>&limit=5",
+      "GET /data/foundation/flowservice/flows?property=inheritedAttributes.properties.isDestinationFlow==true&limit=5"
+    ]
+  },
+  {
+    "query": "Show me the IDs of failed dataflow runs",
+    "reasoning": "The SQL query performs a simple filter on the hkg_dim_source table using a LIKE condition on the STATE column to find failed dataflows, selecting distinct dataflow IDs with a limit of 25. There are no JOINs or aggregations beyond DISTINCT and LIMIT. The business logic is straightforward: retrieve IDs of dataflows with failed state.",
+    "gold_sql": "SELECT DISTINCT S.DATAFLOWID AS dataflow_id\nFROM DIM_CONNECTOR AS S\nWHERE S.STATE ILIKE '%loyalty%'\nLIMIT 50",
+    "gold_api": [
+      "GET /data/foundation/flowservice/flows?filter=state eq 'failed'&limit=50"
+    ]
+  },
+  {
+    "query": "Export a list of all destinations in the b2b-prod sandbox, sorted by most recently modified, including all columns associated with each destination, and include the 'modified' column for validation.",
+    "reasoning": "The SQL query is a straightforward single-table SELECT from hkg_dim_destination with an ORDER BY on the updatedTime column and a LIMIT clause. No JOINs or complex filters are involved, and the request is a simple recent modification sort with all relevant columns selected.",
+    "gold_sql": "SELECT D.targetId AS target_id,\n       D.dataflowName AS dataflow_name,\n       D.name AS target_name,\n       D.description,\n       D.state,\n       D.connectionSpecId AS connection_spec_id,\n       D.createdTime AS created_time,\n       D.updatedTime AS modified,\n       D.interval,\n       D.frequency\nFROM dim_target AS D\nORDER BY D.updatedTime DESC\nLIMIT 50",
+    "gold_api": [
+      "GET /data/foundation/flowservice/flows?limit=50&sort=updatedTime:desc&property=inheritedAttributes.properties.isDestinationFlow==true"
+    ]
+  },
+  {
+    "query": "How many datasets have been ingested using the same schema in the prod sandbox?",
+    "reasoning": "The SQL query involves a three-table join chain: hkg_dim_dataset joins the bridge table hkg_br_schema_dataset, which in turn joins hkg_dim_schema. It performs aggregation by grouping on schemaId and schema name and filters groups having more than one distinct dataset, which is a GROUP BY + HAVING pattern. This adds some complexity beyond a simple lookup or direct filter. The question involves counting datasets sharing the same schema, requiring aggregation and joining multiple entities.",
+    "gold_sql": "SELECT S.blueprintid AS blueprint_id,\n       S.name AS blueprint_name,\n       COUNT(DISTINCT DS.collectionid) AS collection_count\nFROM dim_collection AS D\nJOIN hkg_br_blueprint_collection AS DS ON D.collectionid = DS.collectionid\nJOIN dim_blueprint AS S ON DS.blueprintid = S.blueprintid\nGROUP BY S.blueprintid,\n         S.name\nHAVING COUNT(DISTINCT DS.collectionid) > 1",
+    "gold_api": [
+      "GET /data/foundation/catalog/dataSets?limit=25&property=schema.name",
+      "GET /data/foundation/schemaregistry/tenant/schemas/{schema_id}"
+    ]
+  },
+  {
+    "query": "List all datasets that use the schema 'hkg_adls_profile_count_history'.",
+    "reasoning": "The SQL query is a straightforward JOIN between the schema-dataset bridge table and the dataset and schema dimension tables, filtering by a schema name. It is a simple filter with a direct relationship and no aggregation or subqueries. The business logic is clear: find datasets linked to a specific schema name.",
+    "gold_sql": "SELECT DISTINCT D.collectionid AS collection_id,\n       D.name AS collection_name\nFROM hkg_br_blueprint_collection AS SD\nJOIN dim_collection AS D ON SD.collectionid = D.collectionid\nJOIN dim_blueprint AS S ON SD.blueprintid = S.blueprintid\nWHERE S.name = 'hkg_adls_profile_count_history'\nLIMIT 3",
+    "gold_api": [
+      "GET /data/foundation/catalog/dataSets?limit=3&filter=schemaName==\"WF HEMI Account Attribute Retail Fiserv Schema\"",
+      "GET /data/foundation/schemaregistry/tenant/schemas/{schema_id}"
+    ]
+  },
+  {
+    "query": "show me the field for Person: Birthday Today 001",
+    "reasoning": "The SQL query involves a JOIN between the audience-attribute bridge table and the audience dimension table, filtering on audience name and selecting distinct attributes related to that audience. This is a two-table join with a filter on the audience name, which is more complex than a simple lookup and requires understanding the relationship between audiences and attributes. The SQL also involves a distinct selection to avoid duplicates.",
+    "gold_sql": "SELECT DISTINCT aa.property AS property_name, a.name AS segment_name\nFROM hkg_br_segment_property aa\nJOIN dim_segment a ON aa.segmentid = a.segmentid\nWHERE a.name = 'Person: Birthday Today 001'\nLIMIT 20",
+    "gold_api": [
+      "GET /data/foundation/catalog/datasets?limit=20&filter=name:SG AND name:non loyalty"
+    ]
+  },
+  {
+    "query": "Provide more details for the schema 'weRetail: Customer Actions'",
+    "reasoning": "The SQL query involves the dimension table hkg_dim_schema joined with two bridge tables: hkg_br_schema_dataset and hkg_br_schema_attribute, to calculate counts of related datasets and attributes for a specific schema name. It performs aggregation using COUNT(DISTINCT) with GROUP BY and filtering by a case-insensitive name match. This goes beyond a simple lookup, involving multiple JOINs and aggregation, which increases complexity from easy to moderate. The domain 'source' is not touched in the SQL, so it should be excluded; only 'dataset' and 'attribute' are correct here.",
+    "gold_sql": "SELECT S.BLUEPRINTID AS blueprint_id,\n       S.NAME,\n       S.CLASS,\n       S.ISPROFILEENABLED,\n       S.UPDATEDTIME AS updated_time,\n       S.REQUIREDFIELDS AS required_fields,\n       COUNT(DISTINCT SD.COLLECTIONID) AS collection_count,\n       COUNT(DISTINCT SA.PROPERTY) AS property_count\nFROM DIM_BLUEPRINT AS S\nLEFT JOIN HKG_BR_BLUEPRINT_COLLECTION AS SD ON S.BLUEPRINTID = SD.BLUEPRINTID\nLEFT JOIN HKG_BR_BLUEPRINT_PROPERTY AS SA ON S.BLUEPRINTID = SA.BLUEPRINTID\nWHERE LOWER(S.NAME) = LOWER('weRetail: Customer Actions')\nGROUP BY S.BLUEPRINTID,\n         S.NAME,\n         S.CLASS,\n         S.ISPROFILEENABLED,\n         S.UPDATEDTIME,\n         S.REQUIREDFIELDS\nLIMIT 3",
+    "gold_api": [
+      "GET /schemas?limit=5&filter=name==weRetail: Customer Actions"
+    ]
+  },
+  {
+    "query": "Count the number of XDM Experience Event schemas that are enabled for profile.",
+    "reasoning": "The SQL query is a straightforward single-table scan on hkg_dim_schema with simple filters on the 'class' column using a LIKE pattern and a boolean flag isProfileEnabled. It counts distinct schema IDs, which is a basic aggregation. There are no JOINs or complex logic.",
+    "gold_sql": "SELECT COUNT(DISTINCT S.BLUEPRINTID) AS num_experience_event_profile_enabled_blueprints\nFROM DIM_BLUEPRINT AS S\nWHERE LOWER(S.CLASS) LIKE LOWER('%download%')\n  AND S.ISPROFILEENABLED = TRUE",
+    "gold_api": [
+      "GET /data/foundation/schemaregistry/tenant/schemas?limit=25&filter=class==ExperienceEvent;isProfileEnabled==true"
+    ]
+  },
+  {
+    "query": "How many schemas do I have?",
+    "reasoning": "The SQL query performs a simple count of distinct schema IDs from a single table without any joins or complex logic. The question is straightforward: count the number of schemas. This maps directly to a single-table aggregation with no ambiguity.",
+    "gold_sql": "SELECT COUNT(DISTINCT S.blueprintid) AS blueprint_count\nFROM dim_blueprint AS S",
+    "gold_api": [
+      "GET /schemas?limit=25"
+    ]
+  },
+  {
+    "query": "List all audiences in the sandbox that have been mapped to new destinations in the last 3 months.",
+    "reasoning": "The SQL query involves joining three tables: audience, audience_destination bridge, and destination. It filters destinations created within the last 3 months, which is a date range filter on a dimension table attribute. The DISTINCT keyword and multiple JOINs make it more complex than a simple single-table lookup, but it is a straightforward filtering and joining pattern without subqueries or aggregations beyond DISTINCT.",
+    "gold_sql": "SELECT DISTINCT A.segmentid AS segment_id, A.name AS segment_name, D.targetId AS target_id, D.name AS target_name\nFROM dim_segment AS A\nJOIN hkg_br_segment_target AS AD ON A.segmentid = AD.segmentid\nJOIN dim_target AS D ON AD.targetId = D.targetId\nWHERE D.createdTime >= DATEADD(MONTH, -3, CURRENT_DATE)\nLIMIT 3",
+    "gold_api": [
+      "GET /data/foundation/audit/events?property=assetType==destination&limit=3"
+    ]
+  },
+  {
+    "query": "Show recent changes in datasets.",
+    "reasoning": "The SQL query filters datasets updated in the last 7 days and orders by update time, with a LIMIT. It is a single table query with a date filter and ordering, which is straightforward. However, the 'recent changes' concept uses the UPDATEDTIME column on the dataset dimension table, which is a direct attribute, but the API uses audit events filtered by assetType=dataset, which is a different data source (audit logs) that records changes rather than the dataset table itself. This mismatch and the need to interpret audit events as dataset changes add some complexity and require understanding of the difference between dataset metadata and audit events representing changes.",
+    "gold_sql": "SELECT DISTINCT D.COLLECTIONID AS collection_id,\n       D.NAME AS collection_name,\n       D.UPDATEDTIME AS updated_time\nFROM DIM_COLLECTION AS D\nWHERE D.UPDATEDTIME >= DATEADD(DAY, -90, CURRENT_DATE)\nORDER BY D.UPDATEDTIME DESC\nLIMIT 50",
+    "gold_api": [
+      "GET /audit/events?property=assetType==dataset&orderBy=-timestamp&limit=50"
+    ]
+  },
+  {
+    "query": "Show me all entities created by download",
+    "reasoning": "The SQL query performs a single-table filter on the dataset dimension table, searching for datasets created by a specific user, using an ILIKE filter on the 'createdby' column. It is straightforward but involves a case-insensitive pattern match, which is slightly more than a simple equality filter. The query also uses DISTINCT and LIMIT 25 to restrict results. Overall, the SQL is simple but requires understanding the 'createdby' column's format and filtering accordingly.",
+    "gold_sql": "SELECT DISTINCT collectionid AS collection_id, name AS collection_name, createdtime AS created_time\nFROM dim_collection\nWHERE createdby ILIKE '%download%'\nLIMIT 20",
+    "gold_api": [
+      "GET /data/foundation/audit/events?property=action==create&limit=20"
+    ]
+  },
+  {
+    "query": "How many tags exist in this sandbox?",
+    "reasoning": "Count all unified tags via the Tags API.",
+    "gold_sql": "",
+    "gold_api": [
+      "GET /unifiedtags/tags?limit=20"
+    ]
+  },
+  {
+    "query": "List all tags in this sandbox.",
+    "reasoning": "Retrieve all unified tags using the Tags API list endpoint.",
+    "gold_sql": "",
+    "gold_api": [
+      "GET /unifiedtags/tags?limit=25"
+    ]
+  },
+  {
+    "query": "Which tags belong to the category 'Uncategorized'?",
+    "reasoning": "Filter tags by category using tagCategoryId. Retrieve the category list first, then filter tags.",
+    "gold_sql": "",
+    "gold_api": [
+      "GET /unifiedtags/tagCategory?limit=100",
+      "GET /unifiedtags/tags?limit=100&tagCategoryId=Uncategorized-87891E4066602D250A495F91@AdobeOrg"
+    ]
+  },
+  {
+    "query": "Show me the details of the tag named 'cool'.",
+    "reasoning": "Look up a specific tag by its ID using the Tags API.",
+    "gold_sql": "",
+    "gold_api": [
+      "GET /unifiedtags/tags/51175a7f-aa60-4533-bef1-717b3cef7818"
+    ]
+  },
+  {
+    "query": "List all merge policies in this sandbox.",
+    "reasoning": "Retrieve merge policies from the Real-Time Customer Profile API.",
+    "gold_sql": "",
+    "gold_api": [
+      "GET /data/core/ups/config/mergePolicies?limit=10"
+    ]
+  },
+  {
+    "query": "How many merge policies are configured in this sandbox?",
+    "reasoning": "Count all merge policies using the Profile API.",
+    "gold_sql": "",
+    "gold_api": [
+      "GET /data/core/ups/config/mergePolicies?limit=10"
+    ]
+  },
+  {
+    "query": "Show the default merge policy for schema class '_xdm.context.profile'.",
+    "reasoning": "Filter merge policies by schema class name and the default flag to find the active policy for a given schema.",
+    "gold_sql": "",
+    "gold_api": [
+      "GET /data/core/ups/config/mergePolicies?limit=5"
+    ]
+  },
+  {
+    "query": "How many segment definitions exist in this sandbox?",
+    "reasoning": "Count all segment definitions via the Segmentation Service API.",
+    "gold_sql": "",
+    "gold_api": [
+      "GET /data/core/ups/segment/definitions?limit=100"
+    ]
+  },
+  {
+    "query": "List all segment definitions.",
+    "reasoning": "Retrieve all segment definitions from the Segmentation Service API.",
+    "gold_sql": "",
+    "gold_api": [
+      "GET /data/core/ups/segment/definitions?limit=10"
+    ]
+  },
+  {
+    "query": "Which segment definitions were updated most recently?",
+    "reasoning": "Sort segment definitions by updateTime descending to find the most recently modified ones.",
+    "gold_sql": "",
+    "gold_api": [
+      "GET /data/core/ups/segment/definitions?limit=3&orderBy=updateTime:desc"
+    ]
+  },
+  {
+    "query": "List all segment evaluation jobs.",
+    "reasoning": "Retrieve the list of batch segment evaluation jobs.",
+    "gold_sql": "",
+    "gold_api": [
+      "GET /data/core/ups/segment/jobs?limit=3"
+    ]
+  },
+  {
+    "query": "How many segment jobs are currently processing?",
+    "reasoning": "Filter segment jobs by status = PROCESSING.",
+    "gold_sql": "",
+    "gold_api": [
+      "GET /data/core/ups/segment/jobs?limit=20"
+    ]
+  },
+  {
+    "query": "Show all segment jobs with status 'QUEUED'.",
+    "reasoning": "Retrieve segment jobs filtered to a specific status value.",
+    "gold_sql": "",
+    "gold_api": [
+      "GET /data/core/ups/segment/jobs?limit=10"
+    ]
+  },
+  {
+    "query": "List the most recently created batches.",
+    "reasoning": "Retrieve batches sorted by creation time descending.",
+    "gold_sql": "",
+    "gold_api": [
+      "GET /data/foundation/catalog/batches?limit=100&orderBy=desc:created"
+    ]
+  },
+  {
+    "query": "How many batches have status 'success'?",
+    "reasoning": "Filter catalog batches by status = success.",
+    "gold_sql": "",
+    "gold_api": [
+      "GET /data/foundation/catalog/batches?limit=10&status=success"
+    ]
+  },
+  {
+    "query": "Show the details of batch 01KP69BPA5ZKFB7HCDYPE4GN6F.",
+    "reasoning": "Retrieve metadata for a specific batch by its ID.",
+    "gold_sql": "",
+    "gold_api": [
+      "GET /data/foundation/catalog/batches/01KP69BPA5ZKFB7HCDYPE4GN6F"
+    ]
+  },
+  {
+    "query": "Which files are available for download in batch 69de8a0e0cc6102b5d11f01e?",
+    "reasoning": "List files exported in a given batch using the Data Access API.",
+    "gold_sql": "",
+    "gold_api": [
+      "GET /data/foundation/export/batches/69de8a0e0cc6102b5d11f01e/files"
+    ]
+  },
+  {
+    "query": "Show failed files for batch 01KP6MNQ3X71RP6MNH6FHWGHVE.",
+    "reasoning": "Retrieve failed file records for a batch using the Data Access failed endpoint.",
+    "gold_sql": "",
+    "gold_api": [
+      "GET /data/foundation/export/batches/01KP6MNQ3X71RP6MNH6FHWGHVE/failed"
+    ]
+  },
+  {
+    "query": "What are the daily 'timeseries.ingestion.dataset.recordsuccess.count' values between '2026-03-15' and '2026-03-31'?",
+    "reasoning": "Query the Observability Insights API (POST /metrics) with a V2 body (start, end, granularity, metrics[]) to retrieve daily ingestion metrics.",
+    "gold_sql": "",
+    "gold_api": [
+      "POST /data/infrastructure/observability/insights/metrics body={\"start\":\"2026-03-15T00:00:00.000Z\",\"end\":\"2026-03-31T23:59:59.000Z\",\"granularity\":\"day\",\"metrics\":[{\"name\":\"timeseries.ingestion.dataset.recordsuccess.count\",\"filters\":[],\"aggregator\":\"sum\"}]}"
+    ]
+  },
+  {
+    "query": "Show ingestion record counts and batch success counts for the last 90 days.",
+    "reasoning": "Use the Observability Insights POST /metrics endpoint with multiple metrics in one request to compare record and batch success counts.",
+    "gold_sql": "",
+    "gold_api": [
+      "POST /data/infrastructure/observability/insights/metrics body={\"start\":\"2026-03-01T00:00:00.000Z\",\"end\":\"2026-04-01T23:59:59.000Z\",\"granularity\":\"day\",\"metrics\":[{\"name\":\"timeseries.ingestion.dataset.recordsuccess.count\",\"filters\":[],\"aggregator\":\"sum\"},{\"name\":\"timeseries.ingestion.dataset.batchsuccess.count\",\"filters\":[],\"aggregator\":\"sum\"}]}"
+    ]
+  }
+]
