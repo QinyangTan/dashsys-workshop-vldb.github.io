@@ -1,0 +1,102 @@
+#!/usr/bin/env python
+from __future__ import annotations
+
+import json
+import re
+import shutil
+import sys
+import zipfile
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[1]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+
+from dashagent.config import Config
+
+
+REQUIRED_PATHS = [
+    "dashagent",
+    "eval/implementation_notes.md",
+    "prompts/system_prompt_template.txt",
+    "scripts/inspect_schema.py",
+    "scripts/run_one_query.py",
+    "scripts/run_dev_eval.py",
+    "scripts/package_submission.py",
+    "tests",
+    "pyproject.toml",
+    "requirements.txt",
+    "README.md",
+]
+
+SECRET_PATTERNS = [
+    re.compile(r"client_secret\s*[:=]\s*['\"][^'\"]+", re.IGNORECASE),
+    re.compile(r"access_token\s*[:=]\s*['\"][^'\"]+", re.IGNORECASE),
+    re.compile(r"authorization\s*:\s*bearer\s+[a-z0-9._-]+", re.IGNORECASE),
+]
+
+
+def main() -> int:
+    config = Config.from_env(ROOT)
+    missing = [path for path in REQUIRED_PATHS if not (config.project_root / path).exists()]
+    secret_hits = scan_for_secrets(config.project_root)
+    package_dir = config.outputs_dir / "source_code"
+    zip_path = config.outputs_dir / "source_code.zip"
+
+    if missing or secret_hits:
+        print(
+            json.dumps(
+                {"ok": False, "missing": missing, "secret_hits": secret_hits},
+                indent=2,
+                sort_keys=True,
+            )
+        )
+        return 1
+
+    if package_dir.exists():
+        shutil.rmtree(package_dir)
+    package_dir.mkdir(parents=True)
+    for path in REQUIRED_PATHS:
+        src = config.project_root / path
+        dst = package_dir / path
+        if src.is_dir():
+            shutil.copytree(src, dst, ignore=ignore_package_paths)
+        else:
+            dst.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copy2(src, dst)
+
+    with zipfile.ZipFile(zip_path, "w", compression=zipfile.ZIP_DEFLATED) as archive:
+        for file_path in package_dir.rglob("*"):
+            if file_path.is_file():
+                archive.write(file_path, file_path.relative_to(package_dir))
+
+    print(
+        json.dumps(
+            {"ok": True, "package_dir": str(package_dir), "zip_path": str(zip_path)},
+            indent=2,
+            sort_keys=True,
+        )
+    )
+    return 0
+
+
+def ignore_package_paths(directory: str, names: list[str]) -> set[str]:
+    ignored = {"__pycache__", ".pytest_cache", ".mypy_cache"}
+    return {name for name in names if name in ignored or name.endswith(".pyc")}
+
+
+def scan_for_secrets(root: Path) -> list[str]:
+    hits: list[str] = []
+    for path in list(root.glob("*.txt")) + list(root.glob("*.md")) + list(root.glob("*.py")) + list((root / "dashagent").rglob("*.py")):
+        if path.is_relative_to(root / "outputs") or path.is_relative_to(root / "data"):
+            continue
+        text = path.read_text(encoding="utf-8", errors="ignore")
+        for pattern in SECRET_PATTERNS:
+            if pattern.search(text):
+                hits.append(str(path.relative_to(root)))
+                break
+    return sorted(set(hits))
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

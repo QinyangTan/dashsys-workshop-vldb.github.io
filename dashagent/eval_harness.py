@@ -1,0 +1,381 @@
+from __future__ import annotations
+
+import csv
+import json
+import time
+from dataclasses import dataclass
+from difflib import SequenceMatcher
+from pathlib import Path
+from typing import Any
+
+from .config import Config, DEFAULT_CONFIG
+from .db import DuckDBDatabase
+from .endpoint_catalog import normalize_api_path
+from .executor import AgentExecutor
+from .planner import STRATEGIES
+
+
+@dataclass
+class EvalExample:
+    query_id: str
+    query: str
+    gold_sql: str | None = None
+    gold_api: Any = None
+    gold_answer: str | None = None
+
+
+class EvalHarness:
+    def __init__(
+        self,
+        config: Config | None = None,
+        executor: AgentExecutor | None = None,
+    ) -> None:
+        self.config = config or DEFAULT_CONFIG
+        self.config.ensure_dirs()
+        self.executor = executor or AgentExecutor(self.config)
+
+    def load_examples(self, data_json_path: Path | None = None) -> list[EvalExample]:
+        path = data_json_path or self.config.data_json_path
+        if not path.exists():
+            return []
+        payload = json.loads(path.read_text(encoding="utf-8"))
+        raw_examples = find_example_list(payload)
+        examples: list[EvalExample] = []
+        for index, item in enumerate(raw_examples):
+            if not isinstance(item, dict):
+                continue
+            query = item.get("question") or item.get("query") or item.get("input") or item.get("nl_query")
+            if not query:
+                continue
+            examples.append(
+                EvalExample(
+                    query_id=str(item.get("id") or item.get("query_id") or f"example_{index:03d}"),
+                    query=str(query),
+                    gold_sql=coerce_gold_sql(item),
+                    gold_api=item.get("gold_api") or item.get("api") or item.get("api_calls") or item.get("tool_calls"),
+                    gold_answer=item.get("answer") or item.get("gold_answer") or item.get("expected_answer"),
+                )
+            )
+        return examples
+
+    def run(
+        self,
+        *,
+        strategies: list[str] | None = None,
+        examples: list[EvalExample] | None = None,
+    ) -> dict[str, Any]:
+        strategies = strategies or STRATEGIES
+        examples = examples if examples is not None else self.load_examples()
+        if not examples:
+            return self._write_empty_results(strategies)
+
+        rows: list[dict[str, Any]] = []
+        for example in examples:
+            for strategy in strategies:
+                start = time.perf_counter()
+                output_dir = self.config.outputs_dir / "eval" / example.query_id / strategy.lower()
+                result = self.executor.run(
+                    example.query,
+                    strategy=strategy,
+                    query_id=example.query_id,
+                    output_dir=output_dir,
+                )
+                elapsed = time.perf_counter() - start
+                trajectory = result["trajectory"]
+                generated_sql = first_generated_sql(trajectory)
+                generated_api = generated_api_calls(trajectory)
+                sql_score, sql_reason = score_sql(
+                    self.executor.db,
+                    generated_sql,
+                    example.gold_sql,
+                )
+                api_score, api_reason = score_api(generated_api, example.gold_api)
+                answer_score, answer_reason = score_answer(result["final_answer"], example.gold_answer)
+                correctness_score = 0.4 * sql_score + 0.3 * api_score + 0.3 * answer_score
+                efficiency_penalty = min(
+                    1.0,
+                    (trajectory.get("tool_call_count", 0) / 8)
+                    + (trajectory.get("runtime", elapsed) / 30)
+                    + (trajectory.get("estimated_tokens", 0) / 12000),
+                )
+                final_score = correctness_score - 0.1 * efficiency_penalty
+                rows.append(
+                    {
+                        "query_id": example.query_id,
+                        "strategy": strategy,
+                        "query": example.query,
+                        "sql_score": round(sql_score, 4),
+                        "api_score": round(api_score, 4),
+                        "answer_score": round(answer_score, 4),
+                        "correctness_score": round(correctness_score, 4),
+                        "efficiency_penalty": round(efficiency_penalty, 4),
+                        "final_score": round(final_score, 4),
+                        "tool_call_count": trajectory.get("tool_call_count", 0),
+                        "sql_call_count": trajectory.get("sql_call_count", 0),
+                        "api_call_count": trajectory.get("api_call_count", 0),
+                        "runtime": round(trajectory.get("runtime", elapsed), 4),
+                        "estimated_tokens": trajectory.get("estimated_tokens", 0),
+                        "error_count": len(trajectory.get("errors", [])),
+                        "validation_failures": count_validation_failures(trajectory),
+                        "sql_reason": sql_reason,
+                        "api_reason": api_reason,
+                        "answer_reason": answer_reason,
+                        "output_dir": result["output_dir"],
+                    }
+                )
+        summary = summarize_rows(rows, strategies)
+        payload = {"examples": len(examples), "strategies": strategies, "rows": rows, "summary": summary}
+        self._write_outputs(payload)
+        return payload
+
+    def _write_empty_results(self, strategies: list[str]) -> dict[str, Any]:
+        payload = {
+            "examples": 0,
+            "strategies": strategies,
+            "rows": [],
+            "summary": {
+                "message": "No public examples found. Place data/data.json to run the dev evaluation.",
+                "best_correctness": None,
+                "best_efficiency": None,
+                "best_overall": None,
+            },
+        }
+        self._write_outputs(payload)
+        return payload
+
+    def _write_outputs(self, payload: dict[str, Any]) -> None:
+        self.config.outputs_dir.mkdir(parents=True, exist_ok=True)
+        (self.config.outputs_dir / "eval_results.json").write_text(
+            json.dumps(payload, indent=2, sort_keys=True, default=str),
+            encoding="utf-8",
+        )
+        csv_path = self.config.outputs_dir / "eval_results.csv"
+        rows = payload.get("rows", [])
+        with csv_path.open("w", encoding="utf-8", newline="") as handle:
+            if rows:
+                writer = csv.DictWriter(handle, fieldnames=list(rows[0]))
+                writer.writeheader()
+                writer.writerows(rows)
+            else:
+                writer = csv.DictWriter(handle, fieldnames=["message"])
+                writer.writeheader()
+                writer.writerow({"message": payload["summary"]["message"]})
+        (self.config.outputs_dir / "strategy_comparison.md").write_text(
+            render_strategy_comparison(payload),
+            encoding="utf-8",
+        )
+
+
+def find_example_list(payload: Any) -> list[Any]:
+    if isinstance(payload, list):
+        return payload
+    if isinstance(payload, dict):
+        for key in ["examples", "data", "queries", "dev", "public_examples"]:
+            value = payload.get(key)
+            if isinstance(value, list):
+                return value
+        dict_values = [value for value in payload.values() if isinstance(value, dict)]
+        if dict_values and all(("query" in item or "question" in item) for item in dict_values):
+            return dict_values
+    return []
+
+
+def coerce_gold_sql(item: dict[str, Any]) -> str | None:
+    value = item.get("gold_sql") or item.get("sql") or item.get("expected_sql")
+    if isinstance(value, list):
+        return str(value[0]) if value else None
+    return str(value) if value else None
+
+
+def normalize_sql(sql: str | None) -> str:
+    if not sql:
+        return ""
+    return " ".join(sql.strip().rstrip(";").replace('"', "").lower().split())
+
+
+def first_generated_sql(trajectory: dict[str, Any]) -> str | None:
+    for step in trajectory.get("steps", []):
+        if step.get("kind") == "sql_call":
+            return step.get("sql")
+    return None
+
+
+def generated_api_calls(trajectory: dict[str, Any]) -> list[dict[str, Any]]:
+    return [
+        {"method": step.get("method"), "path": normalize_api_path(step.get("url", "")), "params": step.get("params", {})}
+        for step in trajectory.get("steps", [])
+        if step.get("kind") == "api_call"
+    ]
+
+
+def score_sql(db: DuckDBDatabase, generated_sql: str | None, gold_sql: str | None) -> tuple[float, str]:
+    if not gold_sql:
+        return (1.0, "No gold SQL supplied; SQL dimension treated as unscored/pass.")
+    if not generated_sql:
+        return (0.0, "No generated SQL.")
+    if normalize_sql(generated_sql) == normalize_sql(gold_sql):
+        return (1.0, "Normalized exact SQL match.")
+    generated_result = db.execute_sql(generated_sql)
+    gold_result = db.execute_sql(gold_sql)
+    if generated_result.get("ok") and gold_result.get("ok") and generated_result.get("rows") == gold_result.get("rows"):
+        return (0.9, "Semantic result match.")
+    return (0.0, "SQL mismatch.")
+
+
+def extract_api_calls(gold_api: Any) -> list[dict[str, Any]]:
+    calls: list[dict[str, Any]] = []
+
+    def walk(obj: Any) -> None:
+        if isinstance(obj, dict):
+            method = obj.get("method") or obj.get("http_method")
+            path = obj.get("path") or obj.get("url") or obj.get("endpoint")
+            if method and path:
+                calls.append({"method": str(method).upper(), "path": normalize_api_path(str(path)), "params": obj.get("params", {})})
+            for value in obj.values():
+                walk(value)
+        elif isinstance(obj, list):
+            for item in obj:
+                walk(item)
+
+    walk(gold_api)
+    return calls
+
+
+def score_api(generated_calls: list[dict[str, Any]], gold_api: Any) -> tuple[float, str]:
+    gold_calls = extract_api_calls(gold_api)
+    if not gold_calls:
+        return (1.0, "No gold API supplied; API dimension treated as unscored/pass.")
+    if not generated_calls:
+        return (0.0, "No generated API call.")
+    for generated in generated_calls:
+        for gold in gold_calls:
+            if generated.get("method") == gold.get("method") and normalize_api_path(generated.get("path", "")) == normalize_api_path(gold.get("path", "")):
+                return (1.0, "Method/path API match.")
+    return (0.0, "API method/path mismatch.")
+
+
+def score_answer(generated_answer: str, gold_answer: str | None) -> tuple[float, str]:
+    if not gold_answer:
+        return (1.0, "No gold answer supplied; answer dimension treated as unscored/pass.")
+    generated = generated_answer.lower().strip()
+    gold = gold_answer.lower().strip()
+    if generated == gold:
+        return (1.0, "Exact answer match.")
+    if gold in generated or generated in gold:
+        return (0.85, "Substring answer match.")
+    try:
+        from rapidfuzz.fuzz import ratio  # type: ignore
+
+        score = ratio(generated, gold) / 100
+    except Exception:
+        score = SequenceMatcher(None, generated, gold).ratio()
+    return (score, "Fuzzy answer similarity.")
+
+
+def count_validation_failures(trajectory: dict[str, Any]) -> int:
+    failures = 0
+    for step in trajectory.get("steps", []):
+        validation = step.get("validation") or step.get("result")
+        if isinstance(validation, dict) and validation.get("ok") is False:
+            failures += 1
+    return failures
+
+
+def summarize_rows(rows: list[dict[str, Any]], strategies: list[str]) -> dict[str, Any]:
+    by_strategy: dict[str, dict[str, Any]] = {}
+    for strategy in strategies:
+        strategy_rows = [row for row in rows if row["strategy"] == strategy]
+        if not strategy_rows:
+            continue
+        by_strategy[strategy] = {
+            "avg_sql_score": avg(row["sql_score"] for row in strategy_rows),
+            "avg_api_score": avg(row["api_score"] for row in strategy_rows),
+            "avg_answer_score": avg(row["answer_score"] for row in strategy_rows),
+            "avg_correctness_score": avg(row["correctness_score"] for row in strategy_rows),
+            "avg_tool_call_count": avg(row["tool_call_count"] for row in strategy_rows),
+            "avg_runtime": avg(row["runtime"] for row in strategy_rows),
+            "avg_estimated_tokens": avg(row["estimated_tokens"] for row in strategy_rows),
+            "avg_final_score": avg(row["final_score"] for row in strategy_rows),
+        }
+    if not by_strategy:
+        return {}
+    best_correctness = max(by_strategy, key=lambda strategy: by_strategy[strategy]["avg_correctness_score"])
+    best_efficiency = min(
+        by_strategy,
+        key=lambda strategy: (
+            by_strategy[strategy]["avg_tool_call_count"],
+            by_strategy[strategy]["avg_runtime"],
+            by_strategy[strategy]["avg_estimated_tokens"],
+        ),
+    )
+    best_overall = max(by_strategy, key=lambda strategy: by_strategy[strategy]["avg_final_score"])
+    return {
+        "by_strategy": by_strategy,
+        "best_correctness": best_correctness,
+        "best_efficiency": best_efficiency,
+        "best_overall": best_overall,
+        "recommended_next_focus": recommend_next_focus(best_overall),
+    }
+
+
+def avg(values: Any) -> float:
+    values = list(values)
+    return round(sum(values) / len(values), 4) if values else 0.0
+
+
+def recommend_next_focus(best_overall: str) -> list[str]:
+    if best_overall == "TEMPLATE_FIRST":
+        return [
+            "Keep template coverage but add guardrails to avoid overfitting public examples.",
+            "Back every template with schema-derived column/table checks.",
+        ]
+    if best_overall == "SQL_FIRST_API_VERIFY":
+        return [
+            "Improve entity extraction and join-template coverage.",
+            "Add endpoint-specific param selection from observed gold API patterns.",
+        ]
+    return [
+        "Inspect failed examples and add deterministic routing/schema selection rules before adding agent complexity.",
+    ]
+
+
+def render_strategy_comparison(payload: dict[str, Any]) -> str:
+    if payload.get("examples", 0) == 0:
+        return (
+            "# Strategy Comparison\n\n"
+            "No public examples were evaluated because `data/data.json` is missing.\n\n"
+            "Place the official public examples at `data/data.json` and rerun:\n\n"
+            "```bash\npython scripts/run_dev_eval.py\n```\n"
+        )
+    summary = payload["summary"]
+    lines = [
+        "# Strategy Comparison",
+        "",
+        "| Strategy | Correctness | Final score | Tool calls | Runtime (s) | Tokens |",
+        "|---|---:|---:|---:|---:|---:|",
+    ]
+    for strategy, metrics in summary.get("by_strategy", {}).items():
+        lines.append(
+            "| {strategy} | {correctness:.4f} | {final:.4f} | {tools:.2f} | {runtime:.4f} | {tokens:.0f} |".format(
+                strategy=strategy,
+                correctness=metrics["avg_correctness_score"],
+                final=metrics["avg_final_score"],
+                tools=metrics["avg_tool_call_count"],
+                runtime=metrics["avg_runtime"],
+                tokens=metrics["avg_estimated_tokens"],
+            )
+        )
+    lines.extend(
+        [
+            "",
+            f"- Best correctness: `{summary.get('best_correctness')}`",
+            f"- Best efficiency: `{summary.get('best_efficiency')}`",
+            f"- Best overall: `{summary.get('best_overall')}`",
+            "",
+            "## Recommended Next Focus",
+        ]
+    )
+    for item in summary.get("recommended_next_focus", []):
+        lines.append(f"- {item}")
+    lines.append("")
+    return "\n".join(lines)
