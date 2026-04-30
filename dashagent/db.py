@@ -36,6 +36,29 @@ def strip_sql_comments(sql: str) -> str:
     return sql.strip()
 
 
+def translate_sql_for_duckdb(sql: str) -> str:
+    def replace_dateadd(match: re.Match[str]) -> str:
+        unit = match.group("unit").lower()
+        amount = match.group("amount")
+        base = match.group("base").strip()
+        interval_unit = "month" if unit.startswith("month") else "day"
+        return f"({base} + ({amount}) * INTERVAL '1 {interval_unit}')"
+
+    translated = re.sub(
+        r"DATEADD\s*\(\s*(?P<unit>MONTH|DAY)\s*,\s*(?P<amount>[-+]?\d+)\s*,\s*(?P<base>[^)]+?)\s*\)",
+        replace_dateadd,
+        sql,
+        flags=re.IGNORECASE,
+    )
+    translated = re.sub(
+        r'(?P<lhs>(?:[A-Za-z_][\w$]*\.)?(?:"(?:CREATEDTIME|UPDATEDTIME)"|[A-Za-z_]*(?:created|updated)time))\s*(?P<op>>=|<=|>|<)\s*(?P<rhs>\(CURRENT_DATE\s+\+\s+\([-+]?\d+\)\s*\*\s*INTERVAL\s+\'[^\']+\'\))',
+        lambda match: f"TRY_CAST({match.group('lhs')} AS TIMESTAMP) {match.group('op')} {match.group('rhs')}",
+        translated,
+        flags=re.IGNORECASE,
+    )
+    return translated
+
+
 def is_read_only_sql(sql: str) -> tuple[bool, str | None]:
     cleaned = strip_sql_comments(sql).strip().rstrip(";")
     if not cleaned:
@@ -163,8 +186,9 @@ class DuckDBDatabase:
                 "limited": False,
                 "error": error,
             }
+        executable_sql = translate_sql_for_duckdb(sql)
         effective_sql, limited = self._apply_limit_protection(
-            sql, max_rows or self.config.max_result_rows, allow_full_result
+            executable_sql, max_rows or self.config.max_result_rows, allow_full_result
         )
         try:
             result = self.conn.execute(effective_sql)

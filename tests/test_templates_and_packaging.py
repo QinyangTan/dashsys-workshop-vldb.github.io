@@ -9,9 +9,12 @@ from dashagent.answer_synthesizer import synthesize_answer
 from dashagent.api_templates import find_api_templates
 from dashagent.config import Config
 from dashagent.db import DuckDBDatabase
+from dashagent.endpoint_catalog import EndpointCatalog
 from dashagent.eval_harness import score_api
 from dashagent.schema_index import SchemaIndex
 from dashagent.sql_templates import find_sql_template
+from dashagent.validators import APIValidator
+from scripts.check_submission_ready import check_submission_ready
 from scripts.package_query_outputs import discover_query_output_dirs, scan_for_output_secrets, select_submission_query_dirs
 
 
@@ -59,6 +62,27 @@ def test_api_param_scoring():
     assert "params" in reason
 
 
+def test_every_api_template_validates_against_catalog(tiny_project):
+    validator = APIValidator(EndpointCatalog(tiny_project))
+    queries = [
+        "When was the journey 'Birthday Message' published?",
+        "Give me inactive journeys",
+        "Which audiences are connected to destination SMS?",
+        "List all audiences in the sandbox that have been mapped to new destinations in the last 3 months.",
+        "How many datasets have been ingested using schema https://ns.adobe.com/example/schema?",
+        "Provide more details for the schema 'weRetail: Customer Actions'",
+        "Show the default merge policy for schema class '_xdm.context.profile'.",
+        "What are the daily 'timeseries.ingestion.dataset.recordsuccess.count' values between '2026-03-15' and '2026-03-31'?",
+        "List failed files for batch 01ABCDEF0123456789012345.",
+        "List tags in the Uncategorized category.",
+    ]
+    for query in queries:
+        for template in find_api_templates(query, tiny_project):
+            result = validator.validate(template.method, template.path, template.params)
+            assert result.ok, (query, template.to_dict(), result.errors)
+            assert "{" not in template.path and "}" not in template.path
+
+
 def test_answer_synthesis_for_unpublished_and_published_journey():
     unpublished = synthesize_answer(
         "When was the journey 'Birthday Message' published?",
@@ -83,6 +107,49 @@ def test_answer_synthesis_for_unpublished_and_published_journey():
     assert "was published at 2026-01-01" in published
 
 
+def test_answer_templates_for_weak_domains():
+    schema_answer = synthesize_answer(
+        "How many datasets have been ingested using the same schema in the prod sandbox?",
+        [
+            {
+                "type": "sql",
+                "payload": {
+                    "ok": True,
+                    "rows": [{"blueprint_name": "Journey Inbound External Segment Profile Schema", "collection_count": 2}],
+                    "row_count": 1,
+                },
+            },
+            {"type": "api", "payload": {"ok": False, "dry_run": True}},
+        ],
+    )
+    assert "2 datasets" in schema_answer
+    assert "Journey Inbound External Segment Profile Schema" in schema_answer
+
+    audit_answer = synthesize_answer(
+        "List all audiences in the sandbox that have been mapped to new destinations in the last 3 months.",
+        [
+            {
+                "type": "sql",
+                "payload": {
+                    "ok": True,
+                    "rows": [{"segment_name": "Gender: Male", "target_name": "Amazon S3", "created_time": "2026-03-29"}],
+                    "row_count": 1,
+                },
+            },
+            {"type": "api", "payload": {"ok": False, "dry_run": True}},
+        ],
+    )
+    assert "Gender: Male" in audit_answer
+    assert "Amazon S3" in audit_answer
+
+    merge_answer = synthesize_answer(
+        "Show the default merge policy for schema class '_xdm.context.profile'.",
+        [{"type": "api", "payload": {"ok": False, "dry_run": True}}],
+    )
+    assert "default merge policy" in merge_answer
+    assert "live api verification was not executed" in merge_answer.lower()
+
+
 def test_hidden_output_packager_helpers_and_no_secret_scan(tmp_path: Path):
     outputs = tmp_path / "outputs"
     qdir = outputs / "eval" / "example_001" / "template_first"
@@ -101,3 +168,31 @@ def test_hidden_output_packager_helpers_and_no_secret_scan(tmp_path: Path):
     final_dir.mkdir()
     (final_dir / "safe.txt").write_text("Authorization: [REDACTED]", encoding="utf-8")
     assert scan_for_output_secrets(final_dir)["ok"] is True
+
+
+def test_submission_readiness_checker_accepts_valid_packaged_outputs(tiny_project):
+    tiny_project.outputs_dir.mkdir(parents=True, exist_ok=True)
+    (tiny_project.outputs_dir / "source_code.zip").write_bytes(b"zip")
+    final_dir = tiny_project.outputs_dir / "final_submission"
+    qdir = final_dir / "query_001"
+    qdir.mkdir(parents=True)
+    (final_dir / "system_prompt_template.txt").write_text("prompt", encoding="utf-8")
+    (final_dir / "source_code.zip").write_bytes(b"zip")
+    (qdir / "metadata.json").write_text("{}", encoding="utf-8")
+    (qdir / "filled_system_prompt.txt").write_text("filled", encoding="utf-8")
+    (qdir / "trajectory.json").write_text(
+        json.dumps(
+            {
+                "query_id": "tiny_001",
+                "strategy": "SQL_FIRST_API_VERIFY",
+                "steps": [{"kind": "plan", "steps": []}],
+            }
+        ),
+        encoding="utf-8",
+    )
+    (tiny_project.outputs_dir / "final_submission_manifest.json").write_text(
+        json.dumps({"preferred_strategy": "SQL_FIRST_API_VERIFY"}),
+        encoding="utf-8",
+    )
+    report = check_submission_ready(tiny_project)
+    assert report["ok"] is True

@@ -81,7 +81,7 @@ def main() -> int:
 def discover_query_output_dirs(outputs_dir: Path) -> list[Path]:
     candidates = []
     for path in outputs_dir.rglob("trajectory.json"):
-        if "final_submission" in path.parts:
+        if any(part in {"final_submission", "source_code", "probe"} for part in path.parts):
             continue
         directory = path.parent
         if all((directory / filename).exists() for filename in REQUIRED_QUERY_FILES):

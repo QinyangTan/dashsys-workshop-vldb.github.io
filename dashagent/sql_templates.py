@@ -106,6 +106,36 @@ def segment_destination_template(query: str, lowered: str, schema: SchemaIndex) 
     resolved = resolve_required(schema, required)
     if resolved is None:
         return None
+    if any(token in lowered for token in ["new destination", "new destinations", "last 3 months", "last three months", "mapped"]):
+        time_required = {
+            "dim_segment": ["SEGMENTID", "NAME"],
+            "hkg_br_segment_target": ["SEGMENTID", "TARGETID"],
+            "dim_target": ["TARGETID", "NAME", "CREATEDTIME"],
+        }
+        time_resolved = resolve_required(schema, time_required)
+        if time_resolved is not None:
+            a_time = time_resolved["dim_segment"]
+            ad_time = time_resolved["hkg_br_segment_target"]
+            d_time = time_resolved["dim_target"]
+            sql = (
+                f"SELECT DISTINCT A.{quote_ident(a_time['SEGMENTID'])} AS segment_id, "
+                f"A.{quote_ident(a_time['NAME'])} AS segment_name, "
+                f"D.{quote_ident(d_time['TARGETID'])} AS target_id, "
+                f"D.{quote_ident(d_time['NAME'])} AS target_name "
+                f"FROM {table_ref('dim_segment')} AS A "
+                f"JOIN {table_ref('hkg_br_segment_target')} AS AD "
+                f"ON A.{quote_ident(a_time['SEGMENTID'])} = AD.{quote_ident(ad_time['SEGMENTID'])} "
+                f"JOIN {table_ref('dim_target')} AS D "
+                f"ON AD.{quote_ident(ad_time['TARGETID'])} = D.{quote_ident(d_time['TARGETID'])} "
+                f"WHERE D.{quote_ident(d_time['CREATEDTIME'])} >= DATEADD(MONTH, -3, CURRENT_DATE)"
+                " LIMIT 3"
+            )
+            return SQLTemplate(
+                "segment_new_destination_mapping",
+                sql,
+                list(time_required),
+                {table: list(cols) for table, cols in time_required.items()},
+            )
     term = quoted_term(query)
     where = ""
     if term:
@@ -256,28 +286,54 @@ def blueprint_collection_template(query: str, lowered: str, schema: SchemaIndex)
         }
         detail_resolved = resolve_required(schema, property_required)
         if detail_resolved is not None:
+            detail_blueprint = columns_for(
+                schema,
+                "dim_blueprint",
+                ["BLUEPRINTID", "NAME", "CLASS", "ISPROFILEENABLED", "UPDATEDTIME", "REQUIREDFIELDS"],
+            )
             bp = detail_resolved["hkg_br_blueprint_property"]
+            required_field_select = ""
+            required_field_group = ""
+            if "REQUIREDFIELDS" in detail_blueprint:
+                required_field_select = f"S.{quote_ident(detail_blueprint['REQUIREDFIELDS'])} AS required_fields, "
+                required_field_group = f", S.{quote_ident(detail_blueprint['REQUIREDFIELDS'])}"
             sql = (
-                f"SELECT B.{quote_ident(b['BLUEPRINTID'])} AS blueprint_id, "
-                f"B.{quote_ident(b['NAME'])} AS name, "
-                f"B.{quote_ident(b['CLASS'])} AS class, "
-                f"B.{quote_ident(b['ISPROFILEENABLED'])} AS is_profile_enabled, "
-                f"B.{quote_ident(b['UPDATEDTIME'])} AS updated_time, "
-                f"COUNT(DISTINCT BC.{quote_ident(bc['COLLECTIONID'])}) AS collection_count, "
-                f"COUNT(DISTINCT BP.{quote_ident(bp['PROPERTY'])}) AS property_count "
-                f"FROM {table_ref('dim_blueprint')} AS B "
-                f"LEFT JOIN {table_ref('hkg_br_blueprint_collection')} AS BC "
-                f"ON B.{quote_ident(b['BLUEPRINTID'])} = BC.{quote_ident(bc['BLUEPRINTID'])} "
-                f"LEFT JOIN {table_ref('hkg_br_blueprint_property')} AS BP "
-                f"ON B.{quote_ident(b['BLUEPRINTID'])} = BP.{quote_ident(bp['BLUEPRINTID'])} "
-                f"WHERE B.{quote_ident(b['NAME'])} = {sql_literal(term)} "
-                f"GROUP BY B.{quote_ident(b['BLUEPRINTID'])}, B.{quote_ident(b['NAME'])}, "
-                f"B.{quote_ident(b['CLASS'])}, B.{quote_ident(b['ISPROFILEENABLED'])}, B.{quote_ident(b['UPDATEDTIME'])}"
-                f"{limit_clause(query)}"
+                f"SELECT S.{quote_ident(b['BLUEPRINTID'])} AS blueprint_id, "
+                f"S.{quote_ident(b['NAME'])}, "
+                f"S.{quote_ident(b['CLASS'])}, "
+                f"S.{quote_ident(b['ISPROFILEENABLED'])}, "
+                f"S.{quote_ident(b['UPDATEDTIME'])} AS updated_time, "
+                f"{required_field_select}"
+                f"COUNT(DISTINCT SD.{quote_ident(bc['COLLECTIONID'])}) AS collection_count, "
+                f"COUNT(DISTINCT SA.{quote_ident(bp['PROPERTY'])}) AS property_count "
+                f"FROM {table_ref('dim_blueprint')} AS S "
+                f"LEFT JOIN {table_ref('hkg_br_blueprint_collection')} AS SD "
+                f"ON S.{quote_ident(b['BLUEPRINTID'])} = SD.{quote_ident(bc['BLUEPRINTID'])} "
+                f"LEFT JOIN {table_ref('hkg_br_blueprint_property')} AS SA "
+                f"ON S.{quote_ident(b['BLUEPRINTID'])} = SA.{quote_ident(bp['BLUEPRINTID'])} "
+                f"WHERE LOWER(S.{quote_ident(b['NAME'])}) = LOWER({sql_literal(term)}) "
+                f"GROUP BY S.{quote_ident(b['BLUEPRINTID'])}, S.{quote_ident(b['NAME'])}, "
+                f"S.{quote_ident(b['CLASS'])}, S.{quote_ident(b['ISPROFILEENABLED'])}, "
+                f"S.{quote_ident(b['UPDATEDTIME'])}{required_field_group}"
+                f"{limit_clause(query, default='3')}"
             )
             return SQLTemplate("schema_detail_counts", sql, list(property_required), {t: list(cols) for t, cols in property_required.items()})
 
     if asks_count(query) and "dataset" in lowered:
+        if "same schema" in lowered:
+            sql = (
+                f"SELECT S.{quote_ident(b['BLUEPRINTID'])} AS blueprint_id, "
+                f"S.{quote_ident(b['NAME'])} AS blueprint_name, "
+                f"COUNT(DISTINCT DS.{quote_ident(bc['COLLECTIONID'])}) AS collection_count "
+                f"FROM {table_ref('dim_collection')} AS D "
+                f"JOIN {table_ref('hkg_br_blueprint_collection')} AS DS "
+                f"ON D.{quote_ident(c['COLLECTIONID'])} = DS.{quote_ident(bc['COLLECTIONID'])} "
+                f"JOIN {table_ref('dim_blueprint')} AS S "
+                f"ON DS.{quote_ident(bc['BLUEPRINTID'])} = S.{quote_ident(b['BLUEPRINTID'])} "
+                f"GROUP BY S.{quote_ident(b['BLUEPRINTID'])}, S.{quote_ident(b['NAME'])} "
+                f"HAVING COUNT(DISTINCT DS.{quote_ident(bc['COLLECTIONID'])}) > 1"
+            )
+            return SQLTemplate("blueprint_collection_same_schema_count", sql, list(required), {t: list(cols) for t, cols in required.items()})
         sql = (
             f"SELECT B.{quote_ident(b['BLUEPRINTID'])} AS blueprint_id, "
             f"B.{quote_ident(b['NAME'])} AS blueprint_name, "

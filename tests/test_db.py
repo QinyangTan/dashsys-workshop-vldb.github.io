@@ -16,3 +16,12 @@ def test_execute_sql_blocks_destructive_sql(tiny_project):
     result = db.execute_sql('DROP TABLE "dim_campaign"')
     assert result["ok"] is False
     assert "blocked" in result["error"] or "Only read-only" in result["error"]
+
+
+def test_execute_sql_translates_public_dateadd_syntax(tiny_project):
+    db = DuckDBDatabase(tiny_project)
+    result = db.execute_sql(
+        'SELECT COUNT(*) AS count FROM "dim_campaign" '
+        'WHERE TRY_CAST("lastdeployedtime" AS TIMESTAMP) >= DATEADD(MONTH, -12, CURRENT_DATE)'
+    )
+    assert result["ok"] is True

@@ -5,7 +5,7 @@ import re
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
-from urllib.parse import parse_qsl, urlparse
+from urllib.parse import parse_qsl, quote, urlparse
 
 from .config import Config, DEFAULT_CONFIG
 from .endpoint_catalog import normalize_api_path
@@ -34,6 +34,7 @@ def find_api_templates(query: str, config: Config | None = None) -> list[APITemp
     lowered = query.lower()
     templates: list[APITemplate] = []
     templates.extend(_journey_templates(query, lowered))
+    templates.extend(_audit_templates(query, lowered))
     templates.extend(_destination_flow_templates(query, lowered))
     templates.extend(_schema_dataset_templates(query, lowered))
     templates.extend(_tag_templates(query, lowered))
@@ -65,6 +66,11 @@ def _journey_templates(query: str, lowered: str) -> list[APITemplate]:
 
 def _destination_flow_templates(query: str, lowered: str) -> list[APITemplate]:
     templates: list[APITemplate] = []
+    if "audit" in lowered or (
+        ("mapped" in lowered or "new destination" in lowered or "new destinations" in lowered)
+        and ("last 3 months" in lowered or "last three months" in lowered)
+    ):
+        return []
     if "failed" in lowered and ("dataflow" in lowered or "flow" in lowered):
         templates.append(
             APITemplate(
@@ -118,6 +124,33 @@ def _destination_flow_templates(query: str, lowered: str) -> list[APITemplate]:
     return dedupe_templates(templates)
 
 
+def _audit_templates(query: str, lowered: str) -> list[APITemplate]:
+    if "audit" not in lowered and not (
+        ("mapped" in lowered or "new destination" in lowered or "new destinations" in lowered)
+        and ("last 3 months" in lowered or "last three months" in lowered)
+    ):
+        return []
+    if "destination" in lowered:
+        return [
+            APITemplate(
+                "GET",
+                "/data/foundation/audit/events",
+                {"property": "assetType==destination", "limit": "3"},
+                "destination_audit_events",
+            )
+        ]
+    if "dataset" in lowered:
+        return [
+            APITemplate(
+                "GET",
+                "/audit/events",
+                {"property": "assetType==dataset", "orderBy": "-timestamp", "limit": "50"},
+                "dataset_audit_changes",
+            )
+        ]
+    return [APITemplate("GET", "/audit/events", {"limit": "20"}, "audit_events")]
+
+
 def _schema_dataset_templates(query: str, lowered: str) -> list[APITemplate]:
     templates: list[APITemplate] = []
     if "dataset" in lowered or "datasets" in lowered:
@@ -136,15 +169,16 @@ def _schema_dataset_templates(query: str, lowered: str) -> list[APITemplate]:
             if term:
                 params["filter"] = f'schemaName=="{term}"'
             templates.append(APITemplate("GET", "/data/foundation/catalog/dataSets", params, "datasets_by_schema"))
-            templates.append(
-                APITemplate(
-                    "GET",
-                    "/data/foundation/schemaregistry/tenant/schemas/{schema_id}",
-                    {},
-                    "schema_registry_by_id",
-                    ["unresolved_parameter: schema_id"],
+            schema_id = extract_schema_id(query)
+            if schema_id:
+                templates.append(
+                    APITemplate(
+                        "GET",
+                        f"/data/foundation/schemaregistry/tenant/schemas/{quote(schema_id, safe='')}",
+                        {},
+                        "schema_registry_by_id",
+                    )
                 )
-            )
     if "schema" in lowered and "dataset" not in lowered:
         term = quoted_term(query)
         if "experience event" in lowered and "profile" in lowered:
@@ -332,6 +366,11 @@ def extract_batch_id(query: str) -> str | None:
 
 def extract_destination_id(query: str) -> str | None:
     return extract_uuid(query)
+
+
+def extract_schema_id(query: str) -> str | None:
+    match = re.search(r"\b[0-9a-f]{32,64}\b|https?://ns\.adobe\.com/[^\s]+", query, flags=re.IGNORECASE)
+    return match.group(0).rstrip(" .?!,;") if match else None
 
 
 def dedupe_templates(templates: list[APITemplate]) -> list[APITemplate]:

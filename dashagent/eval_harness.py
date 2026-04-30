@@ -66,6 +66,7 @@ class EvalHarness:
         *,
         strategies: list[str] | None = None,
         examples: list[EvalExample] | None = None,
+        include_live_api_metrics: bool = False,
     ) -> dict[str, Any]:
         strategies = strategies or STRATEGIES
         examples = examples if examples is not None else self.load_examples()
@@ -128,6 +129,8 @@ class EvalHarness:
                 )
         summary = summarize_rows(rows, strategies)
         payload = {"examples": len(examples), "strategies": strategies, "rows": rows, "summary": summary}
+        if include_live_api_metrics:
+            payload["live_api_metrics"] = compute_live_api_metrics(rows)
         self._write_outputs(payload)
         return payload
 
@@ -143,6 +146,15 @@ class EvalHarness:
                 "best_overall": None,
             },
         }
+        if strategies:
+            payload["live_api_metrics"] = {
+                "planned_api_score": 0.0,
+                "live_api_success_rate": 0.0,
+                "live_api_empty_response_rate": 0.0,
+                "live_api_error_rate": 0.0,
+                "dry_run_vs_live_discrepancies": {"dry_run_calls": 0, "live_calls": 0},
+                "note": "No examples were available.",
+            }
         self._write_outputs(payload)
         return payload
 
@@ -387,6 +399,49 @@ def count_validation_failures(trajectory: dict[str, Any]) -> int:
         if isinstance(validation, dict) and validation.get("ok") is False:
             failures += 1
     return failures
+
+
+def compute_live_api_metrics(rows: list[dict[str, Any]]) -> dict[str, Any]:
+    api_rows = [row for row in rows if int(row.get("api_call_count", 0)) > 0]
+    planned_api_score = avg(float(row.get("api_score", 0)) for row in api_rows) if api_rows else 0.0
+    api_calls = []
+    for row in rows:
+        output_dir = row.get("output_dir")
+        if not output_dir:
+            continue
+        path = Path(output_dir) / "trajectory.json"
+        if not path.exists():
+            continue
+        try:
+            trajectory = json.loads(path.read_text(encoding="utf-8"))
+        except json.JSONDecodeError:
+            continue
+        for step in trajectory.get("steps", []):
+            if step.get("kind") == "api_call":
+                result = step.get("result", {})
+                api_calls.append(result)
+    live_calls = [result for result in api_calls if not result.get("dry_run")]
+    dry_run_calls = [result for result in api_calls if result.get("dry_run")]
+    success = [result for result in live_calls if result.get("ok")]
+    empty = [
+        result
+        for result in success
+        if result.get("result_preview") in (None, "", [], {})
+    ]
+    error = [result for result in live_calls if not result.get("ok")]
+    denom = len(live_calls) or 1
+    return {
+        "planned_api_score": planned_api_score,
+        "live_api_success_rate": round(len(success) / denom, 4) if live_calls else 0.0,
+        "live_api_empty_response_rate": round(len(empty) / denom, 4) if live_calls else 0.0,
+        "live_api_error_rate": round(len(error) / denom, 4) if live_calls else 0.0,
+        "dry_run_vs_live_discrepancies": {
+            "dry_run_calls": len(dry_run_calls),
+            "live_calls": len(live_calls),
+            "total_api_calls": len(api_calls),
+        },
+        "note": "No live API calls were executed; credentials are missing or dry-run mode was used." if not live_calls else "",
+    }
 
 
 def summarize_rows(rows: list[dict[str, Any]], strategies: list[str]) -> dict[str, Any]:

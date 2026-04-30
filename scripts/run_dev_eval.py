@@ -18,17 +18,23 @@ from dashagent.planner import STRATEGIES
 def main() -> int:
     parser = argparse.ArgumentParser(description="Run public-example evaluation for all strategies.")
     parser.add_argument("--strategy", action="append", choices=STRATEGIES, help="Limit to one or more strategies.")
+    parser.add_argument(
+        "--live-api",
+        action="store_true",
+        help="Include live API success/empty/error metrics when Adobe credentials are available.",
+    )
     args = parser.parse_args()
 
     config = Config.from_env(ROOT)
     harness = EvalHarness(config)
-    result = harness.run(strategies=args.strategy or STRATEGIES)
+    result = harness.run(strategies=args.strategy or STRATEGIES, include_live_api_metrics=args.live_api)
     print(
         json.dumps(
             {
                 "examples": result["examples"],
                 "strategies": result["strategies"],
                 "summary": result["summary"],
+                "live_api_metrics": result.get("live_api_metrics"),
                 "strategy_comparison": str(config.outputs_dir / "strategy_comparison.md"),
             },
             indent=2,

@@ -24,6 +24,8 @@ REQUIRED_PATHS = [
     "scripts/run_dev_eval.py",
     "scripts/package_submission.py",
     "scripts/package_query_outputs.py",
+    "scripts/generate_failure_analysis.py",
+    "scripts/check_submission_ready.py",
     "tests",
     "pyproject.toml",
     "requirements.txt",
