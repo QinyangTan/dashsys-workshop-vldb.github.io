@@ -2,11 +2,13 @@ from __future__ import annotations
 
 import json
 import re
+import time
 from pathlib import Path
 from typing import Any
 
 from .answer_synthesizer import synthesize_answer
 from .api_client import AdobeAPIClient
+from .cache import load_schema_index_from_cache, write_cache_manifest
 from .config import Config, DEFAULT_CONFIG
 from .db import DuckDBDatabase
 from .endpoint_catalog import EndpointCatalog
@@ -30,7 +32,14 @@ class AgentExecutor:
         self.config = config or DEFAULT_CONFIG
         self.config.ensure_dirs()
         self.db = db or DuckDBDatabase(self.config)
-        self.schema_index = schema_index or SchemaIndex.build(self.db)
+        if schema_index is not None:
+            self.schema_index = schema_index
+        else:
+            cached_schema = load_schema_index_from_cache(self.config)
+            self.schema_index = cached_schema or SchemaIndex.build(self.db)
+            if cached_schema is None:
+                self.schema_index.save(self.config)
+                write_cache_manifest(self.config)
         self.endpoint_catalog = endpoint_catalog or EndpointCatalog(self.config)
         self.api_client = api_client or AdobeAPIClient(self.config)
         self.router = QueryRouter(self.db.list_tables(), self.endpoint_catalog)
@@ -56,6 +65,7 @@ class AgentExecutor:
         out_dir = output_dir or (self.config.outputs_dir / qid / strategy.lower())
         out_dir.mkdir(parents=True, exist_ok=True)
 
+        preprocessing_start = time.perf_counter()
         routing = self.router.route(query)
         broad = strategy == "LLM_FREE_AGENT_BASELINE"
         metadata = self.metadata_selector.select(
@@ -69,8 +79,11 @@ class AgentExecutor:
 
         filled_prompt = render_system_prompt(self.config, metadata)
         (out_dir / "filled_system_prompt.txt").write_text(filled_prompt, encoding="utf-8")
+        preprocessing_time = time.perf_counter() - preprocessing_start
 
+        planning_start = time.perf_counter()
         plan = self.planner.create_plan(query, routing, metadata, strategy)
+        planning_time = time.perf_counter() - planning_start
         trajectory = TrajectoryLogger(
             query_id=qid,
             original_query=query,
@@ -79,11 +92,21 @@ class AgentExecutor:
             domain_type=routing.domain_type,
             max_preview_chars=self.config.max_preview_chars,
         )
+        trajectory.set_timing("preprocessing_time", preprocessing_time)
+        trajectory.set_timing("planning_time", planning_time)
         trajectory.add_step("route", routing.to_dict())
-        trajectory.add_step("metadata", {"estimated_tokens": estimate_tokens(metadata), "metadata_path": str(out_dir / "metadata.json")})
+        trajectory.add_step(
+            "metadata",
+            {
+                "estimated_tokens": estimate_tokens(metadata),
+                "prompt_tokens": estimate_tokens(filled_prompt),
+                "metadata_path": str(out_dir / "metadata.json"),
+            },
+        )
         trajectory.add_step("plan", plan.to_dict())
 
         tool_results: list[dict[str, Any]] = []
+        execution_start = time.perf_counter()
         for step in plan.steps:
             if step.action == "sql" and step.sql:
                 validation = self.sql_validator.validate(step.sql)
@@ -109,8 +132,11 @@ class AgentExecutor:
                     result = {"ok": False, "dry_run": False, "error": "; ".join(validation.errors)}
                 trajectory.add_api_call(step.method, step.url, step.params, step.headers, validation, result)
                 tool_results.append({"type": "api", "step": step.to_dict(), "validation": validation.to_dict(), "payload": result})
+        trajectory.set_timing("execution_time", time.perf_counter() - execution_start)
 
+        answer_start = time.perf_counter()
         final_answer = synthesize_answer(query, tool_results)
+        trajectory.set_timing("answer_time", time.perf_counter() - answer_start)
         trajectory_payload = trajectory.save(out_dir / "trajectory.json", final_answer)
         return {
             "query_id": qid,

@@ -64,6 +64,14 @@ This writes:
 - `outputs/endpoint_catalog.json`
 - `outputs/gold_api_patterns.json` when `data/data.json` is available
 
+For a final run, warm the reusable cache first:
+
+```bash
+python scripts/warm_cache.py
+```
+
+This precomputes schema summaries, join graphs, endpoint catalog output, and mined public-example patterns. Query execution loads the cache when the DBSnapshot file names/mtimes and `data/data.json` mtime are unchanged.
+
 ## Run One Query
 
 ```bash
@@ -95,6 +103,15 @@ Evaluation outputs:
 - `outputs/eval_results.json`
 - `outputs/eval_results.csv`
 - `outputs/strategy_comparison.md`
+
+Additional diagnostic reports:
+
+```bash
+python scripts/generate_failure_analysis.py
+python scripts/generate_family_score_report.py
+python scripts/generate_pareto_report.py
+python scripts/generate_template_generalization_report.py
+```
 
 The combined score is:
 

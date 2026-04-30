@@ -185,6 +185,10 @@ def test_submission_readiness_checker_accepts_valid_packaged_outputs(tiny_projec
             {
                 "query_id": "tiny_001",
                 "strategy": "SQL_FIRST_API_VERIFY",
+                "final_answer": "done",
+                "tool_call_count": 0,
+                "runtime": 0.01,
+                "estimated_tokens": 10,
                 "steps": [{"kind": "plan", "steps": []}],
             }
         ),
@@ -194,5 +198,17 @@ def test_submission_readiness_checker_accepts_valid_packaged_outputs(tiny_projec
         json.dumps({"preferred_strategy": "SQL_FIRST_API_VERIFY"}),
         encoding="utf-8",
     )
+    for name in [
+        "failure_analysis.json",
+        "family_score_report.json",
+        "pareto_report.json",
+    ]:
+        (tiny_project.outputs_dir / name).write_text("{}", encoding="utf-8")
+    for name in [
+        "failure_analysis.md",
+        "family_score_report.md",
+        "pareto_report.md",
+    ]:
+        (tiny_project.outputs_dir / name).write_text("ok", encoding="utf-8")
     report = check_submission_ready(tiny_project)
     assert report["ok"] is True

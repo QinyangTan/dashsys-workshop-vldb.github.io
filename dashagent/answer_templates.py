@@ -3,9 +3,19 @@ from __future__ import annotations
 import re
 from typing import Any
 
+from .live_response_parsers import normalize_api_evidence
+
 
 def classify_answer_family(query: str) -> str:
     lowered = query.lower()
+    if "field" in lowered or "property" in lowered or "attribute" in lowered:
+        return "property_field"
+    if "created by" in lowered or ("created" in lowered and "download" in lowered):
+        return "audit_entity_created"
+    if "segment definition" in lowered:
+        return "segment_definitions"
+    if "segment job" in lowered or "segment evaluation job" in lowered:
+        return "segment_jobs"
     if ("journey" in lowered or "campaign" in lowered) and "publish" in lowered:
         return "journey_published"
     if "inactive" in lowered and ("journey" in lowered or "campaign" in lowered):
@@ -83,7 +93,17 @@ def render_answer_template(
         target = row_value(row, ["target_name", "name"]) or "unknown target"
         modified = row_value(row, ["modified", "updated_time", "updatedtime"])
         suffix = f" with a modification timestamp of {human_datetime(modified)}" if modified else ""
-        return f'Based on the evidence provided, {len(rows)} destination(s) were found. The most recent is "{dataflow}" ({target} target){suffix}. {sentence_case(api_phrase)}.'
+        sandbox_note = ""
+        if "sandbox" in lowered:
+            sandbox_note = " Live API evidence is needed to validate the requested sandbox."
+        return f'Based on the evidence provided, {len(rows)} destination(s) were found. The most recent is "{dataflow}" ({target} target){suffix}.{sandbox_note} {sentence_case(api_phrase)}.'
+
+    if family == "audit_entity_created" and rows is not None:
+        actor = quoted_text(query) or "download"
+        if not rows:
+            return f"Based on the evidence provided, no entities were created by {actor}. The SQL query returned zero rows, and {api_phrase}."
+        names = extract_names(rows, ["collection_name", "name", "entity_name"])
+        return f"Based on the evidence provided, entities created by {actor} are: {join_human(names) if names else format_rows(rows)}. {sentence_case(api_phrase)}."
 
     if family in {"segment_destination", "audit_destination_mapping"} and rows is not None:
         if not rows:
@@ -97,7 +117,7 @@ def render_answer_template(
 
     if family == "failed_dataflow_runs":
         if rows == [] or rows is None:
-            return "There are no failed dataflow runs to report based on the available evidence."
+            return f"There are no failed dataflow runs to report based on the available evidence. The SQL query returned zero rows, and {api_phrase}."
         ids = extract_names(rows, ["dataflow_id", "run_id", "id"])
         return f"Based on the available evidence, failed dataflow identifiers are: {join_human(ids) if ids else format_rows(rows)}. {sentence_case(api_phrase)}."
 
@@ -107,6 +127,12 @@ def render_answer_template(
             return answer
 
     if family == "merge_policy":
+        live = first_api_evidence(api_results, "merge_policies")
+        if live and not live["empty"]:
+            fields = live.get("important_fields", {})
+            name = fields.get("default_policy_name") or fields.get("name") or fields.get("title")
+            if name:
+                return f"The default merge policy is {name}. This is based on live merge-policy API evidence."
         if rows:
             names = extract_names(rows, ["name", "policy_name", "merge_policy_name"])
             if names:
@@ -125,9 +151,46 @@ def render_answer_template(
             return f"Batch evidence was returned by the API. {sentence_case(api_phrase)}."
         return f"Batch details and files require live API evidence. {sentence_case(api_phrase)}."
 
+    if family == "segment_definitions":
+        live = first_api_evidence(api_results, "segment_definition")
+        if live and not live["empty"]:
+            count = live.get("count", 0)
+            fields = live.get("important_fields", {})
+            name = fields.get("name") or fields.get("title")
+            if "recent" in lowered or "updated" in lowered:
+                return f"The most recent segment definition returned by the API is {name or 'available in the API evidence'}. The API evidence reports {count} item(s)."
+            return f"The API evidence reports {count} segment definition(s). The first visible definition is {name or 'available in the API evidence'}."
+        return f"Segment definition details require live Adobe API evidence. {sentence_case(api_phrase)}."
+
+    if family == "segment_jobs":
+        live = first_api_evidence(api_results, "segment_jobs")
+        if live and not live["empty"]:
+            return f"The API evidence reports {live.get('count', 0)} segment job(s)."
+        return f"Segment job status requires live Adobe API evidence. {sentence_case(api_phrase)}."
+
+    if family == "property_field" and rows is not None:
+        if not rows:
+            return f"No matching field was found in the database. {sentence_case(api_phrase)}."
+        row = rows[0]
+        field = row_value(row, ["property_name", "property", "field"])
+        segment = row_value(row, ["segment_name", "name"]) or quoted_text(query) or "the segment"
+        if field:
+            label = human_property_label(str(field))
+            return f'The field for "{segment}" is {field}. This is the {label} property from the SQL evidence.'
+        return f"The matching field evidence is: {format_rows(rows)}. {sentence_case(api_phrase)}."
+
     if family == "tags":
+        live = first_api_evidence(api_results, "tag")
+        if live and not live["empty"]:
+            fields = live.get("important_fields", {})
+            name = fields.get("name") or fields.get("title")
+            tag_id = fields.get("id")
+            suffix = f" (ID: {tag_id})" if tag_id else ""
+            return f"The tag API returned {name or 'a matching tag'}{suffix}."
         if api_has_live_payload(api_results):
             return f"Tag evidence was returned by the API. {sentence_case(api_phrase)}."
+        if quoted_text(query):
+            return f"Details for the tag named '{quoted_text(query)}' require live API evidence. {sentence_case(api_phrase)}."
         if "category" in lowered:
             return f"Tag category membership requires live API evidence. {sentence_case(api_phrase)}."
         return f"Tag details require live API evidence. {sentence_case(api_phrase)}."
@@ -210,6 +273,15 @@ def api_has_live_payload(api_results: list[dict[str, Any]]) -> bool:
     )
 
 
+def first_api_evidence(api_results: list[dict[str, Any]], family_prefix: str) -> dict[str, Any] | None:
+    for result in api_results:
+        step = result.get("step", {})
+        family = str(step.get("family") or "")
+        if family.startswith(family_prefix) or family_prefix in family:
+            return normalize_api_evidence(family, result.get("payload", {}))
+    return None
+
+
 def row_value(row: dict[str, Any] | None, candidates: list[str]) -> Any:
     if not row:
         return None
@@ -288,3 +360,9 @@ def format_rows(rows: list[dict[str, Any]], limit: int = 5) -> str:
     for row in rows[:limit]:
         parts.append(", ".join(f"{key}={value}" for key, value in list(row.items())[:4]))
     return "; ".join(parts)
+
+
+def human_property_label(field: str) -> str:
+    label = field.rsplit(".", 1)[-1]
+    label = re.sub(r"([a-z])([A-Z])", r"\1 \2", label).replace("_", " ").replace("-", " ")
+    return label.lower()

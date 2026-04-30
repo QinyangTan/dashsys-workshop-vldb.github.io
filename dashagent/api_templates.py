@@ -125,6 +125,15 @@ def _destination_flow_templates(query: str, lowered: str) -> list[APITemplate]:
 
 
 def _audit_templates(query: str, lowered: str) -> list[APITemplate]:
+    if "created by" in lowered or ("created" in lowered and "download" in lowered):
+        return [
+            APITemplate(
+                "GET",
+                "/data/foundation/audit/events",
+                {"property": "action==create", "limit": "20"},
+                "audit_create_events",
+            )
+        ]
     if "audit" not in lowered and not (
         ("mapped" in lowered or "new destination" in lowered or "new destinations" in lowered)
         and ("last 3 months" in lowered or "last three months" in lowered)
@@ -310,6 +319,8 @@ def _gold_pattern_templates(query: str, config: Config) -> list[APITemplate]:
         return []
     lowered_terms = set(re.findall(r"[a-z0-9]+", query.lower()))
     candidates = []
+    stop = {"all", "and", "are", "for", "how", "list", "me", "show", "the", "this", "what", "with"}
+    lowered_terms = {term for term in lowered_terms if term not in stop and len(term) > 2}
     for pattern in patterns:
         examples = pattern.get("examples", [])
         haystack = " ".join(str(example.get("question", "")) for example in examples).lower()
@@ -318,7 +329,9 @@ def _gold_pattern_templates(query: str, config: Config) -> list[APITemplate]:
             candidates.append((overlap, pattern))
     if not candidates:
         return []
-    pattern = sorted(candidates, key=lambda item: item[0], reverse=True)[0][1]
+    best_overlap, pattern = sorted(candidates, key=lambda item: item[0], reverse=True)[0]
+    if best_overlap < 2:
+        return []
     return [
         APITemplate(
             pattern.get("method", "GET"),

@@ -33,6 +33,8 @@ def test_metadata_selector_returns_compact_context(tiny_project):
     )
     assert metadata["selected_tables"]
     assert "selected_columns" in metadata
+    assert len(metadata["selected_join_hints"]) <= tiny_project.max_join_hints
+    assert len(metadata["known_example_patterns"]) <= tiny_project.max_gold_patterns
     assert len(json.dumps(metadata)) < 12000
 
 

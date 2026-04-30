@@ -88,6 +88,7 @@ class EvalHarness:
                 trajectory = result["trajectory"]
                 generated_sql = first_generated_sql(trajectory)
                 generated_api = generated_api_calls(trajectory)
+                metadata_tokens, prompt_tokens = metadata_prompt_tokens(trajectory)
                 sql_score, sql_reason = score_sql(
                     self.executor.db,
                     generated_sql,
@@ -119,6 +120,12 @@ class EvalHarness:
                         "api_call_count": trajectory.get("api_call_count", 0),
                         "runtime": round(trajectory.get("runtime", elapsed), 4),
                         "estimated_tokens": trajectory.get("estimated_tokens", 0),
+                        "metadata_tokens": metadata_tokens,
+                        "prompt_tokens": prompt_tokens,
+                        "preprocessing_time": round(trajectory.get("preprocessing_time", 0.0), 6),
+                        "planning_time": round(trajectory.get("planning_time", 0.0), 6),
+                        "execution_time": round(trajectory.get("execution_time", 0.0), 6),
+                        "answer_time": round(trajectory.get("answer_time", 0.0), 6),
                         "error_count": len(trajectory.get("errors", [])),
                         "validation_failures": count_validation_failures(trajectory),
                         "sql_reason": sql_reason,
@@ -401,6 +408,13 @@ def count_validation_failures(trajectory: dict[str, Any]) -> int:
     return failures
 
 
+def metadata_prompt_tokens(trajectory: dict[str, Any]) -> tuple[int, int]:
+    for step in trajectory.get("steps", []):
+        if step.get("kind") == "metadata":
+            return int(step.get("estimated_tokens", 0)), int(step.get("prompt_tokens", 0))
+    return 0, 0
+
+
 def compute_live_api_metrics(rows: list[dict[str, Any]]) -> dict[str, Any]:
     api_rows = [row for row in rows if int(row.get("api_call_count", 0)) > 0]
     planned_api_score = avg(float(row.get("api_score", 0)) for row in api_rows) if api_rows else 0.0
@@ -458,6 +472,12 @@ def summarize_rows(rows: list[dict[str, Any]], strategies: list[str]) -> dict[st
             "avg_tool_call_count": avg(row["tool_call_count"] for row in strategy_rows),
             "avg_runtime": avg(row["runtime"] for row in strategy_rows),
             "avg_estimated_tokens": avg(row["estimated_tokens"] for row in strategy_rows),
+            "avg_metadata_tokens": avg(row.get("metadata_tokens", 0) for row in strategy_rows),
+            "avg_prompt_tokens": avg(row.get("prompt_tokens", 0) for row in strategy_rows),
+            "avg_preprocessing_time": avg(row.get("preprocessing_time", 0) for row in strategy_rows),
+            "avg_planning_time": avg(row.get("planning_time", 0) for row in strategy_rows),
+            "avg_execution_time": avg(row.get("execution_time", 0) for row in strategy_rows),
+            "avg_answer_time": avg(row.get("answer_time", 0) for row in strategy_rows),
             "avg_final_score": avg(row["final_score"] for row in strategy_rows),
         }
     if not by_strategy:
@@ -534,6 +554,27 @@ def render_strategy_comparison(payload: dict[str, Any]) -> str:
             f"- Best correctness: `{summary.get('best_correctness')}`",
             f"- Best efficiency: `{summary.get('best_efficiency')}`",
             f"- Best overall: `{summary.get('best_overall')}`",
+            "",
+            "## Token Context",
+            "",
+            "| Strategy | Metadata tokens | Prompt tokens | Preprocess (s) | Planning (s) | Execution (s) | Answer (s) |",
+            "|---|---:|---:|---:|---:|---:|---:|",
+        ]
+    )
+    for strategy, metrics in summary.get("by_strategy", {}).items():
+        lines.append(
+            "| {strategy} | {metadata:.0f} | {prompt:.0f} | {pre:.5f} | {planning:.5f} | {execution:.5f} | {answer:.5f} |".format(
+                strategy=strategy,
+                metadata=metrics.get("avg_metadata_tokens", 0),
+                prompt=metrics.get("avg_prompt_tokens", 0),
+                pre=metrics.get("avg_preprocessing_time", 0),
+                planning=metrics.get("avg_planning_time", 0),
+                execution=metrics.get("avg_execution_time", 0),
+                answer=metrics.get("avg_answer_time", 0),
+            )
+        )
+    lines.extend(
+        [
             "",
             "## Recommended Next Focus",
         ]

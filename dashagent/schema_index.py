@@ -99,7 +99,7 @@ class SchemaIndex:
         schema_path = cfg.outputs_dir / "schema_summary.json"
         graph_path = cfg.outputs_dir / "join_graph.json"
         schema_path.write_text(
-            json.dumps(self.compact_summary(), indent=2, sort_keys=True),
+            json.dumps(self.compact_summary(max_columns_per_table=200), indent=2, sort_keys=True),
             encoding="utf-8",
         )
         graph_payload = {

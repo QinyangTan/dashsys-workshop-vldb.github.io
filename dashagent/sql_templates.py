@@ -198,15 +198,15 @@ def destination_export_template(query: str, lowered: str, schema: SchemaIndex) -
         f"SELECT D.{quote_ident(d['TARGETID'])} AS target_id, "
         f"D.{quote_ident(d['DATAFLOWNAME'])} AS dataflow_name, "
         f"D.{quote_ident(d['NAME'])} AS target_name, "
-        f"D.{quote_ident(d['DESCRIPTION'])} AS description, "
-        f"D.{quote_ident(d['STATE'])} AS state, "
+        f"D.{quote_ident(d['DESCRIPTION'])}, "
+        f"D.{quote_ident(d['STATE'])}, "
         f"D.{quote_ident(d['CONNECTIONSPECID'])} AS connection_spec_id, "
         f"D.{quote_ident(d['CREATEDTIME'])} AS created_time, "
         f"D.{quote_ident(d['UPDATEDTIME'])} AS modified, "
-        f"D.{quote_ident(d['INTERVAL'])} AS interval, "
-        f"D.{quote_ident(d['FREQUENCY'])} AS frequency "
+        f"D.{quote_ident(d['INTERVAL'])}, "
+        f"D.{quote_ident(d['FREQUENCY'])} "
         f"FROM {table_ref('dim_target')} AS D "
-        f"ORDER BY D.{quote_ident(d['UPDATEDTIME'])} DESC{limit_clause(query)}"
+        f"ORDER BY D.{quote_ident(d['UPDATEDTIME'])} DESC{destination_limit_clause(query)}"
     )
     return SQLTemplate("destination_export_recent", sql, ["dim_target"], required)
 
@@ -520,6 +520,13 @@ def asks_no_limit(query: str) -> bool:
 
 def limit_clause(query: str, default: str = "50") -> str:
     return "" if asks_no_limit(query) else f" LIMIT {default}"
+
+
+def destination_limit_clause(query: str) -> str:
+    lowered = query.lower()
+    if any(token in lowered for token in ["no row limit", "remove row limit", "all rows", "every row", "return all rows"]):
+        return ""
+    return " LIMIT 50"
 
 
 def asks_count(query: str) -> bool:

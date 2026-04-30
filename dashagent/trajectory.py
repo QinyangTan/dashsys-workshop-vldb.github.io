@@ -48,12 +48,49 @@ def redact_secrets(obj: Any) -> Any:
     return obj
 
 
-def compact_preview(obj: Any, max_chars: int = 2000) -> Any:
+IMPORTANT_PREVIEW_KEYS = [
+    "id",
+    "name",
+    "status",
+    "state",
+    "total",
+    "count",
+    "errors",
+    "error",
+    "result_preview",
+]
+
+
+def compact_preview(obj: Any, max_chars: int = 1000) -> Any:
     redacted = redact_secrets(obj)
+    redacted = structural_preview(redacted)
     text = json.dumps(redacted, default=str, ensure_ascii=False)
     if len(text) <= max_chars:
         return redacted
     return {"preview": text[:max_chars] + "...", "truncated": True}
+
+
+def structural_preview(obj: Any) -> Any:
+    if isinstance(obj, list):
+        return {
+            "items": [structural_preview(item) for item in obj[:3]],
+            "total_items": len(obj),
+            "truncated_items": len(obj) > 3,
+        }
+    if isinstance(obj, dict):
+        compact: dict[str, Any] = {}
+        for key in IMPORTANT_PREVIEW_KEYS:
+            if key in obj:
+                compact[key] = structural_preview(obj[key])
+        for key, value in obj.items():
+            if key in compact:
+                continue
+            if len(compact) >= 12:
+                compact["truncated_fields"] = max(0, len(obj) - len(compact))
+                break
+            compact[key] = structural_preview(value)
+        return compact
+    return obj
 
 
 def estimate_tokens(text_or_obj: Any) -> int:
@@ -74,11 +111,12 @@ class TrajectoryLogger:
     strategy: str
     route_type: str
     domain_type: str
-    max_preview_chars: int = 2000
+    max_preview_chars: int = 1000
     start_time: float = field(default_factory=time.perf_counter)
     steps: list[dict[str, Any]] = field(default_factory=list)
     errors: list[str] = field(default_factory=list)
     final_answer: str | None = None
+    timings: dict[str, float] = field(default_factory=dict)
 
     def add_step(self, kind: str, payload: dict[str, Any]) -> None:
         self.steps.append({"kind": kind, **redact_secrets(payload)})
@@ -122,6 +160,9 @@ class TrajectoryLogger:
         self.errors.append(error)
         self.add_step("error", {"error": error})
 
+    def set_timing(self, name: str, seconds: float) -> None:
+        self.timings[name] = seconds
+
     def finish(self, final_answer: str) -> dict[str, Any]:
         self.final_answer = final_answer
         runtime = time.perf_counter() - self.start_time
@@ -138,6 +179,11 @@ class TrajectoryLogger:
             "sql_call_count": sum(1 for step in self.steps if step["kind"] == "sql_call"),
             "api_call_count": sum(1 for step in self.steps if step["kind"] == "api_call"),
             "estimated_tokens": estimate_tokens({"query": self.original_query, "steps": self.steps, "answer": final_answer}),
+            "timings": self.timings,
+            "preprocessing_time": self.timings.get("preprocessing_time", 0.0),
+            "planning_time": self.timings.get("planning_time", 0.0),
+            "execution_time": self.timings.get("execution_time", 0.0),
+            "answer_time": self.timings.get("answer_time", 0.0),
             "errors": self.errors,
         }
         return redact_secrets(payload)

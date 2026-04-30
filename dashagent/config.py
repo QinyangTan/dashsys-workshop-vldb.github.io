@@ -31,10 +31,13 @@ class Config:
     data_json_path: Path
     outputs_dir: Path
     prompts_dir: Path
-    max_preview_chars: int = 2000
-    max_result_rows: int = 200
-    api_timeout_seconds: int = 30
+    max_preview_chars: int = 1000
+    max_result_rows: int = 50
+    api_timeout_seconds: int = 15
     allow_unknown_api_endpoints: bool = False
+    max_join_hints: int = 8
+    max_gold_patterns: int = 2
+    compact_metadata: bool = True
 
     @classmethod
     def from_env(cls, root: Path | None = None) -> "Config":
@@ -49,10 +52,13 @@ class Config:
             data_json_path=_path_from_env("DASHAGENT_DATA_JSON", data_dir / "data.json"),
             outputs_dir=outputs_dir,
             prompts_dir=prompts_dir,
-            max_preview_chars=int(os.getenv("DASHAGENT_MAX_PREVIEW_CHARS", "2000")),
-            max_result_rows=int(os.getenv("DASHAGENT_MAX_RESULT_ROWS", "200")),
-            api_timeout_seconds=int(os.getenv("DASHAGENT_API_TIMEOUT_SECONDS", "30")),
+            max_preview_chars=int(os.getenv("DASHAGENT_MAX_PREVIEW_CHARS", "1000")),
+            max_result_rows=int(os.getenv("DASHAGENT_MAX_RESULT_ROWS", "50")),
+            api_timeout_seconds=int(os.getenv("DASHAGENT_API_TIMEOUT_SECONDS", "15")),
             allow_unknown_api_endpoints=os.getenv("DASHAGENT_ALLOW_UNKNOWN_API", "0") == "1",
+            max_join_hints=int(os.getenv("DASHAGENT_MAX_JOIN_HINTS", "8")),
+            max_gold_patterns=int(os.getenv("DASHAGENT_MAX_GOLD_PATTERNS", "2")),
+            compact_metadata=os.getenv("DASHAGENT_COMPACT_METADATA", "1") != "0",
         )
 
     def ensure_dirs(self) -> None:

@@ -25,7 +25,11 @@ REQUIRED_PATHS = [
     "scripts/package_submission.py",
     "scripts/package_query_outputs.py",
     "scripts/generate_failure_analysis.py",
+    "scripts/generate_family_score_report.py",
+    "scripts/generate_pareto_report.py",
+    "scripts/generate_template_generalization_report.py",
     "scripts/check_submission_ready.py",
+    "scripts/warm_cache.py",
     "tests",
     "pyproject.toml",
     "requirements.txt",
@@ -85,7 +89,7 @@ def main() -> int:
 
 def ignore_package_paths(directory: str, names: list[str]) -> set[str]:
     ignored = {"__pycache__", ".pytest_cache", ".mypy_cache"}
-    return {name for name in names if name in ignored or name.endswith(".pyc")}
+    return {name for name in names if name in ignored or name.endswith(".pyc") or name == "answer_synthesizer 2.py"}
 
 
 def scan_for_secrets(root: Path) -> list[str]:
