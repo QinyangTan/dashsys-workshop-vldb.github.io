@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>DASHSys 2026</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Workshop on Data-AI Systems (co-located with VLDB 2026)">
+<link rel="stylesheet" href="w3.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<style>
+body,h1,h2,h3,h4,h5,h6 {font-family: "Inter", sans-serif; color: #2d3748}
+h1,h2 {font-family: "Inter", sans-serif; color:#1a2332; font-weight: 600}
+h3 {font-family: "Inter", sans-serif; color:#1e3a4f; font-weight: 500}
+h4,h5,h6 {font-family: "Inter", sans-serif; color:#1e3a4f; font-weight: 500}
+
+:target::before {
+    content: "";
+      display: block;
+        height: 60px; /* fixed header height*/
+          margin: -60px 0 0; /* negative fixed header height */
+}
+
+body, html {
+  height: 100%;
+  line-height: 1.8;
+  margin: auto;
+  max-width: 1280px;
+}
+
+.twitter-follow-button {
+            display: inline-block;
+            font-family: Arial, sans-serif;
+            font-size: 14px;
+            font-weight: bold;
+            color: #fff; /* White text */
+            background-color: #000; /* Black background */
+            border: none;
+            border-radius: 5px;
+            padding: 5px 10px;
+            text-decoration: none;
+            transition: background-color 0.3s ease;
+        }
+
+        .twitter-follow-button:hover {
+            background-color: #888; /* Darker shade on hover */
+        }
+
+        .twitter-follow-button:active {
+            background-color: #555; /* Even darker on active click */
+        }
+
+/* Full height image header */
+.bgimg-1 {
+  background-position: center;
+  background-size: cover;
+  background-image: url("boston.jpg");
+  min-height: 10%;
+}
+
+.w3-bar .w3-button {
+  padding: 16px;
+  position: relative;
+  transition: color 0.2s ease;
+}
+
+.w3-bar .w3-button::after {
+  content: "";
+  position: absolute;
+  bottom: 8px;
+  left: 16px;
+  right: 16px;
+  height: 2px;
+  background: #257a91;
+  transform: scaleX(0);
+  transition: transform 0.2s ease;
+}
+
+.w3-bar .w3-button:hover::after {
+  transform: scaleX(1);
+}
+
+.w3-bar .w3-button:hover {
+  color: #257a91 !important;
+  background-color: transparent !important;
+}
+
+hr {
+  border: none;
+  border-top: 1px solid #e8ecf0;
+  margin: 40px 0;
+}
+
+.container {
+  display: flex;
+  align-items: flex-start; /* Ensures both divs start at the same top point */
+}
+
+.left-div {
+  width: 60%; 
+  margin-right:5%;
+}
+
+.right-div {
+  max-height: 100%;
+  width: 35%; 
+  padding-top:0.5%;
+}
+</style>
+</head>
+<body>
+
+<!-- Navbar (sit on top) -->
+<div class="w3-top" style="max-width:1280px">
+  <div class="w3-bar w3-white w3-card" id="myNavbar">
+    <a href="#home" class="w3-wide"><img src="logo.png" height=80px></a>
+    <!-- Right-sided navbar links -->
+    <div class="w3-right w3-hide-small">
+      <a href="index.html#home" class="w3-bar-item w3-button">Home</a>
+      <a href="index.html#keynotepanel" class="w3-bar-item w3-button">Keynotes &amp; Panels</a>
+      <a href="index.html#program" class="w3-bar-item w3-button">Program</a>
+      <a href="systems.html" class="w3-bar-item w3-button">Systems Track</a>
+	  <a href="index.html#acpapers" class="w3-bar-item w3-button">Accepted Papers</a>
+      <a href="index.html#cfp" class="w3-bar-item w3-button"><i class="fa"></i>Call for Submissions</a>
+      <a href="index.html#dates" class="w3-bar-item w3-button"><i class="fa"></i>Important Dates</a>
+      <a href="index.html#org" class="w3-bar-item w3-button"><i class="fa"></i>Organization</a>
+      <a href="index.html#photos" class="w3-bar-item w3-button"><i class="fa"></i>Photos</a>
+
+      <!--a href="accepted.html" class="w3-bar-item w3-button">Accepted Papers</a-->
+    </div>
+    <!-- Hide right-floated links on small screens and replace them with a menu icon -->
+
+    <a href="javascript:void(0)" class="w3-bar-item w3-button w3-right w3-hide-large w3-hide-medium" onclick="w3_open()">
+      <i class="fa fa-bars"></i>
+    </a>
+  </div>
+</div>
+
+<!-- Sidebar on small screens when clicking the menu icon -->
+<nav class="w3-sidebar w3-bar-block w3-black w3-card w3-animate-left w3-hide-medium w3-hide-large" style="display:none" id="mySidebar">
+  <a href="javascript:void(0)" onclick="w3_close()" class="w3-bar-item w3-button w3-large w3-padding-16">Close ×</a>
+  <a href="index.html#home" onclick="w3_close()" class="w3-bar-item w3-button">Home</a>
+  <a href="index.html#cfp" onclick="w3_close()" class="w3-bar-item w3-button"><i class="fa"></i>Call for Submissions</a>
+  <a href="index.html#dates" onclick="w3_close()" class="w3-bar-item w3-button"><i class="fa"></i>Important Dates</a>
+  <a href="index.html#keynotepanel" onclick="w3_close()" class="w3-bar-item w3-button">Keynotes and Panels</a>
+  <a href="index.html#org" onclick="w3_close()" class="w3-bar-item w3-button"><i class="fa"></i>Organization</a>
+  <a href="index.html#program" onclick="w3_close()" class="w3-bar-item w3-button">Program</a>
+</nav>
+
+<!-- Header with full-height image -->
+<header class="bgimg-1 w3-display-container">
+<div class="w3-container" style="padding:10px 16px" id="home" >
+    <div style="margin-top:150px; background: rgba(20, 30, 48, 0.75); display: inline-block; padding: 24px 32px; border-radius: 8px; backdrop-filter: blur(4px);">
+      <span class="w3-xlarge" style="color:white; font-weight:500; line-height:1.4;">Workshop on Systems for Data-centric Agents with Human-in-the-loop</span><br>
+      <span class="w3-xxlarge" style="color:white; font-weight:700; letter-spacing:2px;">DASHSys</span><br>
+      <span class="w3-large" style="color:rgba(255,255,255,0.9);">Co-located with VLDB 2026, Boston, USA</span><br>
+      <span class="w3-large" style="color:rgba(255,255,255,0.9);">Sep 4, 2026 (Friday)</span>
+    </div>
+		<div style="height:100%; margin-top:5%">
+			<a href="LINK" 
+			class="twitter-follow-button" style="float:right" data-show-count="false">Follow on X</a>		
+		</div>
+</div>
+</header>
+
+<!-- Overview Section -->
+<div class="w3-container" style="padding:40px 16px" id="about">
+  <div class="container">
+    
+    <div class="left-div">
+      <p style="text-align:justify"> 
+        Large language models (LLMs) and autonomous agents are reshaping how data systems are designed and used. Modern AI applications increasingly operate as compound systems that integrate reasoning, retrieval, planning, and tool use over heterogeneous and continuously evolving data ecosystems. These systems must interact with structured and unstructured data, knowledge graphs, multimodal content, and external tools while balancing trade-offs in cost, latency, scalability, robustness, governance, and trust.
+        Effectively deploying agentic AI in such environments requires a systems-driven approach grounded in data management principles and human oversight. Human-in-the-loop methodologies remain central to alignment, evaluation, debugging, and lifecycle management of evolving agent workflows. Ensuring that agents remain reliable, interpretable, and aligned with human intent is as much a data systems challenge as it is a modeling challenge.
+        DASHSys is a full-day workshop dedicated to advancing the foundations, architectures, and evaluation of data-centric agentic systems.
+      </p>
+    </div>
+
+    <div class="right-div" style="border-left: 1px solid #eee; padding-left: 20px;">			
+      <h4>Announcements</h4>
+      <div style="overflow-y: auto; max-height: 400px;">
+        <ul style="padding-left: 20px;">
+          <li><b>Apr 29, 2026:</b> Excited to release the list of keynote speakers!</li>
+          <li><b>Apr 1, 2026:</b> Call for submission for the <a href="systems.html">systems track</a> released.</li>
+          <li><b>Mar 15, 2026:</b> First call for papers released.</li>
+          <li>We are excited to announce the Workshop on Systems for Data-centric Agents with Human-in-the-loop @VLDB 2026 (DASHSys).</li>
+        </ul>
+      </div>
+    </div>
+
+  </div> </div> <hr>
+
+
+<!-- keynote and panels -->
+<div class="w3-container" style="padding:0px 16px" id="keynotepanel">
+<h2>Keynote Speakers and Panelists</h2>
+
+<!-- Row 0 -->
+<div class="speaker-grid" id="speaker-row-0">
+  <div class="speaker-card" data-bio="Erkang (Eric) Zhu is a Senior Staff Researcher at Alibaba, where he leads work on AI agent systems, from exploring the upper-bound capabilities of LLMs through novel applications to building production-ready sandbox runtimes and training platforms. His current work includes CoPaw, a project exploring how to build self-improving and secure personal assistants. His team's projects are open-source under AgentScope. Previously, as a Principal Researcher at Microsoft Research, Eric was a key contributor to AutoGen, a widely adopted open-source framework for building multi-agent applications that orchestrate reasoning, tool use, and human-in-the-loop collaboration. He also helped build the Microsoft Agent Framework and the Azure AI Foundry Agent Platform for deploying agentic workflows at scale. Eric's work sits at the intersection of AI agents and data systems. Before working on agents, he built optimized query execution engines for pattern search in SQL at Microsoft Research, and his PhD research at the University of Toronto focused on dataset search over massive Open Data archives.">
+    <div class="speaker-photo"><img src="eric.png" alt="Erkang Eric Zhu" loading="lazy"></div>
+    <a class="speaker-name" href="https://ekzhu.com/" target="_blank" rel="noopener">Erkang (Eric) Zhu</a>
+    <div class="speaker-affiliation">Alibaba</div>
+    <div class="speaker-actions">
+      <button class="bio-btn" onclick="toggleBio(this)">Bio</button>
+    </div>
+  </div>
+
+  <div class="speaker-card" data-bio="Fatma Özcan is a Principal Engineer at Systems Research@Google. Her current research focuses on GenAI and data management, vector search, platforms and infrastructure for large-scale data analysis, and natural language interfaces to data. Dr Özcan earned her PhD in computer science from the University of Maryland, College Park, and her BSc in computer engineering from METU, Ankara. Before joining Google, she was a Distinguished Research Staff Member and a senior manager at the IBM Almaden Research Center. She has over 24 years of experience in industrial research, and has delivered core technologies into various IBM and Google products. She is the co-author of the book &quot;Heterogeneous Agent Systems&quot; and co-author of several conference and journal papers, as well as patents. She is an ACM Fellow, serves on the CRA board of directors, and is the co-chair of CRA-Industry. She received the VLDB Women in Database Research Award in 2022.">
+    <div class="speaker-photo"><img src="fatma.png" alt="Fatma Özcan" loading="lazy"></div>
+    <a class="speaker-name" href="https://research.google/people/107649/?&amp;type=google" target="_blank" rel="noopener">Fatma Özcan</a>
+    <div class="speaker-affiliation">Google</div>
+    <div class="speaker-actions">
+      <button class="bio-btn" onclick="toggleBio(this)">Bio</button>
+    </div>
+  </div>
+
+  <div class="speaker-card" data-bio="Omar Khattab is an Assistant Professor at MIT's Department of Electrical Engineering and Computer Science (EECS) and a PI at MIT CSAIL. Omar's research develops models, algorithms, and abstractions for building reliable and scalable AI systems. Among other efforts, he created the ColBERT retrieval model, which has helped shape the modern landscape of neural information retrieval, and the DSPy framework for building and optimizing language model programs. His lines of work on ColBERT, DSPy, GEPA, and RLMs form the basis of influential open-source projects, together downloaded millions of times per month, and have sparked applications at dozens of organizations. Omar's Ph.D. at Stanford CS was supported by the Apple Scholars in AI/ML PhD Fellowship and his work received a Best Paper Award at SIGIR 2025.">
+    <div class="speaker-photo"><img src="omar.png" alt="Omar Khattab" loading="lazy"></div>
+    <a class="speaker-name" href="https://omarkhattab.com/" target="_blank" rel="noopener">Omar Khattab</a>
+    <div class="speaker-affiliation">MIT CSAIL</div>
+    <div class="speaker-actions">
+      <button class="bio-btn" onclick="toggleBio(this)">Bio</button>
+    </div>
+  </div>
+
+  <div class="speaker-card" data-bio="Eugene Wu is an associate professor of computer science at Columbia University and Co-director of the new Data, Agents, and Processes Lab (DAPLab). He is broadly interested in the foundations of computing infrastructure that are needed in a future where AI agents can safely, reliably, and efficiently automate complex work. His research spans the computing stack, from visualization and HCI to core data systems. Eugene has received the VLDB 2018 10-year test of time award, best-of-conference citations at ICDE and VLDB, the NSF CAREER, and Google, Adobe, and Amazon faculty awards.">
+    <div class="speaker-photo"><img src="eugene.png" alt="Eugene Wu" loading="lazy"></div>
+    <a class="speaker-name" href="https://www.cs.columbia.edu/~ewu/" target="_blank" rel="noopener">Eugene Wu</a>
+    <div class="speaker-affiliation">Columbia University</div>
+    <div class="speaker-actions">
+      <button class="bio-btn" onclick="toggleBio(this)">Bio</button>
+    </div>
+  </div>
+</div>
+
+<!-- Bio panel for Row 0 -->
+<div class="bio-panel" id="bio-panel-0">
+  <div class="bio-panel-inner">
+    <button class="bio-close" onclick="closeBio(0)">&times;</button>
+    <div class="bio-panel-content"></div>
+  </div>
+</div>
+
+<!-- Row 1 -->
+<div class="speaker-grid" id="speaker-row-1">
+  <div class="speaker-card" data-bio="Shreya Shankar is a final-year PhD student in the Data Systems and Foundations group at UC Berkeley, advised by Dr. Aditya Parameswaran. She is broadly interested in data systems, large language models, and human-computer interaction. Her PhD has been supported by an NDSEG Fellowship and a Bridgewater Research Fellowship, and her work has been recognized with several awards, including 2025 EECS Rising Stars, a best paper honorable mention at UIST 2025, and a best paper award at CHI 2026. Before her PhD, Shreya worked as the first data/ML engineer at a startup after her undergraduate degree in CS at Stanford.">
+    <div class="speaker-photo"><img src="shreya.jpg" alt="Shreya Shankar" loading="lazy"></div>
+    <a class="speaker-name" href="https://www.sh-reya.com/" target="_blank" rel="noopener">Shreya Shankar</a>
+    <div class="speaker-affiliation">UC Berkeley</div>
+    <div class="speaker-actions">
+      <button class="bio-btn" onclick="toggleBio(this)">Bio</button>
+    </div>
+  </div>
+
+  <div class="speaker-card" data-bio="Juliana Freire is an Institute Professor at the Tandon School of Engineering and Professor of Computer Science and Data Science at New York University, where she co-directs the Visualization Imaging and Data Analysis (VIDA) Center. Her research develops methods and systems that enable a wide range of users to obtain trustworthy insights from data. It spans large-scale data analysis and integration, visualization, AI/machine learning, provenance management, and information discovery, and addresses application areas such as urban analytics, computational reproducibility, biomedical data harmonization, and AI for science. She has co-authored over 250 papers, including 12 award winners and a Test of Time Award. She served as elected chair of ACM SIGMOD and as a council member of the Computing Community Consortium (CCC), and was the NYU lead investigator for the Moore-Sloan Data Science Environment. She is a Fellow of the ACM and AAAS, and a winner of the ACM SIGMOD Contributions Award.">
+    <div class="speaker-photo"><img src="juliana.png" alt="Juliana Freire" loading="lazy"></div>
+    <a class="speaker-name" href="https://engineering.nyu.edu/faculty/juliana-freire" target="_blank" rel="noopener">Juliana Freire</a>
+    <div class="speaker-affiliation">New York University</div>
+    <div class="speaker-actions">
+      <button class="bio-btn" onclick="toggleBio(this)">Bio</button>
+    </div>
+  </div>
+
+  <div class="speaker-card" data-bio="Yunyao Li is the Director of Machine Learning at Adobe Experience Platform, where she leads strategic initiatives to integrate Generative AI and knowledge graph technologies into enterprise-scale systems. Her work focuses on enabling scalable audience intelligence and personalization through data-centric AI. Previously, she led machine learning for Apple's Knowledge Platform, developing the systems and services powering Siri and Spotlight for billions of users. She also served as a Distinguished Research Staff Member and Senior Research Manager at IBM Research, where she founded and led the Scalable Knowledge Intelligence department and contributed to core products, including Watson. A recognized expert in scalable natural language processing and human-in-the-loop systems, Yunyao has published over 100 papers, holds 36 patents, and has co-authored two books on natural language interfaces to data. She is an ACM Distinguished Member and was selected for the inaugural New Voices program of the U.S. National Academies.">
+    <div class="speaker-photo"><img src="yunyao.jpg" alt="Yunyao Li" loading="lazy"></div>
+    <a class="speaker-name" href="https://yunyaoli.github.io/" target="_blank" rel="noopener">Yunyao Li</a>
+    <div class="speaker-affiliation">Adobe</div>
+    <div class="speaker-actions">
+      <button class="bio-btn" onclick="toggleBio(this)">Bio</button>
+    </div>
+  </div>
+
+  <div class="speaker-card" data-bio="Anbang Xu is a Director of AI at NVIDIA, where he leads machine learning and product engineering teams focused on building enterprise agentic AI products. His research lies at the intersection of applied machine learning and human-computer interaction (HCI). He serves as an Associate Editor for ACM Transactions on Interactive Intelligent Systems. Anbang has published more than 50 research articles, holds over 25 patents, and has received more than 4,500 citations. He earned his Ph.D. in Computer Science from the University of Illinois Urbana-Champaign.">
+    <div class="speaker-photo"><img src="anbang.png" alt="Anbang Xu" loading="lazy"></div>
+    <a class="speaker-name" href="https://www.linkedin.com/in/anbangxu/" target="_blank" rel="noopener">Anbang Xu</a>
+    <div class="speaker-affiliation">NVIDIA</div>
+    <div class="speaker-actions">
+      <button class="bio-btn" onclick="toggleBio(this)">Bio</button>
+    </div>
+  </div>
+</div>
+
+<!-- Bio panel for Row 1 -->
+<div class="bio-panel" id="bio-panel-1">
+  <div class="bio-panel-inner">
+    <button class="bio-close" onclick="closeBio(1)">&times;</button>
+    <div class="bio-panel-content"></div>
+  </div>
+</div>
+
+
+</div>
+<hr>
+
+<!-- Program -->
+	
+<div class="w3-container" style="padding:0px 0px 0px 10px" id="program">
+<h2>Program</h2>
+<h4>Location: TBD</h4>	
+
+Coming soon...
+    
+	<!-- <table>
+        <tr>
+            <th style="width:15%">Time</th>
+            <th>Event</th>
+        </tr>
+        <tr>
+            <td>09:15 - 09:30</td>
+            <td><span style="color:darkgoldenrod; font-weight:bold; font-size:large;">Welcome Address</span>
+			<br/><strong>Session chair</strong>: Sajjadur Rahman</td>
+        </tr>
+        <tr>
+            <td>09:30 - 10:30</td>
+            <td><span style="color:darkgoldenrod; font-weight:bold; font-size:large;">Keynote 1</span>
+			<br/><strong>Session chair</strong>:
+			<br/><strong>Speaker: </strong>
+			<br/><strong>Title:</strong> TITLE [<a href="LINK" target="_blank">Slides</a>]
+			<br/><span style="text-align: justify; width:100%; display:inline-block;"><strong>Abstract: </strong>
+			ABSTRACT
+			</span>
+			</td>
+        </tr>
+        <tr>
+            <td>10:30 - 11:00</td>
+            <td><span style="color:darkgoldenrod; font-weight:bold; font-size:large;">Coffee Break</span></td>
+        </tr>
+        <tr>
+            <td>11:00 - 11:30</td>
+            <td><span style="color:darkgoldenrod; font-weight:bold; font-size:large;">Invited Paper Session</span>
+			<br/><strong>Session chair</strong>: Sairam Gurajada</td>
+        </tr>
+		<tr>
+            <td>11:30 - 12:30</td>
+            <td><span style="color:darkgoldenrod; font-weight:bold; font-size:large;">Keynote 2</span>
+			<br/><strong>Session chair</strong>: Nikita Bhutani
+			<br/><strong>Speaker: </strong>Ziawasch Abedjan
+			<br/><strong>Title:</strong> Navigating Disruption: The Impact of AI Technologies on Data Integration Research [<a href="Keynote_2.pdf" target="_blank">Slides</a>]
+			<br/><span style="text-align: justify; width:100%; display:inline-block;"><strong>Abstract: </strong>The advent of novel AI technologies, such as
+			foundation models and agentic systems, has introduced major disruptions in
+			the field of data management, particularly in data integration. This talk
+			will share our experiences in advancing data integration and preparation
+			solutions, highlighting cases where these technologies have brought
+			significant disruption. I will explore the trade-offs associated with
+			leveraging such powerful tools and shed light on the new pitfalls that make
+			data integration research increasingly challenging. By addressing both
+			opportunities and pitfalls, this talk aims to provide insights into
+			navigating this rapidly evolving landscape.</span>
+			</td>
+        </tr>
+        <tr>
+            <td>12:30 - 14:00</td>
+            <td><span style="color:darkgoldenrod; font-weight:bold; font-size:large;">Lunch</span></td>
+        </tr>
+        <tr>
+            <td>14:00 - 14:45</td>
+            <td><span style="color:darkgoldenrod; font-weight:bold; font-size:large;">Long Paper Session</span>
+			<br/><strong>Session chair</strong>:  Arpit Narechania</td>
+        </tr>
+        <tr>
+            <td>14:45 - 15:30</td>
+            <td><span style="color:darkgoldenrod; font-weight:bold; font-size:large;">Short Paper Session</span>
+			<br/><strong>Session chair</strong>: Kaustubh Beedkar</td>
+        </tr>
+        <tr>
+            <td>15:30 - 16:00</td>
+            <td><span style="color:darkgoldenrod; font-weight:bold; font-size:large;">Coffee Break</span></td>
+        </tr>
+        <tr>
+            <td>16:00 - 17:00</td>
+            <td><span style="color:darkgoldenrod; font-weight:bold; font-size:large;">Panel Discussion: Towards Scalable, Responsible, and Reliable Application of Agentic Systems</span>
+				<br/><strong>Moderator:</strong> Sajjadur Rahman
+				<br/><strong>Panelists:</strong> Ziawasch Abedjan, Kaustubh Beedkar, Estevam Hruschka, and Arpit Narechania</td>
+        </tr>
+        <tr>
+            <td>17:00 - 17:15</td>
+            <td><span style="color:darkgoldenrod; font-weight:bold; font-size:large;">Closing Remarks</span>
+            <br/><strong>Speaker:</strong> Sajjadur Rahman
+            </td>
+        </tr>
+    </table> -->
+	
+</div>
+<hr/>
+	
+<!--Accepted Papers-->
+
+<!-- keynote and panels -->
+<!-- <div class="w3-container" style="padding:0px 0px 0px 10px" id="acpapers">
+<h2>Accepted Papers</h2>
+<h3>Long Papers</h3>
+<ul>
+	<li><strong>SEED: Enhancing Text-to-SQL Performance and Practical Usability Through Automatic Evidence Generation</strong>. Janghyeon Yun (Seoul National University), Sang-goo Lee (Seoul National University)</li>
+	<li><strong>Fine-tuning Large Language Models for Entity Matching</strong>. Aaron Steiner (University of Mannheim), Ralph Peeters (University of Mannheim), Christian Bizer (University of Mannheim)</li>
+	<li><strong>Orchestrating Agents and Data for Enterprise: A Blueprint Architecture for Compound AI</strong>. Eser Kandogan (Megagon Labs), Nikita Bhutani (Megagon Labs), Dan Zhang (Megagon Labs), Rafael Li Chen (Megagon Labs), Sairam Gurajada (Megagon Labs), Estevam Hruschka (Megagon Labs)</li>
+</ul>
+
+<h3>Short Papers</h3>
+<ul>
+	<li><strong>Data Cleaning Using Large Language Models</strong>. Shuo Zhang (Columbia University), Zezhou Huang (Columbia University), Eugene Wu (DSI, Columbia University)</li>
+	<li><strong>SLPerf: A Research Library and Benchmark Framework for Split Learning</strong>. Zhanyi Hu (East China Normal University), Tianchen Zhou (East China Normal University), Bingzhe Wu (Tencent AI Lab), Cen Chen (East China Normal University), Yanhao Wang (East China Normal University)</li>
+	<li><strong>Agentic Workflows for Extraction of Access Control Matrices from Policy Documents</strong>. Pranav Subramaniam (University of Chicago), Sanjay Krishnan (University of Chicago)</li>
+	<li><strong>Towards Regaining Control over Messy Machine Learning Pipelines [Vision]</strong>. Stefan Grafberger (BIFOLD & TU Berlin), Hao Chen (BIFOLD & TU Berlin), Olga Ovcharenko (BIFOLD & TU Berlin), Sebastian Schelter (BIFOLD & TU Berlin)</li>
+</ul>
+
+<h3>Invited Papers</h2>
+<ul>
+	<li><strong>FeVisQA: Free-form Question Answering over Data Visualizations</strong>.
+		Yuanfeng Song (WeBank),
+		Jinwei Lu (Shenzhen University),
+		Yuanwei Song (Huawei Technologies),
+		Caleb Chen Cao (HKUST),
+		Raymond Chi-Wing Wong (Hong Kong University of Science and Technology),
+		Haodi Zhang (Shenzhen University)</li>
+	<li><strong>ZeroED: Hybrid Zero-Shot Error Detection with Large Language Model Reasoning</strong>.
+		Wei Ni (Zhejiang University; City University of Hong Kong),
+		Kaihang Zhang (Zhejiang University),
+		Xiaoye Miao (Zhejiang University),
+		Xiangyu Zhao (City University of Hong Kong),
+		Yangyang Wu (Zhejiang University),
+		Yaoshu Wang (Shenzhen Institute of Computing Sciences, Shenzhen University),
+		Jianwei Yin (Zhejiang University)
+		</li>
+
+</ul>
+
+</div>
+<hr/> -->
+
+<!-- CFP -->
+<div class="w3-container" style="padding:0px 0px 0px 10px" id="cfp">
+<h2>Call for Submissions</h2>
+
+<p>DASHSys invites original research contributions, system papers, position papers, and real-world system reports at the intersection of:</p>
+
+<ul>
+  <li>Data management for agentic systems</li>
+  <li>Agentic systems for data management</li>
+  <li>Evaluation, reliability, and continual learning</li>
+  <li>Human-centered and human-in-the-loop agentic systems</li>
+</ul>
+
+<p>We welcome submissions that advance the theory, systems, and practice of building data-aware, agent-driven, and human-aligned AI systems.</p>
+
+<!-- <p> Submissions should present original results and substantial new work not
+currently under review or published elsewhere. The following submissions are
+accepted:
+
+  <ul>
+    <li>Regular research papers (up to 8 pages)</li>
+    <li>Short research, application, and vision papers (up to 4 pages)</li>
+  </ul>
+</p>
+
+<p>
+  The page limit for both tracks is <em>excluding</em> the references.
+  <em>No appendix is allowed.</em>
+  Papers must be submitted via <a href="https://cmt3.research.microsoft.com/DASHSys2026/">Microsoft CMT</a>.
+  Only electronic submissions in PDF format will be considered.
+  Manuscripts must be prepared following the same rules as VLDB conference papers, i.e.,
+  in accordance with the IEEE format available
+  <a href="https://www.ieee.org/conferences_events/conferences/publishing/templates.html" target="_blank">here</a>.
+</p>
+<p>
+  A paper submitted to DASHSys cannot be under review for any other conference or journal.
+  All accepted papers will appear in the conference proceedings.
+  All accepted papers are expected to be presented at the workshop, and
+  at least one author is required to register.
+</p> -->
+
+<h3>Topics of Interest</h3>
+<p>Topics include (but are not limited to):</p>
+
+<ul>
+  <li><b>Data Management for Agentic Systems.</b> Architectures, abstractions, and infrastructure that enable agents to reliably access, integrate, govern, and reason (including memory and context engineering) over heterogeneous and evolving data ecosystems.</li>
+  <li><b>Agentic Systems for Data Management.</b> The use of multi-agent systems to automate, optimize, and enhance data discovery, integration, querying, debugging, governance, and system operations.</li>
+  <li><b>Evaluation, Reliability, and Continual Learning.</b> Benchmarking, scalable evaluation, learning and lifecycle management of compound and agentic AI systems under evolving data and dynamic environments.</li>
+  <li><b>Human-Centered and Human-in-the-Loop Agentic Systems.</b> Interactive workflows, alignment mechanisms, interpretability, feedback-driven adaptation, mixed-initiative systems, and governance frameworks that ensure agent behavior remains transparent, trustworthy, and aligned with human goals.</li>
+</ul>
+
+<h3>Submission Categories</h3>
+<div style="display: flex; gap: 30px; flex-wrap: wrap;">
+  <div style="flex: 1; min-width: 280px; padding: 16px 20px; background: #f7f8fa; border: 1px solid #dfe3e8; border-radius: 8px;">
+    <h4 style="margin-top: 0;">Research Track</h4>
+    <ul>
+      <li><b>Long Papers</b> — up to 8 pages (excluding references). Mature research contributions with substantial technical depth.</li>
+      <li><b>Short Papers</b> — up to 4 pages (excluding references). Focused contributions, negative results, position papers, and early-stage work.</li>
+    </ul>
+    <p style="font-size:14px; line-height:1.6;">Submissions should present original results and substantial new work not currently under review or published elsewhere. Manuscripts must be prepared following the same rules as VLDB conference papers. Papers must be submitted via the workshop's submission system in PDF format. Demo-oriented submissions are strongly encouraged. Artifact availability (code, datasets, system demos) is highly encouraged.</p>
+    <h4>Evaluation Criteria and Reviewing Process</h4>
+    <p style="font-size:14px; line-height:1.6;">DASHSys will follow a double-anonymous review process. Each paper will be evaluated based on relevance, originality, technical quality, and clarity. Reviewers will be instructed to provide constructive feedback. Accepted papers will appear in the official VLDB workshop proceedings.</p>
+    <p style="font-size:12px; color:gray; line-height:1.5;">The Microsoft CMT service was used for managing the peer-reviewing process for this conference. This service was provided for free by Microsoft and they bore all expenses, including costs for Azure cloud services as well as for software development and support.</p>
+  </div>
+  <div style="flex: 1; min-width: 280px; padding: 16px 20px; background: #f7f8fa; border: 1px solid #dfe3e8; border-radius: 8px;">
+    <h4 style="margin-top: 0;">Systems Track</h4>
+    <p style="font-size:14px; line-height:1.6;">A competition where participants build production-grade agentic systems for performing data centric tasks spanning complex SQL queries and API calls.</p>
+    <p style="font-size:14px; line-height:1.6;">We're looking for systems that go beyond demos: robust prompt and system designs that generalize across models, architectures for reliable agent-driven data systems, effective orchestration of SQL and API workflows, and practical approaches to efficiency and scalability. Deliverables include a metadata JSON with query-specific context, a filled system prompt and system prompt template, an agent output trajectory JSON, and a zipped source code archive.</p>
+    <ul>
+      <li><b>System Papers</b> — up to 4 pages (excluding references), VLDB format.</li>
+    </ul>
+    <h4>Evaluation Criteria</h4>
+    <p style="font-size:14px; line-height:1.6;">Submissions are ranked on two dimensions:</p>
+    <ul style="font-size:14px;">
+      <li><b>Correctness</b> — accuracy of generated SQL, API calls, and final response</li>
+      <li><b>Efficiency</b> — number of turns, tool calls, total tokens, and wall time</li>
+    </ul>
+    <p style="font-size:14px; line-height:1.6;"><em>Winners receive monetary prizes.</em></p>
+    <p style="font-size:14px; line-height:1.6;"><a href="systems.html" style="color:#257a91; font-weight:500;">Full details and dataset &rarr;</a></p>
+  </div>
+</div>
+
+
+</div>
+<hr>
+
+<div class="w3-container" style="padding:0px 0px 0px 10px" id="dates">
+  <h2>Important Dates</h2>
+  <div style="display: flex; gap: 30px; flex-wrap: wrap;">
+    <div style="flex: 1; min-width: 280px; padding: 16px 20px; background: #f7f8fa; border: 1px solid #dfe3e8; border-radius: 8px;">
+      <h4 style="margin-top: 0;">Research Track</h4>
+      <ul>
+        <li>Paper submission: May 19, 2026</li>
+        <li>Notification of acceptance: June 12, 2026</li>
+        <li>Camera-ready due: TBD</li>
+        <li>Workshop: Sep 4, 2026</li>
+      </ul>
+    </div>
+    <div style="flex: 1; min-width: 280px; padding: 16px 20px; background: #f7f8fa; border: 1px solid #dfe3e8; border-radius: 8px;">
+      <h4 style="margin-top: 0;">Systems Track</h4>
+      <ul>
+        <li>Registration deadline: May 4, 2026 (AoE)</li>
+        <li>Test set release: May 18, 2026</li>
+        <li>Submission deadline: May 19, 2026 (AoE)</li>
+        <li>Winners announced: May 31, 2026</li>
+      </ul>
+    </div>
+  </div>
+</div>
+<hr>
+
+
+
+<!-- Organization -->
+<div class="w3-container" style="padding:0px 0px 0px 10px" id="org">
+<h2>Organization</h2>
+<div style="display: flex; gap: 30px; flex-wrap: wrap;">
+  <div style="flex: 1; min-width: 280px;">
+    <h3>General Chairs</h3>
+    <ul style="padding-left:15px;margin-top:0px;margin-bottom:0px">
+      <li><a href="https://megagon.ai/our-team/estevam-hruschka/">Estevam Hruschka</a>, Megagon Labs, <a href="mailto:estevam@megagon.ai">estevam@megagon.ai</a></li>
+      <li><a href="https://kunqian-58.github.io/kunqian/">Kun Qian</a>, Adobe Inc., <a href="mailto:kunq@adobe.com">kunq@adobe.com</a></li>
+      <li><a href="https://sajjadur.net/">Sajjadur Rahman</a>, Adobe Inc., <a href="mailto:sajjadurr@adobe.com">sajjadurr@adobe.com</a></li>
+    </ul>
+
+    <h3>Submission Chairs</h3>
+    <ul style="padding-left:15px;margin-top:0px;margin-bottom:0px">
+      <li><a href="https://www.cs.cornell.edu/people/sainyam-galhotra">Sainyam Galhotra</a>, Cornell University, <a href="mailto:sg@cs.cornell.edu">sg@cs.cornell.edu</a></li>
+      <li><a href="https://szeighami.github.io/">Sepanta Zeighami</a>, UC Berkeley</li>
+      <li><a href="http://www.miaozhengjie.com/">Zhengjie Miao</a>, Simon Fraser University</li>
+      <li><a href="https://megagon.ai/our-team/dan-zhang/">Dan Zhang</a>, Megagon Labs</li>
+    </ul>
+
+    <h3>Website and Publicity Chairs</h3>
+    <ul style="padding-left:15px;margin-top:0px;margin-bottom:0px">
+      <li><a href="https://afariha.github.io/">Anna Fariha</a>, University of Utah</li>
+    </ul>
+  </div>
+
+  <div style="flex: 1; min-width: 280px;">
+    <h3>Systems Track Chairs</h3>
+    <ul style="padding-left:15px;margin-top:0px;margin-bottom:0px">
+      <li><a href="">Vineeth Mohan</a>, Adobe Inc. <a href="mailto:vineethm@adobe.com"><i class="fa fa-envelope"></i></a></li>
+      <li><a href="">Gromit Chan</a>, Adobe Research <a href="mailto:ychan@adobe.com"><i class="fa fa-envelope"></i></a></li>
+      <li><a href="">Raghav Addanki</a>, Adobe Research <a href="mailto:raddanki@adobe.com"><i class="fa fa-envelope"></i></a></li>
+      <li><a href="">Shaddy Gard</a>, Adobe Inc.</li>
+      <li><a href="">Aman Sehgal</a>, Adobe Inc.</li>
+    </ul>
+
+    <h3>Keynotes, Panels, and Session Chairs</h3>
+    <ul style="padding-left:15px;margin-top:0px;margin-bottom:0px">
+      <li><a href="https://www.cs.columbia.edu/~chen1ru/">Yiru Chen</a>, Adobe Inc.</li>
+      <li><a href="https://www.linkedin.com/in/ufminhas/">Umar Farooq Minhas</a>, Apple Inc.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>Steering Committee</h3>
+<div style="display: flex; gap: 30px; flex-wrap: wrap;">
+  <div style="flex: 1; min-width: 280px;">
+    <ul style="padding-left:15px;margin-top:0px;margin-bottom:0px">
+      <li><a href="https://www.csail.mit.edu/person/michael-stonebraker">Michael Stonebraker</a>, MIT</li>
+      <li><a href="https://www.cs.cmu.edu/~tom/">Tom Mitchell</a>, Carnegie Mellon University</li>
+      <li><a href="https://web.eecs.umich.edu/~jag/">H.V. Jagadish</a>, University of Michigan</li>
+      <li><a href="https://cs.uwaterloo.ca/~rjmiller/">Renée J. Miller</a>, University of Waterloo</li>
+      <li><a href="https://yunyaoli.github.io/">Yunyao Li</a>, Adobe Inc.</li>
+      <li><a href="https://research.ibm.com/people/lucian-popa">Lucian Popa</a>, IBM Research</li>
+      <li><a href="https://research.adobe.com/person/eunyee-koh/">Eunyee Koh</a>, Adobe Research</li>
+      <li><a href="https://people.eecs.berkeley.edu/~adityagp/">Aditya Parameswaran</a>, UC Berkeley</li>
+      <li><a href="https://www.cs.columbia.edu/~ewu/">Eugene Wu</a>, Columbia University</li>
+    </ul>
+  </div>
+  <div style="flex: 1; min-width: 280px;">
+    <ul style="padding-left:15px;margin-top:0px;margin-bottom:0px">
+      <li><a href="https://cseweb.ucsd.edu/~arunkk/">Arun Kumar</a>, UC San Diego and RapidFire AI</li>
+      <li><a href="https://www.ijs.si/ijsw/DunjaMladenic">Dunja Mladenic</a>, Jožef Stefan Institute</li>
+      <li><a href="https://www.cs.auckland.ac.nz/~witbrock/">Michael Witbrock</a>, University of Auckland</li>
+      <li><a href="https://kt.ijs.si/MarkoGrobelnik/">Marko Grobelnik</a>, Jožef Stefan Institute</li>
+      <li><a href="https://cis.temple.edu/~edragut/">Eduard Dragut</a>, Temple University</li>
+      <li><a href="https://www.linkedin.com/in/chi-wang-autogen/">Chi Wang</a>, Google DeepMind</li>
+      <li><a href="https://cagataydemiralp.io/">Çağatay Demiralp</a>, AWS AI</li>
+      <li><a href="https://megagon.ai/eser-kandogan/">Eser Kandogan</a>, Megagon Labs</li>
+      <li><a href="https://research.adobe.com/person/ramasuri-narayanam/">Ramasuri Narayanam</a>, Adobe Research</li>
+    </ul>
+  </div>
+</div>
+
+<h3>Program Committee</h3>
+
+<!-- <ul style="padding-left:15px;margin-top:0px;margin-bottom:0px">
+<li>Lei Cao (University of Arizona)</li>
+<li>Amine Mhedhbi (Polytechnique Montréal)</li>
+<li>Zhengjie Miao (Simon Fraser University)</li>
+<li>Yuval Moskovitch (Ben-Gurion University of the Negev)</li>
+<li>Simone Papicchio (Polito.it/Eurecom)</li>
+<li>El Kindi Rezig (University of Utah)</li>
+<li>Vraj Shah (IBM Research)</li>
+<li>Tarique Siddiqui (Microsoft Research)</li>
+<li>Jin Wang (Megagon Labs)</li>
+<li>Doris Xin (Linea.ai)</li>
+<li>Jia Zou (Arizona State University)</li>
+</ul>
+</div> -->
+<hr>
+
+<!-- Photos -->
+<!-- <div class="w3-container" style="padding:0px 0px 0px 0px;" id="photos">
+<h2>Photos</h2>
+<div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; max-width: 100%;">
+  <a href="1.jpg" target="_blank" style="display: block;">
+    <img src="1.jpg" alt="Picture 1" style="height: 210px; border-radius: 0px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: pointer;">
+  </a>
+  <a href="2.jpg" target="_blank" style="display: block;">
+    <img src="2.jpg" alt="Picture 2" style="height: 210px; border-radius: 0px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: pointer;">
+  </a>
+  <a href="3.jpg" target="_blank" style="display: block;">
+    <img src="3.jpg" alt="Picture 3" style="height: 210px; border-radius: 0px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: pointer;">
+  </a>
+  <a href="4.jpg" target="_blank" style="display: block;">
+    <img src="4.jpg" alt="Picture 4" style="height: 210px; border-radius: 0px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: pointer;">
+  </a>
+</div>
+<hr>
+</div> -->
+
+
+<h3>Sponsors</h3>
+<!-- <ul style="padding-left:15px;margin-top:0px;margin-bottom:0px">
+<a href="https://megagon.ai/" target="_blank"><img style="width:20%" src="https://megagon.ai/wp-content/uploads/2026/02/Logo-Megagon-Labs.webp"/></a> -->
+
+<div style="padding-top:50px"></div>
+<script>
+
+// Toggle between showing and hiding the sidebar when clicking the menu icon
+var mySidebar = document.getElementById("mySidebar");
+
+function w3_open() {
+  if (mySidebar.style.display === 'block') {
+    mySidebar.style.display = 'none';
+  } else {
+    mySidebar.style.display = 'block';
+  }
+}
+
+// Close the sidebar with the close button
+function w3_close() {
+    mySidebar.style.display = "none";
+}
+
+function matchHeight() {
+  var leftDiv = document.querySelector('.left-div');
+  var rightDiv = document.querySelector('.right-div');
+  
+  // Get the height of the left-div and set it as the height of the right-div
+  rightDiv.style.height = leftDiv.offsetHeight + 'px';
+}
+
+// Call the function initially to match the heights
+matchHeight();
+
+// Ensure height is recalculated if the window is resized
+window.addEventListener('resize', matchHeight);
+
+function toggleBio(btn) {
+  var card = btn.closest('.speaker-card');
+  var row = card.closest('.speaker-grid');
+  var rowId = row.id.replace('speaker-row-', '');
+  var panel = document.getElementById('bio-panel-' + rowId);
+  var content = panel.querySelector('.bio-panel-content');
+  var bio = card.getAttribute('data-bio');
+
+  row.querySelectorAll('.bio-btn').forEach(function(b) { b.classList.remove('active'); });
+
+  if (panel.classList.contains('open') && panel.getAttribute('data-active') === card.querySelector('.speaker-name').textContent) {
+    panel.classList.remove('open');
+    panel.removeAttribute('data-active');
+    return;
+  }
+
+  document.querySelectorAll('.bio-panel.open').forEach(function(p) { p.classList.remove('open'); });
+  document.querySelectorAll('.bio-btn.active').forEach(function(b) { b.classList.remove('active'); });
+
+  var name = card.querySelector('.speaker-name').textContent;
+  content.innerHTML = '<strong>' + name + ':</strong> ' + bio;
+  btn.classList.add('active');
+  panel.setAttribute('data-active', name);
+  panel.classList.add('open');
+}
+
+function closeBio(rowId) {
+  var panel = document.getElementById('bio-panel-' + rowId);
+  panel.classList.remove('open');
+  var row = document.getElementById('speaker-row-' + rowId);
+  row.querySelectorAll('.bio-btn').forEach(function(b) { b.classList.remove('active'); });
+}
+
+</script>
+
+</body>
+</html>

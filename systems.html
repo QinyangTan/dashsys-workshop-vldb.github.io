@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>DASHSys 2026</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Workshop on Data-AI Systems (co-located with VLDB 2026)">
+<link rel="stylesheet" href="w3.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+<style>
+body,h1,h2,h3,h4,h5,h6 {font-family: "Inter", sans-serif; color: #2d3748}
+h1,h2 {font-family: "Inter", sans-serif; color:#1a2332; font-weight: 600}
+h3 {font-family: "Inter", sans-serif; color:#1e3a4f; font-weight: 500}
+h4,h5,h6 {font-family: "Inter", sans-serif; color:#1e3a4f; font-weight: 500}
+code:not(pre code) {background:#f0f0f0; border:1px solid #ddd; border-radius:4px; padding:1px 5px; font-size:0.88em;}
+
+:target::before {
+    content: "";
+      display: block;
+        height: 60px; /* fixed header height*/
+          margin: -60px 0 0; /* negative fixed header height */
+}
+
+body, html {
+  height: 100%;
+  line-height: 1.8;
+  margin: auto;
+  max-width: 1280px;
+}
+
+.twitter-follow-button {
+            display: inline-block;
+            font-family: Arial, sans-serif;
+            font-size: 14px;
+            font-weight: bold;
+            color: #fff; /* White text */
+            background-color: #000; /* Black background */
+            border: none;
+            border-radius: 5px;
+            padding: 5px 10px;
+            text-decoration: none;
+            transition: background-color 0.3s ease;
+        }
+
+        .twitter-follow-button:hover {
+            background-color: #888; /* Darker shade on hover */
+        }
+
+        .twitter-follow-button:active {
+            background-color: #555; /* Even darker on active click */
+        }
+
+/* Full height image header */
+.bgimg-1 {
+  background-position: center;
+  background-size: cover;
+  background-image: url("boston.jpg");
+  min-height: 10%;
+}
+
+.w3-bar .w3-button {
+  padding: 16px;
+  position: relative;
+  transition: color 0.2s ease;
+}
+
+.w3-bar .w3-button::after {
+  content: "";
+  position: absolute;
+  bottom: 8px;
+  left: 16px;
+  right: 16px;
+  height: 2px;
+  background: #257a91;
+  transform: scaleX(0);
+  transition: transform 0.2s ease;
+}
+
+.w3-bar .w3-button:hover::after {
+  transform: scaleX(1);
+}
+
+.w3-bar .w3-button:hover {
+  color: #257a91 !important;
+  background-color: transparent !important;
+}
+
+hr {
+  border: none;
+  border-top: 1px solid #e8ecf0;
+  margin: 40px 0;
+}
+
+.container {
+  display: flex;
+  align-items: flex-start; /* Ensures both divs start at the same top point */
+}
+
+.left-div {
+  width: 60%; 
+  margin-right:5%;
+}
+
+.right-div {
+  max-height: 100%;
+  width: 35%; 
+  padding-top:0.5%;
+}
+</style>
+</head>
+<body>
+
+<!-- Navbar (sit on top) -->
+<div class="w3-top" style="max-width:1280px">
+  <div class="w3-bar w3-white w3-card" id="myNavbar">
+    <a href="#home" class="w3-wide"><img src="logo.png" height=80px></a>
+    <!-- Right-sided navbar links -->
+    <div class="w3-right w3-hide-small">
+      <a href="index.html#home" class="w3-bar-item w3-button">Home</a>
+      <a href="index.html#keynotepanel" class="w3-bar-item w3-button">Keynotes & Panels</a>
+      <a href="index.html#program" class="w3-bar-item w3-button">Program</a>
+      <a href="systems.html" class="w3-bar-item w3-button">Systems Track</a>
+	  <a href="index.html#acpapers" class="w3-bar-item w3-button">Accepted Papers</a>
+      <a href="index.html#cfp" class="w3-bar-item w3-button"><i class="fa"></i>Call for Submissions</a>
+      <a href="index.html#dates" class="w3-bar-item w3-button"><i class="fa"></i>Important Dates</a>
+      <a href="index.html#org" class="w3-bar-item w3-button"><i class="fa"></i>Organization</a>
+      <a href="index.html#photos" class="w3-bar-item w3-button"><i class="fa"></i>Photos</a>
+
+      <!--a href="accepted.html" class="w3-bar-item w3-button">Accepted Papers</a-->
+    </div>
+    <!-- Hide right-floated links on small screens and replace them with a menu icon -->
+
+    <a href="javascript:void(0)" class="w3-bar-item w3-button w3-right w3-hide-large w3-hide-medium" onclick="w3_open()">
+      <i class="fa fa-bars"></i>
+    </a>
+  </div>
+</div>
+
+<!-- Sidebar on small screens when clicking the menu icon -->
+<nav class="w3-sidebar w3-bar-block w3-black w3-card w3-animate-left w3-hide-medium w3-hide-large" style="display:none" id="mySidebar">
+  <a href="javascript:void(0)" onclick="w3_close()" class="w3-bar-item w3-button w3-large w3-padding-16">Close ×</a>
+  <a href="index.html#home" onclick="w3_close()" class="w3-bar-item w3-button">Home</a>
+  <a href="index.html#cfp" onclick="w3_close()" class="w3-bar-item w3-button"><i class="fa"></i>Call for Submissions</a>
+  <a href="index.html#dates" onclick="w3_close()" class="w3-bar-item w3-button"><i class="fa"></i>Important Dates</a>
+  <a href="index.html#keynotepanel" onclick="w3_close()" class="w3-bar-item w3-button">Keynotes and Panels</a>
+  <a href="index.html#org" onclick="w3_close()" class="w3-bar-item w3-button"><i class="fa"></i>Organization</a>
+  <a href="index.html#program" onclick="w3_close()" class="w3-bar-item w3-button">Program</a>
+</nav>
+
+<!-- Header with full-height image -->
+<header class="bgimg-1 w3-display-container">
+<div class="w3-container" style="padding:10px 16px" id="home" >
+    <div style="margin-top:150px; background: rgba(20, 30, 48, 0.75); display: inline-block; padding: 24px 32px; border-radius: 8px; backdrop-filter: blur(4px);">
+      <span class="w3-xlarge" style="color:white; font-weight:500; line-height:1.4;">Workshop on Systems for Data-centric Agents with Human-in-the-loop</span><br>
+      <span class="w3-xxlarge" style="color:white; font-weight:700; letter-spacing:2px;">DASHSys</span><br>
+      <span class="w3-large" style="color:rgba(255,255,255,0.9);">Co-located with VLDB 2026, Boston, USA</span><br>
+      <span class="w3-large" style="color:rgba(255,255,255,0.9);">Sep 4, 2026 (Friday)</span>
+    </div>
+		<div style="height:100%; margin-top:5%">
+			<a href="LINK" 
+			class="twitter-follow-button" style="float:right" data-show-count="false">Follow on X</a>		
+		</div>
+</div>
+</header>
+
+
+
+<!-- Overview -->
+
+<div class="w3-container" style="padding:40px 16px">
+
+<h2>Systems Track Overview</h2>
+
+  <p>In addition to the general research track, DASHSys features a dedicated <b>Real-World Systems Track</b>, a competition where participants build production-grade systems for data-centric agents. Submissions are evaluated on the <b>correctness</b> of responses and <b>efficiency</b> of the system.</p>
+
+<p>Winners of the competition will receive monetary prizes.</p>
+
+<p>
+The DASHSys Systems Track focuses on practical systems that support
+data-centric agents operating over structured databases and APIs. Participants design agentic systems that
+answer natural language questions by iteratively executing SQL queries and API calls.
+</p>
+
+<p>
+The track emphasizes robust prompt design and system architectures that
+generalize across models and agentic harnesses. Submissions should
+demonstrate practical solutions for building reliable agent-driven data
+systems.
+</p>
+
+<!-- Registration Deadline Banner -->
+<div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 16px 24px; border-radius: 8px; margin-top: 32px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); text-align: center; font-size: 1.1em; font-weight: 500;">
+  📢 Registration ends on <strong style="font-size: 1.2em; text-decoration: underline; text-decoration-style: wavy; text-decoration-color: rgba(255,255,255,0.5);">May 4th, 2026</strong>
+</div>
+
+</div>
+
+<hr>
+
+
+<!-- Task Description -->
+
+<div class="w3-container" style="padding:0px 16px">
+
+<h2>Task Description</h2>
+
+<p><b>Input:</b> A natural language user query.</p>
+<p><b>Output:</b> A response derived by executing SQL queries against a database and/or making REST API calls, along with the full agent trajectory capturing each step taken.</p>
+<p><b>Tools:</b> The following two tools must be implemented in the agent system:</p>
+
+<ul>
+<li><b>execute_sql(sql)</b>: executes a SQL query against the database and returns results</li>
+<li><b>call_api(method, url, params, headers)</b>: makes an API call against the provisioned sandbox and returns the response</li>
+</ul>
+
+<h3>Sample Dataset</h3>
+
+<h4>Illustration Examples</h4>
+
+<p>
+<a href="https://github.com/dashsys-workshop-vldb/dashsys-workshop-vldb.github.io/blob/master/data/data.json" style="color:#1a73e8; text-decoration:none;">
+<i class="fa fa-download" style="margin-right:5px"></i>data.json</a>
+&mdash; 35 labeled examples, each showing a complete agent trajectory. Use these to understand the expected submission format and validate your system.
+Each entry has five fields:
+</p>
+
+<details style="margin-bottom:12px">
+<summary style="cursor:pointer; color:#563d2d; font-weight:bold">Entry format</summary>
+<pre style="margin-top:8px"><code class="language-json">{
+  "query": "&lt;user query&gt;",
+  "trace": [
+    {
+      "step": 1,
+      "action": "sql_query",
+      "sql": "&lt;SQL executed&gt;",
+      "results": ["&lt;...&gt;"],
+      "status": "success"
+    },
+    {
+      "step": 2,
+      "action": "api_call",
+      "api_call": {
+        "method": "GET",
+        "url": "&lt;endpoint&gt;",
+        "params": {"&lt;key&gt;": "&lt;value&gt;"},
+        "result_preview": ["&lt;...&gt;"]
+      }
+    }
+  ],
+  "answer":   "&lt;final answer&gt;",           // correctness evaluation
+  "gold_sql": "&lt;reference SQL query&gt;",    // correctness evaluation
+  "gold_api": ["&lt;reference API call(s)&gt;"] // correctness evaluation
+}</code></pre>
+</details>
+
+<p><code>answer</code>, <code>gold_sql</code>, and <code>gold_api</code> are used for <b>correctness</b> scoring; <code>trace</code> is used for <b>efficiency</b> scoring — see the <a href="#evaluation">Evaluation</a> section for details.</p>
+
+<h4>Knowledge Graph Database</h4>
+
+<p>
+<a href="https://github.com/dashsys-workshop-vldb/dashsys-workshop-vldb.github.io/tree/master/data/DBSnapshot" style="color:#1a73e8; text-decoration:none;">
+<i class="fa fa-database" style="margin-right:5px"></i>DBSnapshot</a>
+&mdash; a self-contained set of 18 parquet files representing entities and relationships in the sandbox.
+</p>
+
+<ul>
+<li><b>Dimension tables</b> (<code>dim_*</code>) — one row per entity</li>
+<li><b>Bridge tables</b> (<code>hkg_br_*</code>) — relationships between entities</li>
+</ul>
+
+<table class="w3-table w3-bordered w3-small" style="max-width:400px; margin-bottom:12px">
+<tr class="w3-light-grey"><th>Table</th><th>Represents</th></tr>
+<tr><td><code>dim_campaign</code></td><td>Campaigns</td></tr>
+<tr><td><code>dim_segment</code></td><td>Segments</td></tr>
+<tr><td><code>dim_collection</code></td><td>Collections</td></tr>
+<tr><td><code>dim_blueprint</code></td><td>Blueprints</td></tr>
+<tr><td><code>dim_connector</code></td><td>Source connectors</td></tr>
+<tr><td><code>dim_target</code></td><td>Targets</td></tr>
+<tr><td><code>dim_property</code></td><td>Properties</td></tr>
+</table>
+
+<h3>Querying the Dataset</h3>
+
+<p>There are two ways to retrieve answers for a given query:</p>
+
+<details style="margin-bottom:8px">
+<summary style="cursor:pointer; font-weight:bold">SQL &mdash; run locally, no credentials needed</summary>
+<pre style="margin-top:8px"><code class="language-python">import os
+import duckdb
+
+SNAPSHOT_DIR = "DBSnapshot"  # path to the KG snapshot folder
+
+# Register every parquet file as a queryable view
+con = duckdb.connect()
+for fname in os.listdir(SNAPSHOT_DIR):
+    if fname.endswith(".parquet"):
+        table = fname[: -len(".parquet")]
+        con.execute(
+            f"CREATE VIEW {table} AS SELECT * FROM read_parquet('{SNAPSHOT_DIR}/{fname}')"
+        )
+
+# Run any SQL query against the registered tables
+sql = "SELECT * FROM dim_campaign LIMIT 10"
+print(con.execute(sql).df())</code></pre>
+</details>
+
+<details style="margin-bottom:16px">
+<summary style="cursor:pointer; font-weight:bold">API &mdash; provisioned sandbox (credentials provided upon registration)</summary>
+<pre style="margin-top:8px"><code class="language-python">import requests
+
+# Credentials provided upon registration
+CLIENT_ID     = "provided upon registration"
+CLIENT_SECRET = "provided upon registration"
+IMS_ORG       = "provided upon registration"
+SANDBOX       = "provided upon registration"
+
+BASE_URL      = "https://platform.adobe.io"
+IMS_TOKEN_URL = "https://ims-na1.adobelogin.com/ims/token/v3"
+
+# Generate bearer token
+resp = requests.post(
+    IMS_TOKEN_URL,
+    headers={"Content-Type": "application/x-www-form-urlencoded"},
+    data={
+        "grant_type":    "client_credentials",
+        "client_id":     CLIENT_ID,
+        "client_secret": CLIENT_SECRET,
+        "scope":         "openid,AdobeID,read_organizations,additional_info.projectedProductContext,session",
+    },
+)
+access_token = resp.json()["access_token"]
+
+headers = {
+    "Authorization": f"Bearer {access_token}",
+    "x-api-key":        CLIENT_ID,
+    "x-gw-ims-org-id":  IMS_ORG,
+    "x-sandbox-name":   SANDBOX,
+    "Content-Type":     "application/json",
+}
+
+# Make API calls against the provisioned sandbox
+response = requests.get(f"{BASE_URL}/&lt;endpoint&gt;", headers=headers)
+print(response.json())</code></pre>
+</details>
+
+<h3>API Specifications</h3>
+
+<p>API specifications (OpenAPI YAML) can be obtained from:
+<a href="https://developer-stage.adobe.com/experience-platform-apis/">Adobe Experience Platform APIs</a> and
+<a href="https://developer.adobe.com/journey-optimizer-apis/">Adobe Journey Optimizer APIs</a>.
+</p>
+
+<h3>Deliverables</h3>
+
+<p>Participants provide the following for each query:</p>
+
+<ul>
+<li>A <b>metadata JSON</b> containing the query-specific context selected by the participant's system (e.g., relevant schema and API specifications)</li>
+<li>A <b>filled system prompt</b> with the user query and metadata populated</li>
+<li>An <b>agent output trajectory JSON</b></li>
+</ul>
+
+<p>Additionally, participants submit:</p>
+
+<ul>
+<li>A <b>system prompt template</b> with placeholders for the user query and metadata</li>
+<li>A <b>zipped archive</b> of the system's source code</li>
+</ul>
+
+<p>The test set will be released approximately 48 hours before the submission deadline. Participants must submit the deliverables as described above within this window.</p>
+
+</div>
+
+<hr>
+
+<!-- Evaluation -->
+
+<div class="w3-container" style="padding:0px 16px">
+
+<h2 id="evaluation">Evaluation</h2>
+
+<p>
+Organizers will execute each participant's system prompt using the
+<a href="https://code.claude.com/docs/en/agent-sdk/overview">Claude Agent SDK</a> or
+<a href="https://openai.github.io/openai-agents-python/">OpenAI Agents SDK</a>.
+The agent harness can be run with any LLM model. For each query, the evaluation harness runs the submitted system prompt against
+a chosen model (not necessarily the latest) and collects the response and a trajectory JSON capturing the full agent execution trace.
+</p>
+
+<p>Submissions are evaluated and ranked along two dimensions: <b>correctness</b> and <b>efficiency</b>.</p>
+
+<h3>Correctness</h3>
+<p>The correctness of the generated SQLs, API calls, and the final response is measured against the ground truth. Each component is scored independently:</p>
+
+<ul>
+<li><b>SQL correctness</b>: accuracy of generated SQL queries</li>
+<li><b>API correctness</b>: accuracy of generated API calls</li>
+<li><b>Response correctness</b>: quality and accuracy of the final answer to the user query</li>
+</ul>
+
+<h3>Efficiency</h3>
+<p>Resource usage during agent execution, measured from the trajectory JSON:</p>
+
+<ul>
+<li><b>Number of turns</b> in the agent conversation</li>
+<li><b>Number of tool calls</b> made during execution</li>
+<li><b>Total tokens</b> consumed (input + output)</li>
+<li><b>Wall time</b> for end-to-end execution</li>
+</ul>
+
+<p>Organizers will also run the participant's submitted code to measure end-to-end wall clock time, including any pre-processing and context selection steps beyond the agent execution itself.</p>
+
+<p>Participant-submitted trajectory JSONs will be cross-validated against organizer evaluation runs to ensure reproducibility of results.</p>
+
+</div>
+
+<hr>
+
+
+
+
+
+
+<!-- Registration -->
+
+<div class="w3-container" style="padding:0px 16px">
+
+<h2>Registration</h2>
+
+<p>To register your team, submit an abstract on the CMT portal with your <b>team name as the paper title</b> and all <b>team members listed as authors</b>. No document upload is required at this stage. The full system paper and source code are due by the submission deadline.</p>
+
+<p><a href="https://cmt3.research.microsoft.com/DASHSys2026/" style="color:#1a73e8; text-decoration:none; font-weight:bold;"><i class="fa fa-external-link" style="margin-right:5px"></i>Submit on CMT</a></p>
+
+</div>
+
+<hr>
+
+
+<!-- Important Dates -->
+
+<div class="w3-container" style="padding:0px 16px">
+
+<h2>Important Dates</h2>
+
+<table>
+
+<tr>
+<th>Milestone</th>
+<th>Date</th>
+</tr>
+
+<tr>
+<td>Dataset release</td>
+<td>April 15th, 2026 <span style="background:#2e7d32; color:white; border-radius:12px; padding:2px 9px; font-size:0.75em; margin-left:6px; vertical-align:middle;">&#10003; Released</span></td>
+</tr>
+
+<tr>
+<td>Registration deadline</td>
+<td><s>April 26, 2026 (AoE)</s> May 4th, 2026 (AoE)</td>
+</tr>
+
+<tr>
+<td>Test set release</td>
+<td>May 18, 2026 — 8:00 AM PT</td>
+</tr>
+
+<tr>
+<td>System paper submission deadline</td>
+<td>May 19, 2026 — end of day (AoE)</td>
+</tr>
+
+<tr>
+<td>Competition winners announced</td>
+<td>May 31, 2026</td>
+</tr>
+
+<tr>
+<td>Notification of acceptance</td>
+<td>June 12, 2026</td>
+</tr>
+
+<tr>
+<td>Camera-ready deadline</td>
+<td>TBD</td>
+</tr>
+
+</table>
+
+</div>
+
+<hr>
+
+
+
+<!-- Submission -->
+
+<div class="w3-container" style="padding:0px 16px">
+
+<h2>Submission Guidelines</h2>
+
+<p>
+System description papers must follow the <b>VLDB formatting guidelines</b>.
+</p>
+
+<ul>
+
+<li>Maximum <b>4 pages</b> (excluding references)</li>
+<li>Use the <a href="https://www.vldb.org/pvldb/volumes/19/formatting/"><b>VLDB conference formatting template</b></a></li>
+
+</ul>
+
+<p>Submissions should clearly describe:</p>
+
+<ul>
+
+<li>System architecture and design principles</li>
+<li>Prompting or training strategies employed</li>
+<li>Key technical challenges and solutions</li>
+<li>Evaluation methodology with benchmark results and ablation studies</li>
+<li>Lessons learned and open challenges</li>
+
+</ul>
+
+<h3>Review Process</h3>
+
+<ul>
+
+<li>Double-blind anonymous peer review</li>
+<li>Accepted papers appear in <b>VLDB workshop proceedings</b></li>
+
+</ul>
+
+<h3>Presentation Format</h3>
+
+<table>
+
+<tr>
+<th>Outcome</th>
+<th>Presentation Type</th>
+</tr>
+
+<tr>
+<td>Winners / Runner-up teams</td>
+<td>Oral presentations</td>
+</tr>
+
+<tr>
+<td>Other accepted papers</td>
+<td>Poster presentations</td>
+</tr>
+
+</table>
+
+</div>
+
+<hr>
+
+
+
+<!-- Organizers -->
+
+<div class="w3-container" style="padding:0px 16px">
+
+<h2>Organizers</h2>
+
+<ul>
+
+<li>Vineeth Mohan, Adobe Inc. <a href="mailto:vineethm@adobe.com"><i class="fa fa-envelope"></i></a></li>
+<li>Gromit Chan, Adobe Research <a href="mailto:ychan@adobe.com"><i class="fa fa-envelope"></i></a></li>
+<li>Raghav Addanki, Adobe Research <a href="mailto:raddanki@adobe.com"><i class="fa fa-envelope"></i></a></li>
+<li>Shaddy Garg, Adobe Inc.</li>
+<li>Aman Sehgal, Adobe Inc.</li>
+
+</ul>
+
+</div>
+
+<hr>
+
+
+
+<!-- Contact -->
+
+<div class="w3-container" style="padding:0px 16px">
+
+<h2>Contact</h2>
+
+<p>
+For questions about the systems track, dataset, or submission process,
+please visit the workshop website:
+</p>
+
+<p>
+<a href="https://dashsys-workshop-vldb.github.io/">
+https://dashsys-workshop-vldb.github.io/
+</a>
+</p>
+
+</div>
+
+
+<div style="padding-top:50px"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script>hljs.highlightAll();</script>
+</body>
+</html>
