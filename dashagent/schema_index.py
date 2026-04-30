@@ -216,21 +216,37 @@ def curated_join_hints(tables: dict[str, dict[str, Any]]) -> list[JoinHint]:
     ]
     hints: list[JoinHint] = []
     for left_table, left_column, right_table, right_column, reason in candidates:
+        actual_left_column = find_actual_column(tables.get(left_table, {}), left_column)
+        actual_right_column = find_actual_column(tables.get(right_table, {}), right_column)
         if (
             left_table in tables
             and right_table in tables
-            and has_column(tables[left_table], left_column)
-            and has_column(tables[right_table], right_column)
+            and actual_left_column
+            and actual_right_column
         ):
             hints.append(
-                JoinHint(left_table, left_column, right_table, right_column, 0.98, f"Curated: {reason}")
+                JoinHint(
+                    left_table,
+                    actual_left_column,
+                    right_table,
+                    actual_right_column,
+                    0.98,
+                    f"Curated: {reason}",
+                )
             )
     return hints
 
 
 def has_column(table_meta: dict[str, Any], column_name: str) -> bool:
+    return find_actual_column(table_meta, column_name) is not None
+
+
+def find_actual_column(table_meta: dict[str, Any], column_name: str) -> str | None:
     wanted = normalize_name(column_name)
-    return any(normalize_name(column["name"]) == wanted for column in table_meta.get("columns", []))
+    for column in table_meta.get("columns", []):
+        if normalize_name(column["name"]) == wanted:
+            return column["name"]
+    return None
 
 
 def dedupe_join_hints(hints: list[JoinHint]) -> list[JoinHint]:

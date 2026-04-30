@@ -53,6 +53,7 @@ def is_read_only_sql(sql: str) -> tuple[bool, str | None]:
 class TableRegistration:
     table_name: str
     parquet_path: Path
+    load_error: str | None = None
 
 
 class DuckDBDatabase:
@@ -82,11 +83,21 @@ class DuckDBDatabase:
                 suffix += 1
             used.add(table_name)
             path_literal = str(parquet_path.resolve()).replace("'", "''")
-            self.conn.execute(
-                f"CREATE OR REPLACE VIEW {quote_ident(table_name)} AS "
-                f"SELECT * FROM read_parquet('{path_literal}')"
-            )
-            self.registrations[table_name] = TableRegistration(table_name, parquet_path)
+            load_error = None
+            try:
+                self.conn.execute(
+                    f"CREATE OR REPLACE VIEW {quote_ident(table_name)} AS "
+                    f"SELECT * FROM read_parquet('{path_literal}')"
+                )
+            except Exception as exc:
+                load_error = str(exc).splitlines()[0][:500]
+                if not is_zero_column_parquet(parquet_path):
+                    raise
+                self.conn.execute(
+                    f"CREATE OR REPLACE VIEW {quote_ident(table_name)} AS "
+                    'SELECT NULL::VARCHAR AS "__empty_parquet_placeholder" WHERE FALSE'
+                )
+            self.registrations[table_name] = TableRegistration(table_name, parquet_path, load_error)
 
     def list_tables(self) -> list[str]:
         return sorted(self.registrations)
@@ -121,6 +132,7 @@ class DuckDBDatabase:
                 if self.registrations[table].parquet_path.is_relative_to(self.config.project_root)
                 else self.registrations[table].parquet_path.name,
                 "columns": columns,
+                "load_error": self.registrations[table].load_error,
             }
         return {"table_count": len(tables), "tables": tables}
 
@@ -151,7 +163,6 @@ class DuckDBDatabase:
                 "limited": False,
                 "error": error,
             }
-
         effective_sql, limited = self._apply_limit_protection(
             sql, max_rows or self.config.max_result_rows, allow_full_result
         )
@@ -178,3 +189,13 @@ class DuckDBDatabase:
                 "limited": limited,
                 "error": str(exc).splitlines()[0][:500],
             }
+
+
+def is_zero_column_parquet(path: Path) -> bool:
+    try:
+        import pyarrow.parquet as pq  # type: ignore
+
+        metadata = pq.ParquetFile(path).metadata
+        return metadata.num_columns == 0
+    except Exception:
+        return False
