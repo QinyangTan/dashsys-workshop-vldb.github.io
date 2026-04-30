@@ -125,6 +125,23 @@ This verifies required source files, scans for obvious credential leaks, and wri
 - `outputs/source_code/`
 - `outputs/source_code.zip`
 
+To package per-query outputs for a final submission after running queries or dev eval:
+
+```bash
+python scripts/package_query_outputs.py
+```
+
+By default this selects `SQL_FIRST_API_VERIFY` when multiple strategy outputs exist for the same query. Override with:
+
+```bash
+export DASHAGENT_SUBMISSION_STRATEGY=TEMPLATE_FIRST
+```
+
+This writes:
+
+- `outputs/final_submission/`
+- `outputs/final_submission_manifest.json`
+
 ## Architecture Notes
 
 The main execution path is:

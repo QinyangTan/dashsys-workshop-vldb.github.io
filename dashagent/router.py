@@ -128,15 +128,34 @@ class QueryRouter:
         is_count = hits.get("COUNT_AGGREGATION", 0) > 0
         is_status = hits.get("STATUS_MONITORING", 0) > 0
         is_relationship = hits.get("RELATIONSHIP_TRAVERSAL", 0) > 0
-        mentions_api_state = any(word in query.lower() for word in ["current", "live", "platform", "sandbox", "api"])
+        lowered_query = query.lower()
+        mentions_api_state = any(word in lowered_query for word in ["current", "live", "platform", "sandbox", "api"])
+        api_only_resource = any(
+            phrase in lowered_query
+            for phrase in [
+                "tag",
+                "merge polic",
+                "segment job",
+                "segment definition",
+                "segment evaluation job",
+                "batch",
+                "batches",
+                "files available",
+                "timeseries.",
+                "ingestion record",
+                "audit",
+            ]
+        )
 
         sql_needed = primary != "UNKNOWN" or is_count or is_relationship
-        api_needed = (
+        api_needed = api_only_resource or (
             primary in {"JOURNEY_CAMPAIGN", "SEGMENT_AUDIENCE", "DESTINATION_DATAFLOW", "DATASET_SCHEMA"}
             and (is_status or mentions_api_state)
         )
         if "compare" in query.lower() or "disagree" in query.lower():
             route_type = "SQL_AND_API_COMPARE"
+        elif api_only_resource:
+            route_type = "API_ONLY"
         elif api_needed and sql_needed:
             route_type = "SQL_THEN_API"
         elif api_needed:

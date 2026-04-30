@@ -118,13 +118,17 @@ class AdobeAPIClient:
             }
 
         try:
-            response = self.session.request(
-                method=method,
-                url=full_url,
-                params=params,
-                headers=merged_headers,
-                timeout=self.config.api_timeout_seconds,
-            )
+            request_kwargs: dict[str, Any] = {
+                "method": method,
+                "url": full_url,
+                "headers": merged_headers,
+                "timeout": self.config.api_timeout_seconds,
+            }
+            if method in {"POST", "PUT", "PATCH"}:
+                request_kwargs["json"] = params
+            else:
+                request_kwargs["params"] = params
+            response = self.session.request(**request_kwargs)
             content_type = response.headers.get("content-type", "")
             if "application/json" in content_type:
                 body: Any = response.json()

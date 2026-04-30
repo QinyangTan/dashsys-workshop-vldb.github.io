@@ -2,12 +2,15 @@ from __future__ import annotations
 
 import csv
 import json
+import re
 import time
 from dataclasses import dataclass
 from difflib import SequenceMatcher
 from pathlib import Path
 from typing import Any
+from urllib.parse import parse_qsl, urlparse
 
+from .api_templates import parse_api_call_string
 from .config import Config, DEFAULT_CONFIG
 from .db import DuckDBDatabase
 from .endpoint_catalog import normalize_api_path
@@ -202,7 +205,11 @@ def first_generated_sql(trajectory: dict[str, Any]) -> str | None:
 
 def generated_api_calls(trajectory: dict[str, Any]) -> list[dict[str, Any]]:
     return [
-        {"method": step.get("method"), "path": normalize_api_path(step.get("url", "")), "params": step.get("params", {})}
+        {
+            "method": str(step.get("method", "")).upper(),
+            "path": normalize_api_path(step.get("url", "")),
+            "params": step.get("params", {}),
+        }
         for step in trajectory.get("steps", [])
         if step.get("kind") == "api_call"
     ]
@@ -226,11 +233,27 @@ def extract_api_calls(gold_api: Any) -> list[dict[str, Any]]:
     calls: list[dict[str, Any]] = []
 
     def walk(obj: Any) -> None:
-        if isinstance(obj, dict):
+        if isinstance(obj, str):
+            parsed = parse_api_call_string(obj)
+            if parsed:
+                calls.append(parsed)
+        elif isinstance(obj, dict):
             method = obj.get("method") or obj.get("http_method")
             path = obj.get("path") or obj.get("url") or obj.get("endpoint")
             if method and path:
-                calls.append({"method": str(method).upper(), "path": normalize_api_path(str(path)), "params": obj.get("params", {})})
+                params = dict(obj.get("params", {}) or {})
+                parsed_url = urlparse(str(path))
+                params.update(dict(parse_qsl(parsed_url.query, keep_blank_values=True)))
+                body = obj.get("body")
+                if isinstance(body, dict):
+                    params.update(body)
+                calls.append(
+                    {
+                        "method": str(method).upper(),
+                        "path": normalize_api_path(parsed_url.path or str(path)),
+                        "params": params,
+                    }
+                )
             for value in obj.values():
                 walk(value)
         elif isinstance(obj, list):
@@ -247,11 +270,96 @@ def score_api(generated_calls: list[dict[str, Any]], gold_api: Any) -> tuple[flo
         return (1.0, "No gold API supplied; API dimension treated as unscored/pass.")
     if not generated_calls:
         return (0.0, "No generated API call.")
-    for generated in generated_calls:
-        for gold in gold_calls:
-            if generated.get("method") == gold.get("method") and normalize_api_path(generated.get("path", "")) == normalize_api_path(gold.get("path", "")):
-                return (1.0, "Method/path API match.")
-    return (0.0, "API method/path mismatch.")
+
+    pair_scores = []
+    for index, gold in enumerate(gold_calls):
+        candidates = []
+        for generated_index, generated in enumerate(generated_calls):
+            method_path = method_path_score(generated, gold)
+            params = param_score(generated.get("params", {}), gold.get("params", {}))
+            order_bonus = 1.0 if generated_index == index else 0.5
+            candidates.append(0.4 * method_path + 0.4 * params + 0.2 * order_bonus)
+        pair_scores.append(max(candidates) if candidates else 0.0)
+    call_count_score = 1.0 if len(generated_calls) == len(gold_calls) else max(0.0, 1.0 - abs(len(generated_calls) - len(gold_calls)) / max(len(gold_calls), 1))
+    score = 0.8 * (sum(pair_scores) / len(gold_calls)) + 0.2 * call_count_score
+    return (round(score, 4), f"API method/path, params, and call-count score: {score:.4f}.")
+
+
+def method_path_score(generated: dict[str, Any], gold: dict[str, Any]) -> float:
+    method_match = str(generated.get("method", "")).upper() == str(gold.get("method", "")).upper()
+    generated_path = normalize_api_path(str(generated.get("path", ""))).lower()
+    gold_path = normalize_api_path(str(gold.get("path", ""))).lower()
+    if generated_path == gold_path:
+        path_match = 1.0
+    elif path_shape(generated_path) == path_shape(gold_path):
+        path_match = 0.75
+    else:
+        path_match = 0.0
+    return (0.5 if method_match else 0.0) + 0.5 * path_match
+
+
+def path_shape(path: str) -> str:
+    return re.sub(r"/[0-9a-f]{8,}(?:-[0-9a-f]{4,})*", "/{id}", path.lower())
+
+
+def param_score(generated_params: Any, gold_params: Any) -> float:
+    generated = normalize_params(generated_params)
+    gold = normalize_params(gold_params)
+    if not gold:
+        return 1.0 if not generated else 0.8
+    if not generated:
+        return 0.0
+    scores = []
+    for key, gold_value in gold.items():
+        generated_key = next((candidate for candidate in generated if normalize_param_key(candidate) == normalize_param_key(key)), None)
+        if generated_key is None:
+            scores.append(0.0)
+            continue
+        key_score = 0.4
+        value_score = 0.6 * param_value_similarity(generated[generated_key], gold_value)
+        scores.append(key_score + value_score)
+    extra_penalty = max(0, len(generated) - len(gold)) * 0.03
+    return max(0.0, min(1.0, sum(scores) / len(scores) - extra_penalty))
+
+
+def normalize_params(params: Any) -> dict[str, Any]:
+    if params is None:
+        return {}
+    if isinstance(params, str):
+        parsed = parse_api_call_string("GET /x?" + params.lstrip("?"))
+        return parsed["params"] if parsed else {}
+    if isinstance(params, dict):
+        return params
+    return {}
+
+
+def normalize_param_key(key: str) -> str:
+    return re.sub(r"[^a-z0-9]", "", str(key).lower())
+
+
+def normalize_param_value(value: Any) -> str:
+    if isinstance(value, (dict, list)):
+        return json.dumps(value, sort_keys=True, separators=(",", ":"))
+    text = str(value).strip().strip('"')
+    text = re.sub(r"\s*(==|!=|=|eq|:)\s*", r"\1", text, flags=re.IGNORECASE)
+    text = re.sub(r"\s+", " ", text)
+    return text.lower()
+
+
+def param_value_similarity(generated_value: Any, gold_value: Any) -> float:
+    generated = normalize_param_value(generated_value)
+    gold = normalize_param_value(gold_value)
+    if generated == gold:
+        return 1.0
+    if generated in gold or gold in generated:
+        return 0.75
+    generated_tokens = set(re.findall(r"[a-z0-9_<>.-]+", generated))
+    gold_tokens = set(re.findall(r"[a-z0-9_<>.-]+", gold))
+    if generated_tokens and gold_tokens:
+        overlap = len(generated_tokens & gold_tokens) / len(gold_tokens)
+        if overlap:
+            return min(0.7, overlap)
+    return SequenceMatcher(None, generated, gold).ratio() * 0.6
 
 
 def score_answer(generated_answer: str, gold_answer: str | None) -> tuple[float, str]:

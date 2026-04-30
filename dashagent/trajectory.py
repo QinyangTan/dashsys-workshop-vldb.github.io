@@ -21,6 +21,8 @@ SECRET_KEYS = {
 
 def redact_value(key: str, value: Any) -> Any:
     lowered = key.lower()
+    if lowered.startswith("no_secret"):
+        return value
     if (
         lowered in SECRET_KEYS
         or lowered.endswith("_token")

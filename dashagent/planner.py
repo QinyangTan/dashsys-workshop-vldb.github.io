@@ -4,10 +4,12 @@ import re
 from dataclasses import asdict, dataclass, field
 from typing import Any
 
+from .api_templates import find_api_templates
 from .db import quote_ident
 from .endpoint_catalog import Endpoint
 from .router import RoutingDecision
 from .schema_index import SchemaIndex
+from .sql_templates import find_sql_template
 
 
 STRATEGIES = [
@@ -29,6 +31,7 @@ class PlanStep:
     params: dict[str, Any] = field(default_factory=dict)
     headers: dict[str, Any] = field(default_factory=dict)
     allow_full_result: bool = False
+    warnings: list[str] = field(default_factory=list)
 
     def to_dict(self) -> dict[str, Any]:
         return asdict(self)
@@ -79,7 +82,14 @@ class StrategyPlanner:
         strategy: str,
     ) -> Plan:
         sql = self._build_sql(query, routing, metadata)
-        steps = [PlanStep(action="sql", purpose="Answer from local snapshot using selected schema.", sql=sql)] if sql else []
+        steps = [
+            PlanStep(
+                action="sql",
+                purpose="Answer from local snapshot using selected schema.",
+                sql=sql,
+                allow_full_result=asks_all_rows(query),
+            )
+        ] if sql else []
         return Plan(strategy, "SQL-only baseline avoids API calls unless no local table can be selected.", steps)
 
     def _llm_free_baseline(
@@ -92,7 +102,14 @@ class StrategyPlanner:
         steps: list[PlanStep] = []
         sql = self._build_sql(query, routing, metadata, broad=True)
         if sql:
-            steps.append(PlanStep(action="sql", purpose="Broad-context baseline SQL attempt.", sql=sql))
+            steps.append(
+                PlanStep(
+                    action="sql",
+                    purpose="Broad-context baseline SQL attempt.",
+                    sql=sql,
+                    allow_full_result=asks_all_rows(query),
+                )
+            )
         for api_step in self._api_steps(query, routing, metadata, force=True)[:2]:
             api_step.purpose = "Broad-context baseline API probe."
             steps.append(api_step)
@@ -113,7 +130,14 @@ class StrategyPlanner:
         if routing.route_type in {"SQL_ONLY", "SQL_THEN_API", "SQL_AND_API_COMPARE", "API_THEN_SQL"}:
             sql = self._build_sql(query, routing, metadata)
             if sql:
-                steps.append(PlanStep(action="sql", purpose="Ground answer in selected local tables.", sql=sql))
+                steps.append(
+                    PlanStep(
+                        action="sql",
+                        purpose="Ground answer in selected local tables.",
+                        sql=sql,
+                        allow_full_result=asks_all_rows(query),
+                    )
+                )
         if routing.route_type in {"API_ONLY", "SQL_THEN_API", "SQL_AND_API_COMPARE", "API_THEN_SQL"}:
             steps.extend(self._api_steps(query, routing, metadata)[:1])
         return Plan(
@@ -130,12 +154,23 @@ class StrategyPlanner:
         strategy: str,
     ) -> Plan:
         steps: list[PlanStep] = []
-        sql = self._build_sql(query, routing, metadata)
+        sql = self._build_sql(query, routing, metadata) if routing.route_type != "API_ONLY" else None
         if sql:
-            steps.append(PlanStep(action="sql", purpose="Ground names/IDs in local snapshot before API verification.", sql=sql))
-        needs_api = routing.route_type in {"API_ONLY", "SQL_THEN_API", "SQL_AND_API_COMPARE", "API_THEN_SQL"} or asks_live_state(query)
+            steps.append(
+                PlanStep(
+                    action="sql",
+                    purpose="Ground names/IDs in local snapshot before API verification.",
+                    sql=sql,
+                    allow_full_result=asks_all_rows(query),
+                )
+            )
+        needs_api = (
+            routing.route_type in {"API_ONLY", "SQL_THEN_API", "SQL_AND_API_COMPARE", "API_THEN_SQL"}
+            or asks_live_state(query)
+            or bool(find_api_templates(query))
+        )
         if needs_api:
-            steps.extend(self._api_steps(query, routing, metadata)[:1])
+            steps.extend(self._api_steps(query, routing, metadata))
         return Plan(
             strategy,
             "Use SQL first for entity grounding, then API only for live/platform state or status verification.",
@@ -151,9 +186,16 @@ class StrategyPlanner:
     ) -> Plan:
         template_sql = self._known_pattern_sql(query, metadata)
         if template_sql:
-            steps = [PlanStep(action="sql", purpose="Known reusable query pattern.", sql=template_sql)]
-            if asks_live_state(query):
-                steps.extend(self._api_steps(query, routing, metadata)[:1])
+            steps = [
+                PlanStep(
+                    action="sql",
+                    purpose="Known reusable query pattern.",
+                    sql=template_sql,
+                    allow_full_result=asks_all_rows(query),
+                )
+            ]
+            if asks_live_state(query) or find_api_templates(query):
+                steps.extend(self._api_steps(query, routing, metadata))
             return Plan(strategy, "Template matched a reusable public-example-style pattern.", steps)
         fallback = self._sql_first_api_verify(query, routing, metadata, "SQL_FIRST_API_VERIFY")
         return Plan(strategy, "No template matched; fell back to SQL-first API-verify plan.", fallback.steps)
@@ -165,6 +207,10 @@ class StrategyPlanner:
         metadata: dict[str, Any],
         broad: bool = False,
     ) -> str | None:
+        if not broad:
+            template = find_sql_template(query, self.schema_index)
+            if template is not None:
+                return template.sql
         table = choose_table(query, routing.domain_type, metadata.get("selected_tables", []), self.schema_index)
         if table is None:
             return None
@@ -186,6 +232,21 @@ class StrategyPlanner:
         metadata: dict[str, Any],
         force: bool = False,
     ) -> list[PlanStep]:
+        templated_steps = [
+            PlanStep(
+                action="api",
+                purpose=f"API parameter template: {template.family}.",
+                method=template.method,
+                url=template.path,
+                params=template.params,
+                warnings=template.warnings,
+            )
+            for template in find_api_templates(query)
+            if "{" not in template.path or force
+        ]
+        if templated_steps:
+            return templated_steps
+
         apis = metadata.get("selected_apis", [])
         if not apis:
             return []
@@ -219,6 +280,9 @@ class StrategyPlanner:
         return steps
 
     def _known_pattern_sql(self, query: str, metadata: dict[str, Any]) -> str | None:
+        template = find_sql_template(query, self.schema_index)
+        if template is not None:
+            return template.sql
         lowered = query.lower()
         tables = metadata.get("selected_tables", [])
         table = choose_table(query, metadata.get("domain_type", "UNKNOWN"), tables, self.schema_index)
@@ -362,4 +426,4 @@ def asks_live_state(query: str) -> bool:
 
 def asks_all_rows(query: str) -> bool:
     lowered = query.lower()
-    return any(token in lowered for token in ["all rows", "every row", "list all", "return all"])
+    return any(token in lowered for token in ["all rows", "every row", "list all", "return all", "no row limit", "remove row limit", "every"])

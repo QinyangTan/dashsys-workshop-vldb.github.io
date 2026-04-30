@@ -23,6 +23,7 @@ REQUIRED_PATHS = [
     "scripts/run_one_query.py",
     "scripts/run_dev_eval.py",
     "scripts/package_submission.py",
+    "scripts/package_query_outputs.py",
     "tests",
     "pyproject.toml",
     "requirements.txt",

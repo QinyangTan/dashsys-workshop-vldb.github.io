@@ -198,6 +198,7 @@ def extract_unqualified_columns(sql: str) -> list[str]:
     text = re.sub(r"'(?:''|[^'])*'", " ", text)
     text = re.sub(r'"[^"]+"\s*\.', " ", text)
     text = re.sub(r"[a-zA-Z_][\w$]*\s*\.", " ", text)
+    text = re.sub(r"\b[A-Za-z_][\w$]*\s*\([^)]*\)", " ", text)
     text = re.sub(r"\bAS\s+[a-zA-Z_][\w$]*", " ", text, flags=re.IGNORECASE)
     candidates = re.findall(r'"([^"]+)"|(?<![.\w])([a-zA-Z_][\w$]*)(?!\s*\()', text)
     columns = [quoted or bare for quoted, bare in candidates]

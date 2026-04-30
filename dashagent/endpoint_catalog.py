@@ -29,7 +29,7 @@ class Endpoint:
 
 def normalize_api_path(url_or_path: str) -> str:
     parsed = urlparse(url_or_path)
-    path = parsed.path if parsed.scheme and parsed.netloc else url_or_path
+    path = parsed.path if (parsed.scheme and parsed.netloc) or parsed.query else url_or_path
     path = "/" + path.lstrip("/")
     path = re.sub(r"/+", "/", path)
     return path.rstrip("/") or "/"
@@ -113,6 +113,124 @@ class EndpointCatalog:
                 risk_notes=["Requires a schema ID; do not call with an unresolved placeholder."],
                 domains=["DATASET_SCHEMA", "PROPERTY_FIELD"],
             ),
+            Endpoint(
+                id="schema_registry_schemas",
+                method="GET",
+                path="/data/foundation/schemaregistry/tenant/schemas",
+                use_when="List tenant schemas or filter schema registry metadata.",
+                common_params={"limit": 25},
+                examples=[{"query": "profile-enabled ExperienceEvent schemas"}],
+                risk_notes=["Schema-registry filters vary by endpoint version."],
+                domains=["DATASET_SCHEMA"],
+            ),
+            Endpoint(
+                id="schemas_short",
+                method="GET",
+                path="/schemas",
+                use_when="Gold-example shorthand for schema list/name lookup.",
+                common_params={"limit": 25},
+                examples=[{"query": "schema named weRetail: Customer Actions"}],
+                risk_notes=["Shorthand path is retained for benchmark compatibility."],
+                domains=["DATASET_SCHEMA"],
+            ),
+            Endpoint(
+                id="audit_events",
+                method="GET",
+                path="/data/foundation/audit/events",
+                use_when="Audit events for destination/dataset/entity changes.",
+                common_params={"limit": 20},
+                examples=[{"query": "new destinations in last 3 months"}],
+                domains=["DESTINATION_DATAFLOW", "DATASET_SCHEMA", "STATUS_MONITORING"],
+            ),
+            Endpoint(
+                id="audit_events_short",
+                method="GET",
+                path="/audit/events",
+                use_when="Gold-example shorthand for audit events.",
+                common_params={"limit": 50},
+                examples=[{"query": "recent dataset changes"}],
+                domains=["DATASET_SCHEMA", "STATUS_MONITORING"],
+            ),
+            Endpoint(
+                id="unified_tags",
+                method="GET",
+                path="/unifiedtags/tags",
+                use_when="List or count tags.",
+                common_params={"limit": 25},
+                domains=["UNKNOWN"],
+            ),
+            Endpoint(
+                id="unified_tag_categories",
+                method="GET",
+                path="/unifiedtags/tagCategory",
+                use_when="List tag categories.",
+                common_params={"limit": 100},
+                domains=["UNKNOWN"],
+            ),
+            Endpoint(
+                id="unified_tag_detail",
+                method="GET",
+                path="/unifiedtags/tags/{tag_id}",
+                use_when="Fetch tag details when a tag ID is known.",
+                path_params=["tag_id"],
+                domains=["UNKNOWN"],
+            ),
+            Endpoint(
+                id="merge_policies",
+                method="GET",
+                path="/data/core/ups/config/mergePolicies",
+                use_when="List/count Real-Time Customer Profile merge policies.",
+                common_params={"limit": 10},
+                domains=["SEGMENT_AUDIENCE", "UNKNOWN"],
+            ),
+            Endpoint(
+                id="segment_jobs",
+                method="GET",
+                path="/data/core/ups/segment/jobs",
+                use_when="List segment evaluation jobs and statuses.",
+                common_params={"limit": 10},
+                domains=["SEGMENT_AUDIENCE", "STATUS_MONITORING"],
+            ),
+            Endpoint(
+                id="catalog_batches",
+                method="GET",
+                path="/data/foundation/catalog/batches",
+                use_when="List/count catalog batches.",
+                common_params={"limit": 10},
+                domains=["DATASET_SCHEMA", "STATUS_MONITORING", "UNKNOWN"],
+            ),
+            Endpoint(
+                id="catalog_batch_detail",
+                method="GET",
+                path="/data/foundation/catalog/batches/{batch_id}",
+                use_when="Fetch batch details by ID.",
+                path_params=["batch_id"],
+                domains=["DATASET_SCHEMA", "UNKNOWN"],
+            ),
+            Endpoint(
+                id="export_batch_files",
+                method="GET",
+                path="/data/foundation/export/batches/{batch_id}/files",
+                use_when="List files available for download in an export batch.",
+                path_params=["batch_id"],
+                domains=["DATASET_SCHEMA", "UNKNOWN"],
+            ),
+            Endpoint(
+                id="export_batch_failed",
+                method="GET",
+                path="/data/foundation/export/batches/{batch_id}/failed",
+                use_when="List failed files for an export batch.",
+                path_params=["batch_id"],
+                domains=["DATASET_SCHEMA", "STATUS_MONITORING", "UNKNOWN"],
+            ),
+            Endpoint(
+                id="observability_metrics",
+                method="POST",
+                path="/data/infrastructure/observability/insights/metrics",
+                use_when="Query observability metric time series.",
+                common_params={},
+                domains=["STATUS_MONITORING", "UNKNOWN"],
+            ),
         ]
 
     def as_list(self) -> list[dict[str, Any]]:
@@ -134,8 +252,8 @@ class EndpointCatalog:
         for endpoint in self.endpoints:
             if endpoint.method != method:
                 continue
-            pattern = "^" + re.escape(endpoint.path).replace(r"\{schema_id\}", r"[^/]+") + "$"
-            if re.match(pattern, path):
+            pattern = "^" + re.sub(r"\\\{[^/]+\\\}", r"[^/]+", re.escape(endpoint.path)) + "$"
+            if re.match(pattern, path, flags=re.IGNORECASE):
                 return endpoint
         return None
 
