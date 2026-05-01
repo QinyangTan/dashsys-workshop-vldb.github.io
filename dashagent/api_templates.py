@@ -46,7 +46,7 @@ def find_api_templates(query: str, config: Config | None = None) -> list[APITemp
     else:
         templates.extend(_batch_templates(query, lowered))
 
-    if not templates:
+    if not templates and not (cfg.disable_gold_patterns or cfg.disable_api_fallback_templates):
         templates.extend(_gold_pattern_templates(query, cfg))
     return templates
 

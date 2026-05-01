@@ -28,6 +28,8 @@ REQUIRED_PATHS = [
     "scripts/generate_family_score_report.py",
     "scripts/generate_pareto_report.py",
     "scripts/generate_template_generalization_report.py",
+    "scripts/tune_thresholds.py",
+    "scripts/run_robustness_eval.py",
     "scripts/check_submission_ready.py",
     "scripts/warm_cache.py",
     "tests",

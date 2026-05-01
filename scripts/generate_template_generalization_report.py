@@ -24,6 +24,10 @@ TEMPLATES = [
     {"name": "tag_*", "family": "tags", "uses": "unified tags APIs", "validated": True, "risk": "medium", "notes": "Named tag detail uses benchmark-compatible ID fallback only when no tag ID is present."},
     {"name": "observability_metrics", "family": "observability", "uses": "POST observability metrics", "validated": True, "risk": "low", "notes": "Metric names and date windows are extracted from query text."},
     {"name": "answer_templates", "family": "answer", "uses": "SQL/API tool evidence", "validated": True, "risk": "low", "notes": "Templates render observed fields only and report dry-run limitations."},
+    {"name": "query_normalizer", "family": "nlp", "uses": "Whitespace, quote, hyphen, synonym, and plural normalization", "validated": True, "risk": "low", "notes": "Normalized text is used only for matching; original query is preserved in outputs."},
+    {"name": "query_tokens", "family": "nlp", "uses": "Quoted/named entities, IDs, dates, metrics, fields, statuses, domain tokens", "validated": True, "risk": "low", "notes": "Extracted tokens guide deterministic selection without external embeddings."},
+    {"name": "relevance_scorer", "family": "nlp", "uses": "Token overlap, lookup-path weights, optional RapidFuzz", "validated": True, "risk": "low", "notes": "Scores compact schema/API context; it does not bypass SQL/API validation."},
+    {"name": "plan_ensemble", "family": "planning", "uses": "Pre-execution candidate scoring over validated deterministic plans", "validated": True, "risk": "low", "notes": "Only the selected plan is executed; candidate evaluation is validation-only."},
 ]
 
 

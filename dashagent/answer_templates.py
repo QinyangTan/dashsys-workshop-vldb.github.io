@@ -22,12 +22,12 @@ def classify_answer_family(query: str) -> str:
         return "inactive_journeys"
     if "list" in lowered and "journey" in lowered:
         return "list_journeys"
-    if ("destination" in lowered or "target" in lowered) and any(token in lowered for token in ["export", "list", "recent", "modified"]):
-        if "audience" in lowered or "segment" in lowered or "mapped" in lowered:
-            return "audit_destination_mapping"
-        return "destination_export"
     if ("audience" in lowered or "segment" in lowered) and ("destination" in lowered or "target" in lowered):
+        if any(token in lowered for token in ["mapped", "new destination", "new destinations", "last 3 months", "last three months"]):
+            return "audit_destination_mapping"
         return "segment_destination"
+    if ("destination" in lowered or "target" in lowered) and any(token in lowered for token in ["export", "list", "recent", "modified"]):
+        return "destination_export"
     if "failed" in lowered and ("dataflow" in lowered or "run" in lowered or "file" in lowered):
         return "failed_dataflow_runs"
     if "merge polic" in lowered:

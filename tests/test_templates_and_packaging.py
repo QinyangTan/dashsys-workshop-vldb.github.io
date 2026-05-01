@@ -252,12 +252,16 @@ def test_submission_readiness_checker_accepts_valid_packaged_outputs(tiny_projec
         "failure_analysis.json",
         "family_score_report.json",
         "pareto_report.json",
+        "threshold_tuning_report.json",
+        "robustness_eval.json",
     ]:
         (tiny_project.outputs_dir / name).write_text("{}", encoding="utf-8")
     for name in [
         "failure_analysis.md",
         "family_score_report.md",
         "pareto_report.md",
+        "threshold_tuning_report.md",
+        "robustness_eval.md",
     ]:
         (tiny_project.outputs_dir / name).write_text("ok", encoding="utf-8")
     report = check_submission_ready(tiny_project)

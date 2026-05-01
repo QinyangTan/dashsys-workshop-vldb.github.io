@@ -38,6 +38,15 @@ class Config:
     max_join_hints: int = 8
     max_gold_patterns: int = 2
     compact_metadata: bool = True
+    relevance_top_k_tables: int = 8
+    relevance_top_k_apis: int = 4
+    fast_path_confidence_threshold: float = 0.0
+    api_skip_confidence_threshold: float = 0.0
+    disable_fast_paths: bool = False
+    disable_gold_patterns: bool = False
+    disable_context_cards: bool = False
+    disable_api_fallback_templates: bool = False
+    drop_one_join_hint: bool = False
 
     @classmethod
     def from_env(cls, root: Path | None = None) -> "Config":
@@ -59,6 +68,15 @@ class Config:
             max_join_hints=int(os.getenv("DASHAGENT_MAX_JOIN_HINTS", "8")),
             max_gold_patterns=int(os.getenv("DASHAGENT_MAX_GOLD_PATTERNS", "2")),
             compact_metadata=os.getenv("DASHAGENT_COMPACT_METADATA", "1") != "0",
+            relevance_top_k_tables=int(os.getenv("DASHAGENT_RELEVANCE_TOP_K_TABLES", "8")),
+            relevance_top_k_apis=int(os.getenv("DASHAGENT_RELEVANCE_TOP_K_APIS", "4")),
+            fast_path_confidence_threshold=float(os.getenv("DASHAGENT_FAST_PATH_CONFIDENCE_THRESHOLD", "0.0")),
+            api_skip_confidence_threshold=float(os.getenv("DASHAGENT_API_SKIP_CONFIDENCE_THRESHOLD", "0.0")),
+            disable_fast_paths=os.getenv("DASHAGENT_DISABLE_FAST_PATHS", "0") == "1",
+            disable_gold_patterns=os.getenv("DASHAGENT_DISABLE_GOLD_PATTERNS", "0") == "1",
+            disable_context_cards=os.getenv("DASHAGENT_DISABLE_CONTEXT_CARDS", "0") == "1",
+            disable_api_fallback_templates=os.getenv("DASHAGENT_DISABLE_API_FALLBACK_TEMPLATES", "0") == "1",
+            drop_one_join_hint=os.getenv("DASHAGENT_DROP_ONE_JOIN_HINT", "0") == "1",
         )
 
     def ensure_dirs(self) -> None:

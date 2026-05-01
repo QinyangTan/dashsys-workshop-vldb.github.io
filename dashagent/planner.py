@@ -170,25 +170,26 @@ class StrategyPlanner:
         analysis: QueryAnalysis | None = None,
     ) -> Plan:
         steps: list[PlanStep] = []
-        fast_path = analysis.fast_path if analysis else find_fast_path(query, self.schema_index)
-        sql_template = analysis.sql_template if analysis else (fast_path.sql_template if fast_path else find_sql_template(query, self.schema_index))
-        sql = self._build_sql(query, routing, metadata, sql_template=sql_template) if routing.route_type != "API_ONLY" else None
+        planning_query = analysis.normalized_query if analysis else query
+        fast_path = analysis.fast_path if analysis else find_fast_path(planning_query, self.schema_index)
+        sql_template = analysis.sql_template if analysis else (fast_path.sql_template if fast_path else find_sql_template(planning_query, self.schema_index))
+        sql = self._build_sql(planning_query, routing, metadata, sql_template=sql_template) if routing.route_type != "API_ONLY" else None
         if sql:
             steps.append(
                 PlanStep(
                     action="sql",
                     purpose="Fast-path SQL grounding." if fast_path else "Ground names/IDs in local snapshot before API verification.",
                     sql=sql,
-                    allow_full_result=sql_template.allow_full_result if sql_template else asks_all_rows(query),
+                    allow_full_result=sql_template.allow_full_result if sql_template else asks_all_rows(planning_query),
                     family=sql_template.family if sql_template else None,
                 )
             )
-        api_templates = analysis.api_templates if analysis else (fast_path.api_templates if fast_path else find_api_templates(query))
-        api_decision = analysis.api_need_decision if analysis else decide_api_need(query, routing, sql_template, api_templates, strategy)
+        api_templates = analysis.api_templates if analysis else (fast_path.api_templates if fast_path else find_api_templates(planning_query))
+        api_decision = analysis.api_need_decision if analysis else decide_api_need(planning_query, routing, sql_template, api_templates, strategy)
         if api_decision.mode != API_SKIP:
             steps.extend(
                 self._api_steps(
-                    query,
+                    planning_query,
                     routing,
                     metadata,
                     templates=api_templates,
@@ -221,22 +222,23 @@ class StrategyPlanner:
         strategy: str,
         analysis: QueryAnalysis | None = None,
     ) -> Plan:
-        template_sql = self._known_pattern_sql(query, metadata)
+        planning_query = analysis.normalized_query if analysis else query
+        template_sql = self._known_pattern_sql(planning_query, metadata)
         if template_sql:
-            sql_template = analysis.sql_template if analysis else find_sql_template(query, self.schema_index)
+            sql_template = analysis.sql_template if analysis else find_sql_template(planning_query, self.schema_index)
             steps = [
                 PlanStep(
                     action="sql",
                     purpose="Known reusable query pattern.",
                     sql=template_sql,
-                    allow_full_result=asks_all_rows(query),
+                    allow_full_result=asks_all_rows(planning_query),
                     family=sql_template.family if sql_template else None,
                 )
             ]
-            api_templates = analysis.api_templates if analysis else find_api_templates(query)
-            api_decision = analysis.api_need_decision if analysis else decide_api_need(query, routing, sql_template, api_templates, strategy)
+            api_templates = analysis.api_templates if analysis else find_api_templates(planning_query)
+            api_decision = analysis.api_need_decision if analysis else decide_api_need(planning_query, routing, sql_template, api_templates, strategy)
             if api_decision.mode != API_SKIP:
-                steps.extend(self._api_steps(query, routing, metadata, templates=api_templates, allowed_families=api_decision.allowed_api_families))
+                steps.extend(self._api_steps(planning_query, routing, metadata, templates=api_templates, allowed_families=api_decision.allowed_api_families))
             optimized = optimize_plan_steps(steps, strategy=strategy, route_type=routing.route_type, api_decision=api_decision)
             steps = optimized.steps
             rationale = "Template matched a reusable public-example-style pattern."

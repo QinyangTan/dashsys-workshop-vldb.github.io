@@ -27,7 +27,10 @@ from .db import DuckDBDatabase
 from .endpoint_catalog import EndpointCatalog
 from .evidence_bus import EvidenceBus
 from .metadata_selector import MetadataSelector
+from .plan_ensemble import select_plan_candidate
 from .planner import STRATEGIES, StrategyPlanner
+from .query_normalizer import normalize_query
+from .query_tokens import extract_query_tokens
 from .query_analysis import analyze_query
 from .router import QueryRouter
 from .schema_index import SchemaIndex
@@ -82,11 +85,22 @@ class AgentExecutor:
         out_dir.mkdir(parents=True, exist_ok=True)
 
         preprocessing_start = time.perf_counter()
-        routing = self.router.route(query)
+        normalization = normalize_query(query)
+        tokens = extract_query_tokens(query, normalization)
+        routing = self.router.route(normalization["matching_text"])
         analysis_key = query_analysis_cache_key(query, strategy, self.config, self.cache_fingerprint)
         analysis = get_query_analysis_cache(analysis_key)
         if analysis is None:
-            analysis = analyze_query(query, routing, self.schema_index, strategy=strategy, config=self.config)
+            analysis = analyze_query(
+                query,
+                routing,
+                self.schema_index,
+                strategy=strategy,
+                config=self.config,
+                endpoint_catalog=self.endpoint_catalog,
+                normalized=normalization,
+                tokens=tokens,
+            )
             set_query_analysis_cache(analysis_key, analysis)
         broad = strategy == "LLM_FREE_AGENT_BASELINE"
         metadata = self.metadata_selector.select(
@@ -105,6 +119,19 @@ class AgentExecutor:
 
         planning_start = time.perf_counter()
         plan = self.planner.create_plan(query, routing, metadata, strategy, analysis=analysis)
+        ensemble_metadata = None
+        if strategy == "SQL_FIRST_API_VERIFY":
+            selection = select_plan_candidate(
+                query=query,
+                routing=routing,
+                base_plan=plan,
+                analysis=analysis,
+                sql_validator=self.sql_validator,
+                api_validator=self.api_validator,
+                strategy=strategy,
+            )
+            plan = selection.plan
+            ensemble_metadata = selection.compact()
         planning_time = time.perf_counter() - planning_start
         trajectory = TrajectoryLogger(
             query_id=qid,
@@ -116,7 +143,17 @@ class AgentExecutor:
         )
         trajectory.set_timing("preprocessing_time", preprocessing_time)
         trajectory.set_timing("planning_time", planning_time)
-        trajectory.add_step("route", routing.to_dict())
+        trajectory.add_step("route", compact_routing_decision(routing.to_dict()))
+        nlp_step = {
+            "rewrites": analysis.normalization_rewrites[:3],
+            "tokens": analysis.tokens.compact(),
+            "relevance": {
+                key: value[:2] if isinstance(value, list) else value
+                for key, value in analysis.relevance.compact(table_k=2, api_k=2).items()
+                if key in {"tables", "apis", "lookup_paths"}
+            },
+        }
+        trajectory.add_step("nlp", {key: value for key, value in nlp_step.items() if value not in ([], {}, "", None)})
         trajectory.add_step(
             "metadata",
             {
@@ -126,6 +163,8 @@ class AgentExecutor:
             },
         )
         trajectory.add_step("plan", plan.to_dict())
+        if ensemble_metadata:
+            trajectory.add_step("optimizer", {"plan_ensemble": ensemble_metadata})
 
         tool_results: list[dict[str, Any]] = []
         evidence_bus = EvidenceBus()
@@ -219,3 +258,16 @@ def repair_sql(sql: str, validation: ValidationResult, schema_index: SchemaIndex
         return f"SELECT * FROM \"{table}\" LIMIT 50"
     projection = ", ".join(f'"{column}"' for column in columns)
     return f"SELECT {projection} FROM \"{table}\" LIMIT 50"
+
+
+def compact_routing_decision(decision: dict[str, Any]) -> dict[str, Any]:
+    compact = dict(decision)
+    compact["candidate_apis"] = [
+        {
+            key: api[key]
+            for key in ["id", "method", "path"]
+            if key in api
+        }
+        for api in decision.get("candidate_apis", [])
+    ]
+    return compact

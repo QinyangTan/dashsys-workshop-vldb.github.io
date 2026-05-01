@@ -35,13 +35,21 @@ class MetadataSelector:
         if broad_context:
             selected_tables = list(self.schema_index.tables)[:30]
         sql_template = None if broad_context else (analysis.sql_template if analysis else find_sql_template(query, self.schema_index))
-        context_card = None if broad_context else context_card_for(analysis.lookup_path if analysis else None)
+        context_card = None if broad_context or self.config.disable_context_cards else context_card_for(analysis.lookup_path if analysis else None)
+        relevant_tables = [item.name for item in analysis.relevance.tables[: self.config.relevance_top_k_tables]] if analysis and not broad_context else []
         if sql_template is not None:
             selected_tables = [table for table in sql_template.required_tables if table in self.schema_index.tables]
         elif context_card:
             selected_tables = [table for table in context_card.get("tables", []) if table in self.schema_index.tables] or selected_tables
+        elif relevant_tables:
+            selected_tables = relevant_tables
         selected_columns = {
-            table: self._columns_for_strategy(table, broad_context, sql_template.required_columns.get(table) if sql_template else None)
+            table: self._columns_for_strategy(
+                table,
+                broad_context,
+                sql_template.required_columns.get(table) if sql_template else None,
+                [item.name for item in analysis.relevance.columns.get(table, [])] if analysis else None,
+            )
             for table in selected_tables
             if table in self.schema_index.tables
         }
@@ -59,6 +67,12 @@ class MetadataSelector:
                     matched.append(compact_endpoint(endpoint.to_dict()))
             if matched:
                 selected_apis = matched
+            elif analysis and analysis.relevance.apis:
+                selected_apis = [
+                    compact_endpoint(endpoint.to_dict())
+                    for item in analysis.relevance.apis[: self.config.relevance_top_k_apis]
+                    if (endpoint := self.endpoint_catalog.by_id(item.name)) is not None
+                ] or [compact_endpoint(api) for api in selected_apis]
             else:
                 selected_apis = [compact_endpoint(api) for api in selected_apis]
 
@@ -70,7 +84,7 @@ class MetadataSelector:
             "domain_type": routing.domain_type,
             "selected_tables": selected_tables,
             "selected_columns": selected_columns,
-            "selected_join_hints": self.schema_index.selected_join_hints(selected_tables)[: (30 if broad_context else self.config.max_join_hints)],
+            "selected_join_hints": self._select_join_hints(selected_tables, analysis, broad_context),
             "selected_apis": selected_apis,
             "known_example_patterns": self._load_relevant_gold_patterns(query, selected_apis, broad_context=broad_context),
             "constraints": self._constraints(broad_context),
@@ -78,9 +92,25 @@ class MetadataSelector:
         }
         if context_card:
             metadata["context_card"] = context_card
+        if analysis and not broad_context:
+            nlp = {
+                "rewrites": analysis.normalization_rewrites[:3],
+                "relevance": {
+                    key: value[:2] if isinstance(value, list) else value
+                    for key, value in analysis.relevance.compact(table_k=2, api_k=2).items()
+                    if key in {"lookup_paths"}
+                },
+            }
+            metadata["nlp_diagnostics"] = {key: value for key, value in nlp.items() if value not in ([], {}, "", None)}
         return metadata
 
-    def _columns_for_strategy(self, table: str, broad_context: bool, required_columns: list[str] | None = None) -> list[str]:
+    def _columns_for_strategy(
+        self,
+        table: str,
+        broad_context: bool,
+        required_columns: list[str] | None = None,
+        relevant_columns: list[str] | None = None,
+    ) -> list[str]:
         columns = self.schema_index.columns_for(table)
         if required_columns and self.config.compact_metadata:
             actual = []
@@ -91,6 +121,15 @@ class MetadataSelector:
                     actual.append(match)
             if actual:
                 return list(dict.fromkeys(actual))
+        if relevant_columns and self.config.compact_metadata:
+            actual = []
+            by_norm = {normalize_name(column): column for column in columns}
+            for column in relevant_columns:
+                match = by_norm.get(normalize_name(column))
+                if match:
+                    actual.append(match)
+            if actual:
+                return list(dict.fromkeys(actual))[:16]
         if broad_context:
             return columns[:80]
         important = [
@@ -103,6 +142,27 @@ class MetadataSelector:
         ]
         compact = important or columns[:16]
         return compact[:24]
+
+    def _select_join_hints(
+        self,
+        selected_tables: list[str],
+        analysis: QueryAnalysis | None,
+        broad_context: bool,
+    ) -> list[dict[str, Any]]:
+        hints = self.schema_index.selected_join_hints(selected_tables)
+        if broad_context:
+            return hints[:30]
+        if self.config.drop_one_join_hint and hints:
+            hints = hints[1:]
+        if analysis and analysis.relevance.join_hints:
+            by_name = {
+                f"{hint['left_table']}.{hint['left_column']}->{hint['right_table']}.{hint['right_column']}": hint
+                for hint in hints
+            }
+            ranked = [by_name[item.name] for item in analysis.relevance.join_hints if item.name in by_name]
+            if ranked:
+                return ranked[: self.config.max_join_hints]
+        return hints[: self.config.max_join_hints]
 
     def _load_relevant_gold_patterns(
         self, query: str, selected_apis: list[dict[str, Any]], *, broad_context: bool = False
@@ -118,10 +178,11 @@ class MetadataSelector:
         lowered = query.lower()
         relevant = []
         for pattern in patterns:
-            if pattern.get("path") in selected_paths or any(
-                word in json.dumps(pattern).lower() for word in lowered.split()[:8]
+            if pattern.get("path") in selected_paths or (
+                broad_context
+                and any(word in json.dumps(pattern).lower() for word in lowered.split()[:8])
             ):
-                relevant.append(pattern)
+                relevant.append(pattern if broad_context else compact_gold_pattern(pattern))
         return relevant[: (5 if broad_context else self.config.max_gold_patterns)]
 
     def _constraints(self, broad_context: bool) -> list[str]:
@@ -156,4 +217,12 @@ def compact_endpoint(endpoint: dict[str, Any]) -> dict[str, Any]:
         key: endpoint[key]
         for key in ["id", "method", "path"]
         if key in endpoint
+    }
+
+
+def compact_gold_pattern(pattern: dict[str, Any]) -> dict[str, Any]:
+    return {
+        key: pattern[key]
+        for key in ["method", "path", "params"]
+        if key in pattern
     }

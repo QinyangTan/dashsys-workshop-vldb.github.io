@@ -55,6 +55,7 @@ def generate_family_score_report(config: Config | None = None) -> dict[str, Any]
             "avg_estimated_tokens": avg(row.get("estimated_tokens", 0) for row in family_rows),
             "lowest_example_ids": [row.get("query_id") for row in lowest],
             "recommended_next_fix": recommend_family_fix(family, lowest),
+            "nlp_diagnostics": [nlp_diagnostics_for_row(row) for row in lowest],
         }
     report = {"strategy": "SQL_FIRST_API_VERIFY", "families": families}
     write_family_outputs(cfg, report)
@@ -78,6 +79,7 @@ def generate_pareto_report(config: Config | None = None) -> dict[str, Any]:
     template_better = []
     unnecessary_api = []
     sql_only_enough = []
+    selected_candidates = defaultdict(int)
     for query_id, strategies in by_query.items():
         sql_first = strategies.get("SQL_FIRST_API_VERIFY")
         template = strategies.get("TEMPLATE_FIRST")
@@ -88,6 +90,10 @@ def generate_pareto_report(config: Config | None = None) -> dict[str, Any]:
             unnecessary_api.append({"query_id": query_id, "api_calls": sql_first.get("api_call_count"), "query": sql_first.get("query")})
         if sql_first and sql_only and sql_only["correctness_score"] >= sql_first["correctness_score"] and sql_first.get("api_call_count", 0) > 0:
             sql_only_enough.append({"query_id": query_id, "sql_only_correctness": sql_only["correctness_score"], "sql_first_api_calls": sql_first.get("api_call_count")})
+        if sql_first:
+            selected = selected_ensemble_candidate(sql_first)
+            if selected:
+                selected_candidates[selected] += 1
     report = {
         "best_correctness_strategy": best_correctness,
         "best_final_score_strategy": best_final,
@@ -97,6 +103,7 @@ def generate_pareto_report(config: Config | None = None) -> dict[str, Any]:
         "template_first_correctness_gains_without_final_gain": template_better,
         "sql_first_unnecessary_api_candidates": unnecessary_api,
         "sql_only_enough_but_sql_first_called_api": sql_only_enough,
+        "selected_ensemble_candidates": dict(sorted(selected_candidates.items())),
     }
     write_pareto_outputs(cfg, report)
     return report
@@ -149,6 +156,19 @@ def write_family_outputs(config: Config, report: dict[str, Any]) -> None:
         lines.append(
             f"| {family} | {metrics['example_count']} | {metrics['avg_sql_score']:.4f} | {metrics['avg_api_score']:.4f} | {metrics['avg_answer_score']:.4f} | {metrics['avg_correctness']:.4f} | {metrics['avg_final_score']:.4f} | {metrics['avg_tool_calls']:.2f} | {metrics['avg_runtime']:.4f} | {metrics['avg_estimated_tokens']:.0f} | {', '.join(metrics['lowest_example_ids'])} | {metrics['recommended_next_fix']} |"
         )
+    lines.extend(["", "## NLP Diagnostics For Lowest Examples"])
+    for family, metrics in report["families"].items():
+        compact = [
+            {
+                "query_id": item.get("query_id"),
+                "rewrites": item.get("rewrites", [])[:2],
+                "tables": item.get("relevance", {}).get("tables", [])[:3],
+                "candidate": item.get("selected_candidate"),
+            }
+            for item in metrics.get("nlp_diagnostics", [])
+        ]
+        if compact:
+            lines.append(f"- {family}: {json.dumps(compact, sort_keys=True)}")
     lines.append("")
     md_path.write_text("\n".join(lines), encoding="utf-8")
 
@@ -176,5 +196,49 @@ def write_pareto_outputs(config: Config, report: dict[str, Any]) -> None:
     lines.extend(["", "## SQL_ONLY Enough But SQL_FIRST Called API"])
     for item in report["sql_only_enough_but_sql_first_called_api"][:20]:
         lines.append(f"- {item['query_id']}: SQL-only correctness {item['sql_only_correctness']}, SQL_FIRST API calls {item['sql_first_api_calls']}")
+    lines.extend(["", "## Selected Ensemble Candidates"])
+    for name, count in report.get("selected_ensemble_candidates", {}).items():
+        lines.append(f"- {name}: {count}")
     lines.append("")
     md_path.write_text("\n".join(lines), encoding="utf-8")
+
+
+def nlp_diagnostics_for_row(row: dict[str, Any]) -> dict[str, Any]:
+    metadata = load_json_from_output(row, "metadata.json")
+    trajectory = load_json_from_output(row, "trajectory.json")
+    nlp = metadata.get("nlp_diagnostics", {}) if isinstance(metadata, dict) else {}
+    return {
+        "query_id": row.get("query_id"),
+        "rewrites": nlp.get("rewrites", []),
+        "tokens": nlp.get("tokens", {}),
+        "relevance": nlp.get("relevance", {}),
+        "selected_candidate": extract_selected_candidate(trajectory),
+    }
+
+
+def selected_ensemble_candidate(row: dict[str, Any]) -> str | None:
+    return extract_selected_candidate(load_json_from_output(row, "trajectory.json"))
+
+
+def extract_selected_candidate(trajectory: dict[str, Any]) -> str | None:
+    if not isinstance(trajectory, dict):
+        return None
+    for step in trajectory.get("steps", []):
+        payload = step.get("payload") or step
+        ensemble = payload.get("plan_ensemble") if isinstance(payload, dict) else None
+        if isinstance(ensemble, dict) and ensemble.get("selected"):
+            return str(ensemble["selected"])
+    return None
+
+
+def load_json_from_output(row: dict[str, Any], filename: str) -> dict[str, Any]:
+    output_dir = row.get("output_dir")
+    if not output_dir:
+        return {}
+    path = Path(output_dir) / filename
+    if not path.exists():
+        return {}
+    try:
+        return json.loads(path.read_text(encoding="utf-8"))
+    except json.JSONDecodeError:
+        return {}
