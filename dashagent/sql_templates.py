@@ -78,14 +78,11 @@ def journey_campaign_template(query: str, lowered: str, schema: SchemaIndex) -> 
         return SQLTemplate("journey_campaign_list", sql, ["dim_campaign"], {"dim_campaign": required})
 
     if "published" in lowered or "publish" in lowered:
-        where = ""
-        if term:
-            where = f" WHERE C.{quote_ident(columns['NAME'])} = {sql_literal(term)}"
         sql = (
-            f"SELECT C.{quote_ident(columns['NAME'])} AS campaign_name, "
-            f"C.{quote_ident(columns['LASTDEPLOYEDTIME'])} AS published_time "
-            f"FROM {table} AS C"
-            f"{where}{limit}"
+            f"SELECT {quote_ident(columns['NAME'])} AS campaign_name, "
+            f"{quote_ident(columns['LASTDEPLOYEDTIME'])} AS published_time "
+            f"FROM {table}"
+            f"{limit}"
         )
         return SQLTemplate("journey_campaign_published", sql, ["dim_campaign"], {"dim_campaign": required})
 

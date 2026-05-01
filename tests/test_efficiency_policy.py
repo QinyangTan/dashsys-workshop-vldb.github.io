@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+from types import SimpleNamespace
 
 from dashagent.api_templates import find_api_templates
 from dashagent.evidence_policy import API_OPTIONAL, API_SKIP, decide_api_need
@@ -67,6 +68,37 @@ def test_live_response_parser_for_merge_policy():
     assert evidence["important_fields"]["default_policy_name"] == "Default Timebased"
 
 
+def test_live_response_parser_handles_embedded_and_observability_shapes():
+    embedded_payload = {
+        "ok": True,
+        "result_preview": {
+            "_embedded": {
+                "items": [
+                    {"id": "seg1", "name": "Person: Birthday Today 001", "updateTime": "2026-03-31T00:00:00Z"}
+                ]
+            },
+            "_page": {"totalElements": 13},
+        },
+    }
+    segment_evidence = normalize_api_evidence("recent_segment_definitions", embedded_payload)
+    assert segment_evidence["count"] == 13
+    assert segment_evidence["important_fields"]["name"] == "Person: Birthday Today 001"
+
+    metric_payload = {
+        "ok": True,
+        "result_preview": {
+            "series": [
+                {
+                    "name": "timeseries.ingestion.dataset.recordsuccess.count",
+                    "points": [{"timestamp": "2026-03-31T00:00:00Z", "value": 2701}],
+                }
+            ]
+        },
+    }
+    metric_evidence = normalize_api_evidence("observability_metrics", metric_payload)
+    assert metric_evidence["important_fields"]["values"][0]["value"] == 2701
+
+
 def test_compact_preview_keeps_evidence_small_and_useful():
     payload = {
         "items": [{"id": str(i), "name": f"item {i}", "extra": "x" * 100} for i in range(10)],
@@ -78,3 +110,18 @@ def test_compact_preview_keeps_evidence_small_and_useful():
     assert len(text) < 650
     assert "count" in text
     assert "item 0" in text
+
+
+def test_safe_sql_only_families_skip_api(tiny_project):
+    template = SimpleNamespace(family="segment_property_fields")
+    router = QueryRouter(["dim_blueprint"], executor_catalog_for_test(tiny_project))
+    query = "show me the field for Person: Birthday Today 001"
+    routing = router.route(query)
+    decision = decide_api_need(
+        query,
+        routing,
+        template,
+        [],
+        "SQL_FIRST_API_VERIFY",
+    )
+    assert decision.mode == API_SKIP

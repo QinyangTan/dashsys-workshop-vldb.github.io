@@ -149,6 +149,56 @@ def test_answer_templates_for_weak_domains():
     assert "default merge policy" in merge_answer
     assert "live api verification was not executed" in merge_answer.lower()
 
+    segment_destination_answer = synthesize_answer(
+        "List all segment audiences connected to the destination named 'SMS Opt-In'.",
+        [
+            {"type": "sql", "payload": {"ok": True, "rows": [], "row_count": 0}},
+            {
+                "type": "api",
+                "step": {"family": "audience_by_destination_id"},
+                "payload": {"ok": False, "dry_run": True},
+            },
+        ],
+    )
+    assert "no data available" in segment_destination_answer
+    assert "SQL query returned zero rows" in segment_destination_answer
+
+    observability_answer = synthesize_answer(
+        "What are the daily 'timeseries.ingestion.dataset.recordsuccess.count' values between '2026-03-15' and '2026-03-31'?",
+        [
+            {
+                "type": "api",
+                "step": {"family": "observability_metrics"},
+                "payload": {"ok": False, "dry_run": True},
+            }
+        ],
+    )
+    assert "timeseries.ingestion.dataset.recordsuccess.count" in observability_answer
+    assert "2026-03-15" in observability_answer
+
+    live_observability_answer = synthesize_answer(
+        "What are the daily 'timeseries.ingestion.dataset.recordsuccess.count' values between '2026-03-15' and '2026-03-31'?",
+        [
+            {
+                "type": "api",
+                "step": {"family": "observability_metrics"},
+                "payload": {
+                    "ok": True,
+                    "result_preview": {
+                        "series": [
+                            {
+                                "name": "timeseries.ingestion.dataset.recordsuccess.count",
+                                "points": [{"timestamp": "2026-03-31T00:00:00Z", "value": 2701}],
+                            }
+                        ]
+                    },
+                },
+            }
+        ],
+    )
+    assert "2026-03-31" in live_observability_answer
+    assert "2701" in live_observability_answer
+
 
 def test_hidden_output_packager_helpers_and_no_secret_scan(tmp_path: Path):
     outputs = tmp_path / "outputs"

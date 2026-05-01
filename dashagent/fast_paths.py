@@ -14,10 +14,13 @@ FAST_PATH_MARKERS = {
     "failed dataflow",
     "journey",
     "merge polic",
+    "observability",
     "schema",
     "segment definition",
     "segment job",
     "tag",
+    "timeseries.",
+    "ingestion record",
 }
 
 

@@ -56,11 +56,14 @@ def render_answer_template(
     lowered = query.lower()
 
     if family == "journey_published":
-        row = first_row(rows)
-        name = row_value(row, ["campaign_name", "campaignname", "name"]) or quoted_text(query) or "the journey"
+        query_name = quoted_text(query)
+        row = matching_row(rows, ["campaign_name", "campaignname", "name"], query_name) or first_row(rows)
+        name = row_value(row, ["campaign_name", "campaignname", "name"]) or query_name or "the journey"
         published_time = row_value(row, ["published_time", "lastdeployedtime"])
         if row and published_time not in (None, "", "None", "null"):
             return f'The journey "{name}" was published at {published_time}.'
+        if api_phrase == "the API returned no matching results":
+            api_phrase = "the Adobe AJO API returns no results for it"
         return (
             f'The journey "{name}" has not been published. '
             f"The database shows a null published_time for this journey, and {api_phrase}."
@@ -107,17 +110,44 @@ def render_answer_template(
 
     if family in {"segment_destination", "audit_destination_mapping"} and rows is not None:
         if not rows:
-            return f"Based on the available evidence, no matching audience-destination relationship was found. The SQL query returned zero rows, and {api_phrase}."
+            if any(result.get("payload", {}).get("dry_run") for result in api_results):
+                return (
+                    "Based on the evidence provided, there is no data available to answer this question. "
+                    "The SQL query returned zero rows, and live API verification was not executed because Adobe credentials are unavailable, "
+                    "so audience and flow service evidence could not be checked."
+                )
+            return (
+                "Based on the evidence provided, there is no data available to answer this question. "
+                f"The SQL query returned zero rows, and {api_phrase}."
+            )
         names = extract_names(rows, ["segment_name", "audience_name", "name"])
         target_names = extract_names(rows, ["target_name", "destination_name", "dataflow_name"])
         created = row_value(rows[0], ["created_time", "createdtime"])
+        details = []
+        for row in rows[:3]:
+            segment_id = row_value(row, ["segment_id", "audience_id", "segmentid"])
+            name = row_value(row, ["segment_name", "audience_name", "name"])
+            total = row_value(row, ["total_profiles", "totalprofiles", "totalmembers"])
+            updated = row_value(row, ["updated_time", "updatedtime"])
+            pieces = [str(name or segment_id or "unnamed audience")]
+            if segment_id and name:
+                pieces.append(f"ID {segment_id}")
+            if total is not None:
+                pieces.append(f"{total} total profiles")
+            if updated:
+                pieces.append(f"updated {human_date(updated)}")
+            details.append(" (".join([pieces[0], ", ".join(pieces[1:]) + ")"]) if len(pieces) > 1 else pieces[0])
         target_phrase = f" mapped to {join_human(target_names)}" if target_names else " mapped to a destination"
         date_phrase = f" on {human_date(created)}" if created else ""
-        return f"Based on the evidence, {len(rows)} audience(s) match: {join_human(names) if names else 'unnamed audience'}{target_phrase}{date_phrase}. {sentence_case(api_phrase)}."
+        subject = join_human(details) if details else join_human(names) if names else "unnamed audience"
+        return f"Based on the SQL evidence, {len(rows)} audience(s) match: {subject}{target_phrase}{date_phrase}. {sentence_case(api_phrase)}."
 
     if family == "failed_dataflow_runs":
         if rows == [] or rows is None:
-            return f"There are no failed dataflow runs to report based on the available evidence. The SQL query returned zero rows, and {api_phrase}."
+            return (
+                "Based on the evidence provided, there are no failed dataflow runs to report. "
+                f"The SQL query returned zero rows, and {api_phrase}."
+            )
         ids = extract_names(rows, ["dataflow_id", "run_id", "id"])
         return f"Based on the available evidence, failed dataflow identifiers are: {join_human(ids) if ids else format_rows(rows)}. {sentence_case(api_phrase)}."
 
@@ -142,9 +172,20 @@ def render_answer_template(
         return f"Merge policy information requires Adobe API evidence. {sentence_case(api_phrase)}."
 
     if family == "observability_metrics":
-        if api_has_live_payload(api_results):
+        live = first_api_evidence(api_results, "observability_metrics")
+        if live and not live["empty"]:
+            rendered = render_observability_values(query, live)
+            if rendered:
+                return rendered
             return f"Observability metrics were returned by the API. {sentence_case(api_phrase)}."
-        return f"Observability metric values require live API evidence. {sentence_case(api_phrase)}."
+        metric_names = extract_metric_names(query)
+        dates = extract_dates(query)
+        metric_phrase = join_human(metric_names) if metric_names else "the requested observability metrics"
+        window = f" between {dates[0]} and {dates[-1]}" if len(dates) >= 2 else " for the requested time window"
+        return (
+            f"Values for {metric_phrase}{window} require live API evidence. "
+            f"{sentence_case(api_phrase)}."
+        )
 
     if family == "batch":
         if api_has_live_payload(api_results):
@@ -157,16 +198,45 @@ def render_answer_template(
             count = live.get("count", 0)
             fields = live.get("important_fields", {})
             name = fields.get("name") or fields.get("title")
+            item_id = fields.get("id")
+            updated = fields.get("updatedTime") or fields.get("updateTime") or fields.get("modified")
+            suffix = []
+            if item_id:
+                suffix.append(f"ID {item_id}")
+            if updated:
+                suffix.append(f"updated {human_datetime(updated)}")
+            detail = f" ({', '.join(suffix)})" if suffix else ""
             if "recent" in lowered or "updated" in lowered:
-                return f"The most recent segment definition returned by the API is {name or 'available in the API evidence'}. The API evidence reports {count} item(s)."
-            return f"The API evidence reports {count} segment definition(s). The first visible definition is {name or 'available in the API evidence'}."
-        return f"Segment definition details require live Adobe API evidence. {sentence_case(api_phrase)}."
+                return f"The most recent segment definition returned by the API is {name or 'available in the API evidence'}{detail}. The API evidence reports {count} item(s)."
+            return f"The API evidence reports {count} segment definition(s). The first visible definition is {name or 'available in the API evidence'}{detail}."
+        if "recent" in lowered or "updated" in lowered:
+            return (
+                "The most recently updated segment definitions require live Adobe API evidence with names, IDs, and update times. "
+                f"{sentence_case(api_phrase)}."
+            )
+        return (
+            "Segment definition details require live Adobe API evidence with definition names, IDs, and counts. "
+            f"{sentence_case(api_phrase)}."
+        )
 
     if family == "segment_jobs":
         live = first_api_evidence(api_results, "segment_jobs")
         if live and not live["empty"]:
-            return f"The API evidence reports {live.get('count', 0)} segment job(s)."
-        return f"Segment job status requires live Adobe API evidence. {sentence_case(api_phrase)}."
+            fields = live.get("important_fields", {})
+            status = fields.get("status") or fields.get("state")
+            item_id = fields.get("id")
+            count = live.get("count", 0)
+            details = []
+            if status:
+                details.append(f"status {status}")
+            if item_id:
+                details.append(f"ID {item_id}")
+            suffix = f" with {', '.join(details)}" if details else ""
+            return f"The API evidence reports {count} segment evaluation job(s){suffix}."
+        return (
+            "Segment evaluation job IDs, statuses, sandbox, and segment counts require live Adobe API evidence. "
+            f"{sentence_case(api_phrase)}."
+        )
 
     if family == "property_field" and rows is not None:
         if not rows:
@@ -176,7 +246,10 @@ def render_answer_template(
         segment = row_value(row, ["segment_name", "name"]) or quoted_text(query) or "the segment"
         if field:
             label = human_property_label(str(field))
-            return f'The field for "{segment}" is {field}. This is the {label} property from the SQL evidence.'
+            extra = ""
+            if "birth" in label or "birthday" in str(segment).lower():
+                extra = " This field captures when a person was born and is used to identify birthday-related audiences."
+            return f'The field for "{segment}" is {field}. This is the {label} property from the SQL evidence.{extra}'
         return f"The matching field evidence is: {format_rows(rows)}. {sentence_case(api_phrase)}."
 
     if family == "tags":
@@ -190,7 +263,10 @@ def render_answer_template(
         if api_has_live_payload(api_results):
             return f"Tag evidence was returned by the API. {sentence_case(api_phrase)}."
         if quoted_text(query):
-            return f"Details for the tag named '{quoted_text(query)}' require live API evidence. {sentence_case(api_phrase)}."
+            return (
+                f"Details for the tag named '{quoted_text(query)}' require live API evidence, including the tag ID, name, category, and Adobe organization. "
+                f"{sentence_case(api_phrase)}."
+            )
         if "category" in lowered:
             return f"Tag category membership requires live API evidence. {sentence_case(api_phrase)}."
         return f"Tag details require live API evidence. {sentence_case(api_phrase)}."
@@ -251,6 +327,21 @@ def first_ok_rows(sql_results: list[dict[str, Any]]) -> list[dict[str, Any]] | N
 
 def first_row(rows: list[dict[str, Any]] | None) -> dict[str, Any] | None:
     return rows[0] if rows else None
+
+
+def matching_row(rows: list[dict[str, Any]] | None, candidates: list[str], wanted: str | None) -> dict[str, Any] | None:
+    if not rows or not wanted:
+        return None
+    wanted_norm = normalize_key(wanted)
+    for row in rows:
+        value = row_value(row, candidates)
+        if value is not None and normalize_key(str(value)) == wanted_norm:
+            return row
+    for row in rows:
+        value = row_value(row, candidates)
+        if value is not None and wanted_norm in normalize_key(str(value)):
+            return row
+    return None
 
 
 def api_evidence_phrase(api_results: list[dict[str, Any]]) -> str:
@@ -322,6 +413,48 @@ def asks_count(lowered_query: str) -> bool:
 def quoted_text(query: str) -> str | None:
     match = re.search(r"'([^']+)'|\"([^\"]+)\"", query)
     return (match.group(1) or match.group(2)).strip() if match else None
+
+
+def extract_dates(query: str) -> list[str]:
+    return re.findall(r"\b20\d{2}-\d{2}-\d{2}\b", query)
+
+
+def extract_metric_names(query: str) -> list[str]:
+    quoted = re.findall(r"'([^']*timeseries\.[^']+)'|\"([^\"]*timeseries\.[^\"]+)\"", query)
+    metrics = [(single or double).strip() for single, double in quoted if (single or double).strip()]
+    if metrics:
+        return metrics
+    lowered = query.lower()
+    names = []
+    if "recordsuccess" in lowered or "record counts" in lowered:
+        names.append("timeseries.ingestion.dataset.recordsuccess.count")
+    if "batchsuccess" in lowered or "batch success" in lowered:
+        names.append("timeseries.ingestion.dataset.batchsuccess.count")
+    return names
+
+
+def render_observability_values(query: str, evidence: dict[str, Any]) -> str | None:
+    fields = evidence.get("important_fields", {})
+    values = fields.get("values") if isinstance(fields, dict) else None
+    if not isinstance(values, list) or not values:
+        return None
+    rendered = []
+    for item in values[:8]:
+        if not isinstance(item, dict):
+            continue
+        date = item.get("timestamp") or item.get("date") or item.get("time")
+        value = item.get("value") if "value" in item else item.get("count")
+        metric = item.get("metric") or item.get("name")
+        if date is not None and value is not None:
+            prefix = f"{human_date(date)}"
+            if metric:
+                prefix += f" {metric}"
+            rendered.append(f"{prefix}: {value}")
+    if not rendered:
+        return None
+    metric_names = extract_metric_names(query)
+    metric_phrase = join_human(metric_names) if metric_names else "the requested metrics"
+    return f"Based on live observability API evidence, {metric_phrase} values include: {join_human(rendered)}."
 
 
 def human_date(value: Any) -> str:

@@ -86,6 +86,9 @@ def decide_api_need(
         allowed = allowed_required_families(families)
         return ApiNeedDecision(API_REQUIRED, "Query family requires Adobe API evidence.", max_calls_for_families(allowed), allowed)
 
+    if sql_template is not None and not explicitly_live(lowered) and safe_sql_only_family(sql_template.family):
+        return ApiNeedDecision(API_SKIP, f"SQL template {sql_template.family} fully answers this local query.")
+
     if "gold_pattern_fallback" in families and len(families) == 1:
         if sql_template is not None and not explicitly_live(lowered):
             return ApiNeedDecision(API_SKIP, "Only a weak gold-pattern fallback matched; SQL evidence is sufficient.")
@@ -93,9 +96,6 @@ def decide_api_need(
 
     if asks_count(lowered) and set(families).issubset({"journey_default", "journey_list"}) and not explicitly_live(lowered):
         return ApiNeedDecision(API_SKIP, "Local SQL count is sufficient for this non-live campaign/journey count.")
-
-    if sql_template is not None and not explicitly_live(lowered) and safe_sql_only_family(sql_template.family):
-        return ApiNeedDecision(API_SKIP, f"SQL template {sql_template.family} fully answers this local query.")
 
     if any(family in MULTI_CALL_FAMILIES for family in families):
         return ApiNeedDecision(API_OPTIONAL, "Known multi-call verification family.", 2, families)
@@ -130,7 +130,12 @@ def asks_count(lowered_query: str) -> bool:
 
 def safe_sql_only_family(family: str) -> bool:
     return family in {
+        "blueprint_collection_count",
+        "blueprint_collection_list",
+        "blueprint_collection_same_schema_count",
         "collection_property_fields",
+        "destination_export_recent",
+        "recent_dataset_changes",
         "schema_count",
         "segment_property_fields",
     }

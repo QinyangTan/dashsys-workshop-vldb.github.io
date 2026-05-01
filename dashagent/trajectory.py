@@ -85,7 +85,9 @@ def structural_preview(obj: Any) -> Any:
         for key, value in obj.items():
             if key in compact:
                 continue
-            if len(compact) >= 12:
+            if key in {"original_sql", "sql"} and ("row_count" in obj or "rows" in obj):
+                continue
+            if len(compact) >= 10:
                 compact["truncated_fields"] = max(0, len(obj) - len(compact))
                 break
             compact[key] = structural_preview(value)
