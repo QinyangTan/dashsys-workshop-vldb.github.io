@@ -99,7 +99,8 @@ def render_answer_template(
         sandbox_note = ""
         if "sandbox" in lowered:
             sandbox_note = " Live API evidence is needed to validate the requested sandbox."
-        return f'Based on the evidence provided, {len(rows)} destination(s) were found. The most recent is "{dataflow}" ({target} target){suffix}.{sandbox_note} {sentence_case(api_phrase)}.'
+        destination_phrase = "1 destination was" if len(rows) == 1 else f"{len(rows)} destinations were"
+        return f'Based on the evidence provided, {destination_phrase} found. The most recent is "{dataflow}" ({target} target){suffix}.{sandbox_note} {sentence_case(api_phrase)}.'
 
     if family == "audit_entity_created" and rows is not None:
         actor = quoted_text(query) or "download"
@@ -159,14 +160,22 @@ def render_answer_template(
     if family == "merge_policy":
         live = first_api_evidence(api_results, "merge_policies")
         if live and not live["empty"]:
+            count = live.get("count", 0)
             fields = live.get("important_fields", {})
             name = fields.get("default_policy_name") or fields.get("name") or fields.get("title")
+            if asks_count(lowered):
+                return f"The API evidence reports {count} merge polic{'y' if count == 1 else 'ies'}."
+            if "list" in lowered:
+                names = extract_names(live.get("items", []), ["name", "title", "id"])
+                return f"The merge policies returned by the API are: {join_human(names[:10]) if names else name or 'available in the API evidence'}."
             if name:
                 return f"The default merge policy is {name}. This is based on live merge-policy API evidence."
         if rows:
             names = extract_names(rows, ["name", "policy_name", "merge_policy_name"])
             if names:
                 return f"The matching merge policy evidence identifies: {join_human(names)}. {sentence_case(api_phrase)}."
+        if asks_count(lowered):
+            return f"The merge policy count cannot be determined from the available evidence. {sentence_case(api_phrase)}."
         if "default" in lowered:
             return f"The default merge policy requires live Adobe API evidence. {sentence_case(api_phrase)}."
         return f"Merge policy information requires Adobe API evidence. {sentence_case(api_phrase)}."
@@ -188,9 +197,33 @@ def render_answer_template(
         )
 
     if family == "batch":
-        if api_has_live_payload(api_results):
-            return f"Batch evidence was returned by the API. {sentence_case(api_phrase)}."
-        return f"Batch details and files require live API evidence. {sentence_case(api_phrase)}."
+        live = first_api_evidence(api_results, "batch")
+        if live and not live["empty"]:
+            items = live.get("items", [])
+            count = live.get("count", len(items))
+            fields = live.get("important_fields", {})
+            if asks_count(lowered):
+                status = quoted_text(query) or row_value(fields, ["status", "state"])
+                suffix = f" with status '{status}'" if status else ""
+                return f"The API evidence reports {count} batch{'es' if count != 1 else ''}{suffix}."
+            if "file" in lowered:
+                names = extract_names(items, ["fileName", "filename", "id", "batchId"])
+                return f"The available batch file(s) are: {join_human(names[:10]) if names else format_rows(items)}."
+            batch_id = row_value(fields, ["batchId", "id", "_id"]) or quoted_text(query)
+            status = row_value(fields, ["status", "state"])
+            dataset = row_value(fields, ["datasetId", "dataset", "dataSetId"])
+            pieces = []
+            if status:
+                pieces.append(f"status/state {status}")
+            if dataset:
+                pieces.append(f"dataset {dataset}")
+            detail = f" with {', '.join(pieces)}" if pieces else ""
+            return f"The API evidence reports batch {batch_id or 'details'}{detail}."
+        if asks_count(lowered):
+            return f"The batch count requires live API evidence. {sentence_case(api_phrase)}."
+        if "file" in lowered:
+            return f"Batch file details require live API evidence. {sentence_case(api_phrase)}."
+        return f"Batch details require live API evidence. {sentence_case(api_phrase)}."
 
     if family == "segment_definitions":
         live = first_api_evidence(api_results, "segment_definition")
@@ -214,6 +247,11 @@ def render_answer_template(
                 "The most recently updated segment definitions require live Adobe API evidence with names, IDs, and update times. "
                 f"{sentence_case(api_phrase)}."
             )
+        if "list" in lowered or "all segment definitions" in lowered:
+            return (
+                "The requested segment definition list requires live Adobe API evidence with definition names, IDs, and pagination counts. "
+                f"{sentence_case(api_phrase)}."
+            )
         return (
             "Segment definition details require live Adobe API evidence with definition names, IDs, and counts. "
             f"{sentence_case(api_phrase)}."
@@ -233,6 +271,11 @@ def render_answer_template(
                 details.append(f"ID {item_id}")
             suffix = f" with {', '.join(details)}" if details else ""
             return f"The API evidence reports {count} segment evaluation job(s){suffix}."
+        if asks_count(lowered):
+            return (
+                "The segment evaluation job count requires live Adobe API evidence. "
+                f"{sentence_case(api_phrase)}."
+            )
         return (
             "Segment evaluation job IDs, statuses, sandbox, and segment counts require live Adobe API evidence. "
             f"{sentence_case(api_phrase)}."
@@ -255,13 +298,24 @@ def render_answer_template(
     if family == "tags":
         live = first_api_evidence(api_results, "tag")
         if live and not live["empty"]:
+            count = live.get("count", 0)
+            items = live.get("items", [])
             fields = live.get("important_fields", {})
             name = fields.get("name") or fields.get("title")
             tag_id = fields.get("id")
+            if asks_count(lowered):
+                return f"The API evidence reports {count} tag(s)."
+            if "list" in lowered or "all tags" in lowered:
+                names = extract_names(items, ["name", "title", "id"])
+                return f"The tag(s) returned by the API are: {join_human(names[:10]) if names else name or 'available in the API evidence'}."
             suffix = f" (ID: {tag_id})" if tag_id else ""
             return f"The tag API returned {name or 'a matching tag'}{suffix}."
         if api_has_live_payload(api_results):
             return f"Tag evidence was returned by the API. {sentence_case(api_phrase)}."
+        if asks_count(lowered):
+            return f"The tag count cannot be determined from the available evidence. {sentence_case(api_phrase)}."
+        if "list" in lowered or "all tags" in lowered:
+            return f"The requested tag list requires live API evidence. {sentence_case(api_phrase)}."
         if quoted_text(query):
             return (
                 f"Details for the tag named '{quoted_text(query)}' require live API evidence, including the tag ID, name, category, and Adobe organization. "

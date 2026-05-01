@@ -14,24 +14,24 @@ def normalize_api_evidence(family: str, payload: dict[str, Any]) -> dict[str, An
 
 def parse_family_response(family: str, raw: Any) -> dict[str, Any]:
     if family in {"journey_by_name", "journey_default", "journey_inactive", "journey_list"}:
-        return parse_items(raw, ["items", "journeys", "results", "data", "children", "entities"])
+        return parse_items(raw, ["items", "journeys", "results", "data", "children", "entities", "resources"])
     if family == "merge_policies":
         return parse_merge_policies(raw)
     if family in {"segment_definition_count", "segment_definition_list", "recent_segment_definitions"}:
-        return parse_items(raw, ["children", "items", "segments", "segmentDefinitions", "results", "entities", "data"])
+        return parse_items(raw, ["children", "items", "segments", "segmentDefinitions", "definitions", "results", "entities", "data", "resources"])
     if family == "segment_jobs":
-        return parse_items(raw, ["children", "items", "jobs", "segmentJobs", "results", "entities", "data"])
+        return parse_items(raw, ["children", "items", "jobs", "segmentJobs", "evaluations", "results", "entities", "data", "resources"])
     if family in {"tag_categories", "tag_count", "tag_details_by_id", "tag_list", "tags_by_uncategorized_category"}:
-        return parse_items(raw, ["children", "items", "tags", "tagCategories", "results", "entities", "data"])
+        return parse_items(raw, ["children", "items", "tags", "tagCategories", "categories", "results", "entities", "data", "resources"])
     if family in {"destination_flows", "failed_dataflow_flows", "recent_destination_flows"}:
-        return parse_items(raw, ["items", "flows", "runs", "results", "entities", "data"])
+        return parse_items(raw, ["items", "flows", "runs", "dataFlows", "results", "entities", "data", "resources"])
     if family in {"batch_details", "batch_export_files", "batch_list", "recent_batches", "successful_batch_count"}:
-        return parse_items(raw, ["children", "items", "batches", "files", "results", "entities", "data"])
+        return parse_items(raw, ["children", "items", "batches", "batch", "files", "results", "entities", "data", "resources"])
     if family == "observability_metrics":
         return parse_observability(raw)
     if family in {"audit_create_events", "audit_events", "dataset_audit_changes", "destination_audit_events"}:
-        return parse_items(raw, ["events", "items", "results", "entities", "data"])
-    return parse_items(raw, ["items", "children", "results", "entities", "data"])
+        return parse_items(raw, ["events", "items", "results", "entities", "data", "resources"])
+    return parse_items(raw, ["items", "children", "results", "entities", "data", "resources"])
 
 
 def parse_items(raw: Any, keys: list[str]) -> dict[str, Any]:
@@ -42,7 +42,7 @@ def parse_items(raw: Any, keys: list[str]) -> dict[str, Any]:
 
 
 def parse_merge_policies(raw: Any) -> dict[str, Any]:
-    evidence = parse_items(raw, ["children", "items", "mergePolicies", "policies", "results", "entities", "data"])
+    evidence = parse_items(raw, ["children", "items", "mergePolicies", "policies", "results", "entities", "data", "resources"])
     default = None
     for item in evidence["items"]:
         if truthy(item.get("isDefault")) or truthy(item.get("default")) or truthy(item.get("is_default")):
@@ -82,6 +82,12 @@ def extract_items(raw: Any, keys: list[str]) -> list[dict[str, Any]]:
                 nested = extract_items(value, keys)
                 if nested:
                     return nested
+        for key in ["entry", "record", "value", "payload"]:
+            value = raw.get(key)
+            if isinstance(value, dict):
+                nested = extract_items(value, keys)
+                if nested:
+                    return nested
         list_like_values = [value for value in raw.values() if isinstance(value, dict)]
         if list_like_values and len(list_like_values) == len(raw):
             return [value for value in list_like_values if isinstance(value, dict)]
@@ -92,13 +98,13 @@ def extract_items(raw: Any, keys: list[str]) -> list[dict[str, Any]]:
 
 def extract_count(raw: Any, items: list[dict[str, Any]]) -> int:
     if isinstance(raw, dict):
-        for key in ["total", "count", "totalCount", "total_count", "size", "totalElements"]:
+        for key in ["total", "count", "totalCount", "total_count", "size", "totalElements", "numElements", "resultsCount"]:
             value = raw.get(key)
             if isinstance(value, int):
                 return value
             if isinstance(value, str) and value.isdigit():
                 return int(value)
-        for key in ["_page", "page", "meta"]:
+        for key in ["_page", "page", "meta", "pagination"]:
             value = raw.get(key)
             if isinstance(value, dict):
                 nested = extract_count(value, items)

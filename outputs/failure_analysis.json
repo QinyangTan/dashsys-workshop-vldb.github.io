@@ -392,44 +392,6 @@
     "strategy": "LLM_FREE_AGENT_BASELINE"
   },
   {
-    "answer_score": 0.3048,
-    "api_score": 0.0,
-    "failure_category": "API_CALL_COUNT_MISMATCH",
-    "final_score": 0.4757,
-    "generated_answer": "Tag details require live API evidence. API evidence was not requested.",
-    "generated_api": [],
-    "generated_sql": "SELECT COUNT(*) AS count FROM \"br_campaign_segment\"",
-    "gold_answer": "Based on the evidence shown, there are at least 2 tags visible in the API response: \"AI-Generated\" and \"cool.\" However, the response appears to be truncated, so the complete tag count from the sandbox cannot be determined from this partial data.",
-    "gold_api": [
-      "GET /unifiedtags/tags?limit=20"
-    ],
-    "gold_sql": "",
-    "query": "How many tags exist in this sandbox?",
-    "query_id": "example_015",
-    "recommended_fix": "Emit the expected sequence of API calls or intentionally document why a call is skipped.",
-    "sql_score": 1.0,
-    "strategy": "SQL_ONLY_BASELINE"
-  },
-  {
-    "answer_score": 0.3308,
-    "api_score": 0.0,
-    "failure_category": "API_CALL_COUNT_MISMATCH",
-    "final_score": 0.48,
-    "generated_answer": "Tag details require live API evidence. API evidence was not requested.",
-    "generated_api": [],
-    "generated_sql": "SELECT \"SEGMENTID\", \"CAMPAIGNID\", \"LABELSSEGMENT\", \"LABELSCAMPAIGN\" FROM \"br_campaign_segment\"",
-    "gold_answer": "Based on the API response, the sandbox contains at least two tags: \"AI-Generated\" and \"cool\". The response appears to be truncated, so there may be additional tags not shown in the evidence.",
-    "gold_api": [
-      "GET /unifiedtags/tags?limit=25"
-    ],
-    "gold_sql": "",
-    "query": "List all tags in this sandbox.",
-    "query_id": "example_016",
-    "recommended_fix": "Emit the expected sequence of API calls or intentionally document why a call is skipped.",
-    "sql_score": 1.0,
-    "strategy": "SQL_ONLY_BASELINE"
-  },
-  {
     "answer_score": 0.3361,
     "api_score": 0.0,
     "failure_category": "API_CALL_COUNT_MISMATCH",
@@ -449,30 +411,11 @@
     "strategy": "SQL_ONLY_BASELINE"
   },
   {
-    "answer_score": 0.3415,
+    "answer_score": 0.3408,
     "api_score": 0.0,
     "failure_category": "API_CALL_COUNT_MISMATCH",
-    "final_score": 0.4867,
-    "generated_answer": "Merge policy information requires Adobe API evidence. API evidence was not requested.",
-    "generated_api": [],
-    "generated_sql": "SELECT COUNT(*) AS count FROM \"br_campaign_segment\"",
-    "gold_answer": "Based on the API response provided, there are at least **2 merge policies** configured in the external-benchmarking sandbox. The response shows a \"Default Timebased\" policy and a second policy, though the full response appears to be truncated.",
-    "gold_api": [
-      "GET /data/core/ups/config/mergePolicies?limit=10"
-    ],
-    "gold_sql": "",
-    "query": "How many merge policies are configured in this sandbox?",
-    "query_id": "example_020",
-    "recommended_fix": "Emit the expected sequence of API calls or intentionally document why a call is skipped.",
-    "sql_score": 1.0,
-    "strategy": "SQL_ONLY_BASELINE"
-  },
-  {
-    "answer_score": 0.3551,
-    "api_score": 0.0,
-    "failure_category": "API_CALL_COUNT_MISMATCH",
-    "final_score": 0.4872,
-    "generated_answer": "Batch details and files require live API evidence. API evidence was not requested.",
+    "final_score": 0.483,
+    "generated_answer": "Batch details require live API evidence. API evidence was not requested.",
     "generated_api": [],
     "generated_sql": "SELECT \"SEGMENTID\", \"CAMPAIGNID\", \"LABELSSEGMENT\", \"LABELSCAMPAIGN\" FROM \"br_campaign_segment\" LIMIT 50",
     "gold_answer": "Batch 01KP69BPA5ZKFB7HCDYPE4GN6F is currently inactive. It's a replay batch created by the Adobe Unified Profile export service for dataset 69c8d6c9b9966265fc8e4ea4, and it appears to have predecessor batches as part of its replay history.",
@@ -487,11 +430,11 @@
     "strategy": "SQL_ONLY_BASELINE"
   },
   {
-    "answer_score": 0.3624,
+    "answer_score": 0.3466,
     "api_score": 0.0,
     "failure_category": "API_CALL_COUNT_MISMATCH",
-    "final_score": 0.4894,
-    "generated_answer": "Batch details and files require live API evidence. API evidence was not requested.",
+    "final_score": 0.4847,
+    "generated_answer": "Batch details require live API evidence. API evidence was not requested.",
     "generated_api": [],
     "generated_sql": "SELECT \"SEGMENTID\", \"CAMPAIGNID\", \"LABELSSEGMENT\", \"LABELSCAMPAIGN\" FROM \"br_campaign_segment\" LIMIT 50",
     "gold_answer": "Based on the API response, there is one batch currently visible with a processing status. The batch is actively being ingested with some datasets completing successfully while others are still in progress.",
@@ -506,11 +449,30 @@
     "strategy": "SQL_ONLY_BASELINE"
   },
   {
-    "answer_score": 0.371,
+    "answer_score": 0.3353,
     "api_score": 0.0,
     "failure_category": "API_CALL_COUNT_MISMATCH",
-    "final_score": 0.4919,
-    "generated_answer": "Batch details and files require live API evidence. API evidence was not requested.",
+    "final_score": 0.4848,
+    "generated_answer": "The tag count cannot be determined from the available evidence. API evidence was not requested.",
+    "generated_api": [],
+    "generated_sql": "SELECT COUNT(*) AS count FROM \"br_campaign_segment\"",
+    "gold_answer": "Based on the evidence shown, there are at least 2 tags visible in the API response: \"AI-Generated\" and \"cool.\" However, the response appears to be truncated, so the complete tag count from the sandbox cannot be determined from this partial data.",
+    "gold_api": [
+      "GET /unifiedtags/tags?limit=20"
+    ],
+    "gold_sql": "",
+    "query": "How many tags exist in this sandbox?",
+    "query_id": "example_015",
+    "recommended_fix": "Emit the expected sequence of API calls or intentionally document why a call is skipped.",
+    "sql_score": 1.0,
+    "strategy": "SQL_ONLY_BASELINE"
+  },
+  {
+    "answer_score": 0.3611,
+    "api_score": 0.0,
+    "failure_category": "API_CALL_COUNT_MISMATCH",
+    "final_score": 0.4889,
+    "generated_answer": "Batch file details require live API evidence. API evidence was not requested.",
     "generated_api": [],
     "generated_sql": "SELECT \"SEGMENTID\", \"CAMPAIGNID\", \"LABELSSEGMENT\", \"LABELSCAMPAIGN\" FROM \"br_campaign_segment\" LIMIT 50",
     "gold_answer": "There is one file available for download in batch 69de8a0e0cc6102b5d11f01e (ID: 69de8a0e0cc6102b5d11f01e-DE1), but it is marked as invalid.",
@@ -544,20 +506,20 @@
     "strategy": "SQL_ONLY_BASELINE"
   },
   {
-    "answer_score": 0.3837,
+    "answer_score": 0.375,
     "api_score": 0.0,
     "failure_category": "API_CALL_COUNT_MISMATCH",
-    "final_score": 0.4944,
-    "generated_answer": "Segment definition details require live Adobe API evidence with definition names, IDs, and counts. API evidence was not requested.",
+    "final_score": 0.4933,
+    "generated_answer": "The requested tag list requires live API evidence. API evidence was not requested.",
     "generated_api": [],
-    "generated_sql": "SELECT \"SEGMENTID\", \"UPDATEDTIME\", \"ISACCOUNTSEGMENT\", \"NAME\", \"EVALUATIONCOMPLETEDTIME\", \"LABELSSEGMENT\", \"LIFECYCLESTATUS\", \"CREATEDTIME\" FROM \"dim_segment\"",
-    "gold_answer": "There are 13 segment definitions total across 2 pages. The visible segment from the first page is \"Person: Birthday Today 001,\" which targets all profiles whose birthday falls on a specific month/day. The response was paginated with 10 results per page, so additional segment definitions exist on the second page.",
+    "generated_sql": "SELECT \"SEGMENTID\", \"CAMPAIGNID\", \"LABELSSEGMENT\", \"LABELSCAMPAIGN\" FROM \"br_campaign_segment\"",
+    "gold_answer": "Based on the API response, the sandbox contains at least two tags: \"AI-Generated\" and \"cool\". The response appears to be truncated, so there may be additional tags not shown in the evidence.",
     "gold_api": [
-      "GET /data/core/ups/segment/definitions?limit=10"
+      "GET /unifiedtags/tags?limit=25"
     ],
     "gold_sql": "",
-    "query": "List all segment definitions.",
-    "query_id": "example_023",
+    "query": "List all tags in this sandbox.",
+    "query_id": "example_016",
     "recommended_fix": "Emit the expected sequence of API calls or intentionally document why a call is skipped.",
     "sql_score": 1.0,
     "strategy": "SQL_ONLY_BASELINE"
@@ -620,6 +582,25 @@
     "strategy": "SQL_ONLY_BASELINE"
   },
   {
+    "answer_score": 0.3919,
+    "api_score": 0.0,
+    "failure_category": "API_CALL_COUNT_MISMATCH",
+    "final_score": 0.5018,
+    "generated_answer": "The merge policy count cannot be determined from the available evidence. API evidence was not requested.",
+    "generated_api": [],
+    "generated_sql": "SELECT COUNT(*) AS count FROM \"br_campaign_segment\"",
+    "gold_answer": "Based on the API response provided, there are at least **2 merge policies** configured in the external-benchmarking sandbox. The response shows a \"Default Timebased\" policy and a second policy, though the full response appears to be truncated.",
+    "gold_api": [
+      "GET /data/core/ups/config/mergePolicies?limit=10"
+    ],
+    "gold_sql": "",
+    "query": "How many merge policies are configured in this sandbox?",
+    "query_id": "example_020",
+    "recommended_fix": "Emit the expected sequence of API calls or intentionally document why a call is skipped.",
+    "sql_score": 1.0,
+    "strategy": "SQL_ONLY_BASELINE"
+  },
+  {
     "answer_score": 0.3993,
     "api_score": 0.0,
     "failure_category": "API_CALL_COUNT_MISMATCH",
@@ -639,20 +620,20 @@
     "strategy": "SQL_ONLY_BASELINE"
   },
   {
-    "answer_score": 0.3975,
+    "answer_score": 0.4163,
     "api_score": 0.0,
     "failure_category": "API_CALL_COUNT_MISMATCH",
-    "final_score": 0.503,
-    "generated_answer": "Batch details and files require live API evidence. API evidence was not requested.",
+    "final_score": 0.5042,
+    "generated_answer": "The requested segment definition list requires live Adobe API evidence with definition names, IDs, and pagination counts. API evidence was not requested.",
     "generated_api": [],
-    "generated_sql": "SELECT COUNT(*) AS count FROM \"br_campaign_segment\" WHERE LOWER(CAST(\"LABELSSEGMENT\" AS VARCHAR)) LIKE LOWER('%success%')",
-    "gold_answer": "Based on the API response provided, there is **1 batch** with status 'success'.",
+    "generated_sql": "SELECT \"SEGMENTID\", \"UPDATEDTIME\", \"ISACCOUNTSEGMENT\", \"NAME\", \"EVALUATIONCOMPLETEDTIME\", \"LABELSSEGMENT\", \"LIFECYCLESTATUS\", \"CREATEDTIME\" FROM \"dim_segment\"",
+    "gold_answer": "There are 13 segment definitions total across 2 pages. The visible segment from the first page is \"Person: Birthday Today 001,\" which targets all profiles whose birthday falls on a specific month/day. The response was paginated with 10 results per page, so additional segment definitions exist on the second page.",
     "gold_api": [
-      "GET /data/foundation/catalog/batches?limit=10&status=success"
+      "GET /data/core/ups/segment/definitions?limit=10"
     ],
     "gold_sql": "",
-    "query": "How many batches have status 'success'?",
-    "query_id": "example_029",
+    "query": "List all segment definitions.",
+    "query_id": "example_023",
     "recommended_fix": "Emit the expected sequence of API calls or intentionally document why a call is skipped.",
     "sql_score": 1.0,
     "strategy": "SQL_ONLY_BASELINE"
@@ -704,11 +685,30 @@
     "strategy": "LLM_FREE_AGENT_BASELINE"
   },
   {
-    "answer_score": 0.43,
+    "answer_score": 0.4156,
     "api_score": 0.0,
     "failure_category": "API_CALL_COUNT_MISMATCH",
-    "final_score": 0.5118,
-    "generated_answer": "Segment evaluation job IDs, statuses, sandbox, and segment counts require live Adobe API evidence. API evidence was not requested.",
+    "final_score": 0.5084,
+    "generated_answer": "The batch count requires live API evidence. API evidence was not requested.",
+    "generated_api": [],
+    "generated_sql": "SELECT COUNT(*) AS count FROM \"br_campaign_segment\" WHERE LOWER(CAST(\"LABELSSEGMENT\" AS VARCHAR)) LIKE LOWER('%success%')",
+    "gold_answer": "Based on the API response provided, there is **1 batch** with status 'success'.",
+    "gold_api": [
+      "GET /data/foundation/catalog/batches?limit=10&status=success"
+    ],
+    "gold_sql": "",
+    "query": "How many batches have status 'success'?",
+    "query_id": "example_029",
+    "recommended_fix": "Emit the expected sequence of API calls or intentionally document why a call is skipped.",
+    "sql_score": 1.0,
+    "strategy": "SQL_ONLY_BASELINE"
+  },
+  {
+    "answer_score": 0.4218,
+    "api_score": 0.0,
+    "failure_category": "API_CALL_COUNT_MISMATCH",
+    "final_score": 0.5094,
+    "generated_answer": "The segment evaluation job count requires live Adobe API evidence. API evidence was not requested.",
     "generated_api": [],
     "generated_sql": "SELECT COUNT(*) AS count FROM \"dim_segment\"",
     "gold_answer": "Based on the API response, **zero segment jobs are currently processing**. The only visible job in the response has a status of \"SUCCEEDED,\" indicating it has already completed.",
@@ -1020,11 +1020,11 @@
     "strategy": "SQL_ONLY_BASELINE"
   },
   {
-    "answer_score": 0.6578,
+    "answer_score": 0.6677,
     "api_score": 0.0,
     "failure_category": "API_CALL_COUNT_MISMATCH",
-    "final_score": 0.5769,
-    "generated_answer": "Based on the evidence provided, 1 destination(s) were found. The most recent is \"Activate segments to S3 Feed\" (amazon-s3 target) with a modification timestamp of 2026-04-14 16:15:03.000 UTC. Live API evidence is needed to validate the requested sandbox. API evidence was not requested.",
+    "final_score": 0.5799,
+    "generated_answer": "Based on the evidence provided, 1 destination was found. The most recent is \"Activate segments to S3 Feed\" (amazon-s3 target) with a modification timestamp of 2026-04-14 16:15:03.000 UTC. Live API evidence is needed to validate the requested sandbox. API evidence was not requested.",
     "generated_api": [],
     "generated_sql": "SELECT D.\"TARGETID\" AS target_id, D.\"DATAFLOWNAME\" AS dataflow_name, D.\"NAME\" AS target_name, D.\"DESCRIPTION\", D.\"STATE\", D.\"CONNECTIONSPECID\" AS connection_spec_id, D.\"CREATEDTIME\" AS created_time, D.\"UPDATEDTIME\" AS modified, D.\"INTERVAL\", D.\"FREQUENCY\" FROM \"dim_target\" AS D ORDER BY D.\"UPDATEDTIME\" DESC LIMIT 50",
     "gold_answer": "Based on the evidence provided, only one destination was found: \"Activate segments to S3 Feed\" (amazon-s3 target) with a modification timestamp of 2026-04-14 at 16:15:03 UTC. However, this result is from the \"external-benchmarking\" sandbox rather than the \"b2b-prod\" sandbox you requested, and the API response is incomplete, so the full export cannot be validated from the evidence shown.",
@@ -1253,11 +1253,36 @@
     "strategy": "DETERMINISTIC_ROUTER_SELECTED_METADATA"
   },
   {
-    "answer_score": 0.3602,
+    "answer_score": 0.3823,
     "api_score": 1.0,
     "failure_category": "ANSWER_TOO_GENERIC",
-    "final_score": 0.7775,
-    "generated_answer": "Batch details and files require live API evidence. Live API verification was not executed because Adobe credentials are unavailable.",
+    "final_score": 0.7808,
+    "generated_answer": "Batch details require live API evidence. Live API verification was not executed because Adobe credentials are unavailable.",
+    "generated_api": [
+      {
+        "method": "GET",
+        "params": {},
+        "path": "/data/foundation/catalog/batches/01KP69BPA5ZKFB7HCDYPE4GN6F"
+      }
+    ],
+    "generated_sql": "SELECT \"SEGMENTID\", \"CAMPAIGNID\", \"LABELSSEGMENT\", \"LABELSCAMPAIGN\" FROM \"br_campaign_segment\" LIMIT 50",
+    "gold_answer": "Batch 01KP69BPA5ZKFB7HCDYPE4GN6F is currently inactive. It's a replay batch created by the Adobe Unified Profile export service for dataset 69c8d6c9b9966265fc8e4ea4, and it appears to have predecessor batches as part of its replay history.",
+    "gold_api": [
+      "GET /data/foundation/catalog/batches/01KP69BPA5ZKFB7HCDYPE4GN6F"
+    ],
+    "gold_sql": "",
+    "query": "Show the details of batch 01KP69BPA5ZKFB7HCDYPE4GN6F.",
+    "query_id": "example_030",
+    "recommended_fix": "Add a query-family answer template that names concrete SQL/API evidence.",
+    "sql_score": 1.0,
+    "strategy": "LLM_FREE_AGENT_BASELINE"
+  },
+  {
+    "answer_score": 0.3725,
+    "api_score": 1.0,
+    "failure_category": "ANSWER_TOO_GENERIC",
+    "final_score": 0.7812,
+    "generated_answer": "The batch count requires live API evidence. Live API verification was not executed because Adobe credentials are unavailable.",
     "generated_api": [
       {
         "method": "GET",
@@ -1281,11 +1306,11 @@
     "strategy": "LLM_FREE_AGENT_BASELINE"
   },
   {
-    "answer_score": 0.3602,
+    "answer_score": 0.3725,
     "api_score": 1.0,
     "failure_category": "ANSWER_TOO_GENERIC",
-    "final_score": 0.7776,
-    "generated_answer": "Batch details and files require live API evidence. Live API verification was not executed because Adobe credentials are unavailable.",
+    "final_score": 0.7813,
+    "generated_answer": "The batch count requires live API evidence. Live API verification was not executed because Adobe credentials are unavailable.",
     "generated_api": [
       {
         "method": "GET",
@@ -1307,31 +1332,6 @@
     "recommended_fix": "Add a query-family answer template that names concrete SQL/API evidence.",
     "sql_score": 1.0,
     "strategy": "TEMPLATE_FIRST"
-  },
-  {
-    "answer_score": 0.3827,
-    "api_score": 1.0,
-    "failure_category": "ANSWER_TOO_GENERIC",
-    "final_score": 0.7809,
-    "generated_answer": "Batch details and files require live API evidence. Live API verification was not executed because Adobe credentials are unavailable.",
-    "generated_api": [
-      {
-        "method": "GET",
-        "params": {},
-        "path": "/data/foundation/catalog/batches/01KP69BPA5ZKFB7HCDYPE4GN6F"
-      }
-    ],
-    "generated_sql": "SELECT \"SEGMENTID\", \"CAMPAIGNID\", \"LABELSSEGMENT\", \"LABELSCAMPAIGN\" FROM \"br_campaign_segment\" LIMIT 50",
-    "gold_answer": "Batch 01KP69BPA5ZKFB7HCDYPE4GN6F is currently inactive. It's a replay batch created by the Adobe Unified Profile export service for dataset 69c8d6c9b9966265fc8e4ea4, and it appears to have predecessor batches as part of its replay history.",
-    "gold_api": [
-      "GET /data/foundation/catalog/batches/01KP69BPA5ZKFB7HCDYPE4GN6F"
-    ],
-    "gold_sql": "",
-    "query": "Show the details of batch 01KP69BPA5ZKFB7HCDYPE4GN6F.",
-    "query_id": "example_030",
-    "recommended_fix": "Add a query-family answer template that names concrete SQL/API evidence.",
-    "sql_score": 1.0,
-    "strategy": "LLM_FREE_AGENT_BASELINE"
   },
   {
     "answer_score": 0.3912,
@@ -1386,87 +1386,6 @@
     "recommended_fix": "Run with Adobe credentials for live evidence, or make the answer explicitly describe dry-run limitations.",
     "sql_score": 0.9,
     "strategy": "SQL_FIRST_API_VERIFY"
-  },
-  {
-    "answer_score": 0.3757,
-    "api_score": 1.0,
-    "failure_category": "ANSWER_TOO_GENERIC",
-    "final_score": 0.7826,
-    "generated_answer": "Merge policy information requires Adobe API evidence. Live API verification was not executed because Adobe credentials are unavailable.",
-    "generated_api": [
-      {
-        "method": "GET",
-        "params": {
-          "limit": "10"
-        },
-        "path": "/data/core/ups/config/mergePolicies"
-      }
-    ],
-    "generated_sql": "SELECT COUNT(*) AS count FROM \"br_campaign_segment\"",
-    "gold_answer": "Based on the API response provided, there are at least **2 merge policies** configured in the external-benchmarking sandbox. The response shows a \"Default Timebased\" policy and a second policy, though the full response appears to be truncated.",
-    "gold_api": [
-      "GET /data/core/ups/config/mergePolicies?limit=10"
-    ],
-    "gold_sql": "",
-    "query": "How many merge policies are configured in this sandbox?",
-    "query_id": "example_020",
-    "recommended_fix": "Add a query-family answer template that names concrete SQL/API evidence.",
-    "sql_score": 1.0,
-    "strategy": "LLM_FREE_AGENT_BASELINE"
-  },
-  {
-    "answer_score": 0.3871,
-    "api_score": 1.0,
-    "failure_category": "ANSWER_TOO_GENERIC",
-    "final_score": 0.7828,
-    "generated_answer": "Tag details require live API evidence. Live API verification was not executed because Adobe credentials are unavailable.",
-    "generated_api": [
-      {
-        "method": "GET",
-        "params": {
-          "limit": "25"
-        },
-        "path": "/unifiedtags/tags"
-      }
-    ],
-    "generated_sql": "SELECT \"SEGMENTID\", \"CAMPAIGNID\", \"LABELSSEGMENT\", \"LABELSCAMPAIGN\" FROM \"br_campaign_segment\"",
-    "gold_answer": "Based on the API response, the sandbox contains at least two tags: \"AI-Generated\" and \"cool\". The response appears to be truncated, so there may be additional tags not shown in the evidence.",
-    "gold_api": [
-      "GET /unifiedtags/tags?limit=25"
-    ],
-    "gold_sql": "",
-    "query": "List all tags in this sandbox.",
-    "query_id": "example_016",
-    "recommended_fix": "Add a query-family answer template that names concrete SQL/API evidence.",
-    "sql_score": 1.0,
-    "strategy": "LLM_FREE_AGENT_BASELINE"
-  },
-  {
-    "answer_score": 0.3757,
-    "api_score": 1.0,
-    "failure_category": "ANSWER_TOO_GENERIC",
-    "final_score": 0.7828,
-    "generated_answer": "Merge policy information requires Adobe API evidence. Live API verification was not executed because Adobe credentials are unavailable.",
-    "generated_api": [
-      {
-        "method": "GET",
-        "params": {
-          "limit": "10"
-        },
-        "path": "/data/core/ups/config/mergePolicies"
-      }
-    ],
-    "generated_sql": "SELECT COUNT(*) AS count FROM \"br_campaign_segment\"",
-    "gold_answer": "Based on the API response provided, there are at least **2 merge policies** configured in the external-benchmarking sandbox. The response shows a \"Default Timebased\" policy and a second policy, though the full response appears to be truncated.",
-    "gold_api": [
-      "GET /data/core/ups/config/mergePolicies?limit=10"
-    ],
-    "gold_sql": "",
-    "query": "How many merge policies are configured in this sandbox?",
-    "query_id": "example_020",
-    "recommended_fix": "Add a query-family answer template that names concrete SQL/API evidence.",
-    "sql_score": 1.0,
-    "strategy": "TEMPLATE_FIRST"
   },
   {
     "answer_score": 0.5141,
@@ -1568,6 +1487,31 @@
     "strategy": "LLM_FREE_AGENT_BASELINE"
   },
   {
+    "answer_score": 0.3985,
+    "api_score": 1.0,
+    "failure_category": "ANSWER_TOO_GENERIC",
+    "final_score": 0.7855,
+    "generated_answer": "Batch file details require live API evidence. Live API verification was not executed because Adobe credentials are unavailable.",
+    "generated_api": [
+      {
+        "method": "GET",
+        "params": {},
+        "path": "/data/foundation/export/batches/69de8a0e0cc6102b5d11f01e/files"
+      }
+    ],
+    "generated_sql": "SELECT \"SEGMENTID\", \"CAMPAIGNID\", \"LABELSSEGMENT\", \"LABELSCAMPAIGN\" FROM \"br_campaign_segment\" LIMIT 50",
+    "gold_answer": "There is one file available for download in batch 69de8a0e0cc6102b5d11f01e (ID: 69de8a0e0cc6102b5d11f01e-DE1), but it is marked as invalid.",
+    "gold_api": [
+      "GET /data/foundation/export/batches/69de8a0e0cc6102b5d11f01e/files"
+    ],
+    "gold_sql": "",
+    "query": "Which files are available for download in batch 69de8a0e0cc6102b5d11f01e?",
+    "query_id": "example_031",
+    "recommended_fix": "Add a query-family answer template that names concrete SQL/API evidence.",
+    "sql_score": 1.0,
+    "strategy": "LLM_FREE_AGENT_BASELINE"
+  },
+  {
     "answer_score": 0.405,
     "api_score": 1.0,
     "failure_category": "ANSWER_TOO_GENERIC",
@@ -1594,60 +1538,6 @@
     "recommended_fix": "Add a query-family answer template that names concrete SQL/API evidence.",
     "sql_score": 1.0,
     "strategy": "LLM_FREE_AGENT_BASELINE"
-  },
-  {
-    "answer_score": 0.389,
-    "api_score": 1.0,
-    "failure_category": "ANSWER_TOO_GENERIC",
-    "final_score": 0.7869,
-    "generated_answer": "Tag details require live API evidence. Live API verification was not executed because Adobe credentials are unavailable.",
-    "generated_api": [
-      {
-        "method": "GET",
-        "params": {
-          "limit": "20"
-        },
-        "path": "/unifiedtags/tags"
-      }
-    ],
-    "generated_sql": "SELECT COUNT(*) AS count FROM \"br_campaign_segment\"",
-    "gold_answer": "Based on the evidence shown, there are at least 2 tags visible in the API response: \"AI-Generated\" and \"cool.\" However, the response appears to be truncated, so the complete tag count from the sandbox cannot be determined from this partial data.",
-    "gold_api": [
-      "GET /unifiedtags/tags?limit=20"
-    ],
-    "gold_sql": "",
-    "query": "How many tags exist in this sandbox?",
-    "query_id": "example_015",
-    "recommended_fix": "Add a query-family answer template that names concrete SQL/API evidence.",
-    "sql_score": 1.0,
-    "strategy": "LLM_FREE_AGENT_BASELINE"
-  },
-  {
-    "answer_score": 0.389,
-    "api_score": 1.0,
-    "failure_category": "ANSWER_TOO_GENERIC",
-    "final_score": 0.787,
-    "generated_answer": "Tag details require live API evidence. Live API verification was not executed because Adobe credentials are unavailable.",
-    "generated_api": [
-      {
-        "method": "GET",
-        "params": {
-          "limit": "20"
-        },
-        "path": "/unifiedtags/tags"
-      }
-    ],
-    "generated_sql": "SELECT COUNT(*) AS count FROM \"br_campaign_segment\"",
-    "gold_answer": "Based on the evidence shown, there are at least 2 tags visible in the API response: \"AI-Generated\" and \"cool.\" However, the response appears to be truncated, so the complete tag count from the sandbox cannot be determined from this partial data.",
-    "gold_api": [
-      "GET /unifiedtags/tags?limit=20"
-    ],
-    "gold_sql": "",
-    "query": "How many tags exist in this sandbox?",
-    "query_id": "example_015",
-    "recommended_fix": "Add a query-family answer template that names concrete SQL/API evidence.",
-    "sql_score": 1.0,
-    "strategy": "TEMPLATE_FIRST"
   },
   {
     "answer_score": 0.4029,
@@ -1677,11 +1567,11 @@
     "strategy": "LLM_FREE_AGENT_BASELINE"
   },
   {
-    "answer_score": 0.4036,
+    "answer_score": 0.4037,
     "api_score": 1.0,
     "failure_category": "ANSWER_TOO_GENERIC",
-    "final_score": 0.7874,
-    "generated_answer": "Batch details and files require live API evidence. Live API verification was not executed because Adobe credentials are unavailable.",
+    "final_score": 0.7875,
+    "generated_answer": "Batch details require live API evidence. Live API verification was not executed because Adobe credentials are unavailable.",
     "generated_api": [
       {
         "method": "GET",
@@ -1705,29 +1595,58 @@
     "strategy": "LLM_FREE_AGENT_BASELINE"
   },
   {
-    "answer_score": 0.4059,
+    "answer_score": 0.3929,
     "api_score": 1.0,
     "failure_category": "ANSWER_TOO_GENERIC",
-    "final_score": 0.7877,
-    "generated_answer": "Batch details and files require live API evidence. Live API verification was not executed because Adobe credentials are unavailable.",
+    "final_score": 0.7878,
+    "generated_answer": "The merge policy count cannot be determined from the available evidence. Live API verification was not executed because Adobe credentials are unavailable.",
     "generated_api": [
       {
         "method": "GET",
-        "params": {},
-        "path": "/data/foundation/export/batches/69de8a0e0cc6102b5d11f01e/files"
+        "params": {
+          "limit": "10"
+        },
+        "path": "/data/core/ups/config/mergePolicies"
       }
     ],
-    "generated_sql": "SELECT \"SEGMENTID\", \"CAMPAIGNID\", \"LABELSSEGMENT\", \"LABELSCAMPAIGN\" FROM \"br_campaign_segment\" LIMIT 50",
-    "gold_answer": "There is one file available for download in batch 69de8a0e0cc6102b5d11f01e (ID: 69de8a0e0cc6102b5d11f01e-DE1), but it is marked as invalid.",
+    "generated_sql": "SELECT COUNT(*) AS count FROM \"br_campaign_segment\"",
+    "gold_answer": "Based on the API response provided, there are at least **2 merge policies** configured in the external-benchmarking sandbox. The response shows a \"Default Timebased\" policy and a second policy, though the full response appears to be truncated.",
     "gold_api": [
-      "GET /data/foundation/export/batches/69de8a0e0cc6102b5d11f01e/files"
+      "GET /data/core/ups/config/mergePolicies?limit=10"
     ],
     "gold_sql": "",
-    "query": "Which files are available for download in batch 69de8a0e0cc6102b5d11f01e?",
-    "query_id": "example_031",
+    "query": "How many merge policies are configured in this sandbox?",
+    "query_id": "example_020",
     "recommended_fix": "Add a query-family answer template that names concrete SQL/API evidence.",
     "sql_score": 1.0,
     "strategy": "LLM_FREE_AGENT_BASELINE"
+  },
+  {
+    "answer_score": 0.3929,
+    "api_score": 1.0,
+    "failure_category": "ANSWER_TOO_GENERIC",
+    "final_score": 0.7879,
+    "generated_answer": "The merge policy count cannot be determined from the available evidence. Live API verification was not executed because Adobe credentials are unavailable.",
+    "generated_api": [
+      {
+        "method": "GET",
+        "params": {
+          "limit": "10"
+        },
+        "path": "/data/core/ups/config/mergePolicies"
+      }
+    ],
+    "generated_sql": "SELECT COUNT(*) AS count FROM \"br_campaign_segment\"",
+    "gold_answer": "Based on the API response provided, there are at least **2 merge policies** configured in the external-benchmarking sandbox. The response shows a \"Default Timebased\" policy and a second policy, though the full response appears to be truncated.",
+    "gold_api": [
+      "GET /data/core/ups/config/mergePolicies?limit=10"
+    ],
+    "gold_sql": "",
+    "query": "How many merge policies are configured in this sandbox?",
+    "query_id": "example_020",
+    "recommended_fix": "Add a query-family answer template that names concrete SQL/API evidence.",
+    "sql_score": 1.0,
+    "strategy": "TEMPLATE_FIRST"
   },
   {
     "answer_score": 0.4532,
@@ -1766,34 +1685,6 @@
     "strategy": "LLM_FREE_AGENT_BASELINE"
   },
   {
-    "answer_score": 0.3602,
-    "api_score": 1.0,
-    "failure_category": "ANSWER_TOO_GENERIC",
-    "final_score": 0.7909,
-    "generated_answer": "Batch details and files require live API evidence. Live API verification was not executed because Adobe credentials are unavailable.",
-    "generated_api": [
-      {
-        "method": "GET",
-        "params": {
-          "limit": "10",
-          "status": "success"
-        },
-        "path": "/data/foundation/catalog/batches"
-      }
-    ],
-    "generated_sql": null,
-    "gold_answer": "Based on the API response provided, there is **1 batch** with status 'success'.",
-    "gold_api": [
-      "GET /data/foundation/catalog/batches?limit=10&status=success"
-    ],
-    "gold_sql": "",
-    "query": "How many batches have status 'success'?",
-    "query_id": "example_029",
-    "recommended_fix": "Add a query-family answer template that names concrete SQL/API evidence.",
-    "sql_score": 1.0,
-    "strategy": "SQL_FIRST_API_VERIFY"
-  },
-  {
     "answer_score": 0.5468,
     "api_score": 1.0,
     "failure_category": "DRY_RUN_ONLY",
@@ -1821,32 +1712,31 @@
     "strategy": "SQL_FIRST_API_VERIFY"
   },
   {
-    "answer_score": 0.3602,
+    "answer_score": 0.4161,
     "api_score": 1.0,
     "failure_category": "ANSWER_TOO_GENERIC",
-    "final_score": 0.7914,
-    "generated_answer": "Batch details and files require live API evidence. Live API verification was not executed because Adobe credentials are unavailable.",
+    "final_score": 0.7915,
+    "generated_answer": "The requested tag list requires live API evidence. Live API verification was not executed because Adobe credentials are unavailable.",
     "generated_api": [
       {
         "method": "GET",
         "params": {
-          "limit": "10",
-          "status": "success"
+          "limit": "25"
         },
-        "path": "/data/foundation/catalog/batches"
+        "path": "/unifiedtags/tags"
       }
     ],
-    "generated_sql": null,
-    "gold_answer": "Based on the API response provided, there is **1 batch** with status 'success'.",
+    "generated_sql": "SELECT \"SEGMENTID\", \"CAMPAIGNID\", \"LABELSSEGMENT\", \"LABELSCAMPAIGN\" FROM \"br_campaign_segment\"",
+    "gold_answer": "Based on the API response, the sandbox contains at least two tags: \"AI-Generated\" and \"cool\". The response appears to be truncated, so there may be additional tags not shown in the evidence.",
     "gold_api": [
-      "GET /data/foundation/catalog/batches?limit=10&status=success"
+      "GET /unifiedtags/tags?limit=25"
     ],
     "gold_sql": "",
-    "query": "How many batches have status 'success'?",
-    "query_id": "example_029",
+    "query": "List all tags in this sandbox.",
+    "query_id": "example_016",
     "recommended_fix": "Add a query-family answer template that names concrete SQL/API evidence.",
     "sql_score": 1.0,
-    "strategy": "DETERMINISTIC_ROUTER_SELECTED_METADATA"
+    "strategy": "LLM_FREE_AGENT_BASELINE"
   },
   {
     "answer_score": 0.5468,
@@ -1901,33 +1791,6 @@
     "recommended_fix": "Run with Adobe credentials for live evidence, or make the answer explicitly describe dry-run limitations.",
     "sql_score": 0.9,
     "strategy": "TEMPLATE_FIRST"
-  },
-  {
-    "answer_score": 0.426,
-    "api_score": 1.0,
-    "failure_category": "ANSWER_TOO_GENERIC",
-    "final_score": 0.7925,
-    "generated_answer": "Segment definition details require live Adobe API evidence with definition names, IDs, and counts. Live API verification was not executed because Adobe credentials are unavailable.",
-    "generated_api": [
-      {
-        "method": "GET",
-        "params": {
-          "limit": "10"
-        },
-        "path": "/data/core/ups/segment/definitions"
-      }
-    ],
-    "generated_sql": "SELECT \"SEGMENTID\", \"UPDATEDTIME\", \"ISACCOUNTSEGMENT\", \"NAME\", \"EVALUATIONCOMPLETEDTIME\", \"LABELSSEGMENT\", \"LIFECYCLESTATUS\", \"CREATEDTIME\", \"TYPE\", \"MERGEPOLICYID\" FROM \"dim_segment\"",
-    "gold_answer": "There are 13 segment definitions total across 2 pages. The visible segment from the first page is \"Person: Birthday Today 001,\" which targets all profiles whose birthday falls on a specific month/day. The response was paginated with 10 results per page, so additional segment definitions exist on the second page.",
-    "gold_api": [
-      "GET /data/core/ups/segment/definitions?limit=10"
-    ],
-    "gold_sql": "",
-    "query": "List all segment definitions.",
-    "query_id": "example_023",
-    "recommended_fix": "Add a query-family answer template that names concrete SQL/API evidence.",
-    "sql_score": 1.0,
-    "strategy": "LLM_FREE_AGENT_BASELINE"
   },
   {
     "answer_score": 0.4195,
@@ -1984,10 +1847,38 @@
     "strategy": "SQL_FIRST_API_VERIFY"
   },
   {
+    "answer_score": 0.3725,
+    "api_score": 1.0,
+    "failure_category": "ANSWER_TOO_GENERIC",
+    "final_score": 0.7946,
+    "generated_answer": "The batch count requires live API evidence. Live API verification was not executed because Adobe credentials are unavailable.",
+    "generated_api": [
+      {
+        "method": "GET",
+        "params": {
+          "limit": "10",
+          "status": "success"
+        },
+        "path": "/data/foundation/catalog/batches"
+      }
+    ],
+    "generated_sql": null,
+    "gold_answer": "Based on the API response provided, there is **1 batch** with status 'success'.",
+    "gold_api": [
+      "GET /data/foundation/catalog/batches?limit=10&status=success"
+    ],
+    "gold_sql": "",
+    "query": "How many batches have status 'success'?",
+    "query_id": "example_029",
+    "recommended_fix": "Add a query-family answer template that names concrete SQL/API evidence.",
+    "sql_score": 1.0,
+    "strategy": "SQL_FIRST_API_VERIFY"
+  },
+  {
     "answer_score": 0.4324,
     "api_score": 1.0,
     "failure_category": "ANSWER_TOO_GENERIC",
-    "final_score": 0.7947,
+    "final_score": 0.7946,
     "generated_answer": "Based on the evidence provided, matching datasets are: hkg_adls_segment_profile_history, hkg_adls_profile_count_history, Profile-Snapshot-Export-486e2a5e-dc46-4ab6-ad5f-9cdd16db869d, Profile Export For Destination - Merge Policy - 22a941a9-e598-45f8-846b-c9a8889f5035, BR_Segment_Destination, DIM_Destination, BR_Namespace_Destination, Segmentdefinition-Snapshot-Export-3405afd1-7c78-4aff-84e6-d2136ffcea93, weRetail: CRM, and weRetail: Customer Actions. Live API verification was not executed because Adobe credentials are unavailable.",
     "generated_api": [
       {
@@ -2011,6 +1902,88 @@
     "recommended_fix": "Add a query-family answer template that names concrete SQL/API evidence.",
     "sql_score": 1.0,
     "strategy": "TEMPLATE_FIRST"
+  },
+  {
+    "answer_score": 0.4154,
+    "api_score": 1.0,
+    "failure_category": "ANSWER_TOO_GENERIC",
+    "final_score": 0.7947,
+    "generated_answer": "The tag count cannot be determined from the available evidence. Live API verification was not executed because Adobe credentials are unavailable.",
+    "generated_api": [
+      {
+        "method": "GET",
+        "params": {
+          "limit": "20"
+        },
+        "path": "/unifiedtags/tags"
+      }
+    ],
+    "generated_sql": "SELECT COUNT(*) AS count FROM \"br_campaign_segment\"",
+    "gold_answer": "Based on the evidence shown, there are at least 2 tags visible in the API response: \"AI-Generated\" and \"cool.\" However, the response appears to be truncated, so the complete tag count from the sandbox cannot be determined from this partial data.",
+    "gold_api": [
+      "GET /unifiedtags/tags?limit=20"
+    ],
+    "gold_sql": "",
+    "query": "How many tags exist in this sandbox?",
+    "query_id": "example_015",
+    "recommended_fix": "Add a query-family answer template that names concrete SQL/API evidence.",
+    "sql_score": 1.0,
+    "strategy": "LLM_FREE_AGENT_BASELINE"
+  },
+  {
+    "answer_score": 0.4154,
+    "api_score": 1.0,
+    "failure_category": "ANSWER_TOO_GENERIC",
+    "final_score": 0.7949,
+    "generated_answer": "The tag count cannot be determined from the available evidence. Live API verification was not executed because Adobe credentials are unavailable.",
+    "generated_api": [
+      {
+        "method": "GET",
+        "params": {
+          "limit": "20"
+        },
+        "path": "/unifiedtags/tags"
+      }
+    ],
+    "generated_sql": "SELECT COUNT(*) AS count FROM \"br_campaign_segment\"",
+    "gold_answer": "Based on the evidence shown, there are at least 2 tags visible in the API response: \"AI-Generated\" and \"cool.\" However, the response appears to be truncated, so the complete tag count from the sandbox cannot be determined from this partial data.",
+    "gold_api": [
+      "GET /unifiedtags/tags?limit=20"
+    ],
+    "gold_sql": "",
+    "query": "How many tags exist in this sandbox?",
+    "query_id": "example_015",
+    "recommended_fix": "Add a query-family answer template that names concrete SQL/API evidence.",
+    "sql_score": 1.0,
+    "strategy": "TEMPLATE_FIRST"
+  },
+  {
+    "answer_score": 0.3725,
+    "api_score": 1.0,
+    "failure_category": "ANSWER_TOO_GENERIC",
+    "final_score": 0.7951,
+    "generated_answer": "The batch count requires live API evidence. Live API verification was not executed because Adobe credentials are unavailable.",
+    "generated_api": [
+      {
+        "method": "GET",
+        "params": {
+          "limit": "10",
+          "status": "success"
+        },
+        "path": "/data/foundation/catalog/batches"
+      }
+    ],
+    "generated_sql": null,
+    "gold_answer": "Based on the API response provided, there is **1 batch** with status 'success'.",
+    "gold_api": [
+      "GET /data/foundation/catalog/batches?limit=10&status=success"
+    ],
+    "gold_sql": "",
+    "query": "How many batches have status 'success'?",
+    "query_id": "example_029",
+    "recommended_fix": "Add a query-family answer template that names concrete SQL/API evidence.",
+    "sql_score": 1.0,
+    "strategy": "DETERMINISTIC_ROUTER_SELECTED_METADATA"
   },
   {
     "answer_score": 0.4241,
@@ -2067,33 +2040,6 @@
     "strategy": "TEMPLATE_FIRST"
   },
   {
-    "answer_score": 0.3757,
-    "api_score": 1.0,
-    "failure_category": "ANSWER_TOO_GENERIC",
-    "final_score": 0.7957,
-    "generated_answer": "Merge policy information requires Adobe API evidence. Live API verification was not executed because Adobe credentials are unavailable.",
-    "generated_api": [
-      {
-        "method": "GET",
-        "params": {
-          "limit": "10"
-        },
-        "path": "/data/core/ups/config/mergePolicies"
-      }
-    ],
-    "generated_sql": null,
-    "gold_answer": "Based on the API response provided, there are at least **2 merge policies** configured in the external-benchmarking sandbox. The response shows a \"Default Timebased\" policy and a second policy, though the full response appears to be truncated.",
-    "gold_api": [
-      "GET /data/core/ups/config/mergePolicies?limit=10"
-    ],
-    "gold_sql": "",
-    "query": "How many merge policies are configured in this sandbox?",
-    "query_id": "example_020",
-    "recommended_fix": "Add a query-family answer template that names concrete SQL/API evidence.",
-    "sql_score": 1.0,
-    "strategy": "SQL_FIRST_API_VERIFY"
-  },
-  {
     "answer_score": 0.7902,
     "api_score": 0.776,
     "failure_category": "API_PATH_MISMATCH",
@@ -2123,38 +2069,11 @@
     "strategy": "SQL_FIRST_API_VERIFY"
   },
   {
-    "answer_score": 0.3757,
+    "answer_score": 0.3823,
     "api_score": 1.0,
     "failure_category": "ANSWER_TOO_GENERIC",
-    "final_score": 0.7962,
-    "generated_answer": "Merge policy information requires Adobe API evidence. Live API verification was not executed because Adobe credentials are unavailable.",
-    "generated_api": [
-      {
-        "method": "GET",
-        "params": {
-          "limit": "10"
-        },
-        "path": "/data/core/ups/config/mergePolicies"
-      }
-    ],
-    "generated_sql": null,
-    "gold_answer": "Based on the API response provided, there are at least **2 merge policies** configured in the external-benchmarking sandbox. The response shows a \"Default Timebased\" policy and a second policy, though the full response appears to be truncated.",
-    "gold_api": [
-      "GET /data/core/ups/config/mergePolicies?limit=10"
-    ],
-    "gold_sql": "",
-    "query": "How many merge policies are configured in this sandbox?",
-    "query_id": "example_020",
-    "recommended_fix": "Add a query-family answer template that names concrete SQL/API evidence.",
-    "sql_score": 1.0,
-    "strategy": "DETERMINISTIC_ROUTER_SELECTED_METADATA"
-  },
-  {
-    "answer_score": 0.3827,
-    "api_score": 1.0,
-    "failure_category": "ANSWER_TOO_GENERIC",
-    "final_score": 0.7965,
-    "generated_answer": "Batch details and files require live API evidence. Live API verification was not executed because Adobe credentials are unavailable.",
+    "final_score": 0.7964,
+    "generated_answer": "Batch details require live API evidence. Live API verification was not executed because Adobe credentials are unavailable.",
     "generated_api": [
       {
         "method": "GET",
@@ -2202,6 +2121,31 @@
     "recommended_fix": "Add endpoint selection rules or endpoint catalog coverage for this query family.",
     "sql_score": 0.9,
     "strategy": "TEMPLATE_FIRST"
+  },
+  {
+    "answer_score": 0.3823,
+    "api_score": 1.0,
+    "failure_category": "ANSWER_TOO_GENERIC",
+    "final_score": 0.7969,
+    "generated_answer": "Batch details require live API evidence. Live API verification was not executed because Adobe credentials are unavailable.",
+    "generated_api": [
+      {
+        "method": "GET",
+        "params": {},
+        "path": "/data/foundation/catalog/batches/01KP69BPA5ZKFB7HCDYPE4GN6F"
+      }
+    ],
+    "generated_sql": null,
+    "gold_answer": "Batch 01KP69BPA5ZKFB7HCDYPE4GN6F is currently inactive. It's a replay batch created by the Adobe Unified Profile export service for dataset 69c8d6c9b9966265fc8e4ea4, and it appears to have predecessor batches as part of its replay history.",
+    "gold_api": [
+      "GET /data/foundation/catalog/batches/01KP69BPA5ZKFB7HCDYPE4GN6F"
+    ],
+    "gold_sql": "",
+    "query": "Show the details of batch 01KP69BPA5ZKFB7HCDYPE4GN6F.",
+    "query_id": "example_030",
+    "recommended_fix": "Add a query-family answer template that names concrete SQL/API evidence.",
+    "sql_score": 1.0,
+    "strategy": "DETERMINISTIC_ROUTER_SELECTED_METADATA"
   },
   {
     "answer_score": 0.4329,
@@ -2245,36 +2189,11 @@
     "strategy": "LLM_FREE_AGENT_BASELINE"
   },
   {
-    "answer_score": 0.3827,
+    "answer_score": 0.3823,
     "api_score": 1.0,
     "failure_category": "ANSWER_TOO_GENERIC",
-    "final_score": 0.797,
-    "generated_answer": "Batch details and files require live API evidence. Live API verification was not executed because Adobe credentials are unavailable.",
-    "generated_api": [
-      {
-        "method": "GET",
-        "params": {},
-        "path": "/data/foundation/catalog/batches/01KP69BPA5ZKFB7HCDYPE4GN6F"
-      }
-    ],
-    "generated_sql": null,
-    "gold_answer": "Batch 01KP69BPA5ZKFB7HCDYPE4GN6F is currently inactive. It's a replay batch created by the Adobe Unified Profile export service for dataset 69c8d6c9b9966265fc8e4ea4, and it appears to have predecessor batches as part of its replay history.",
-    "gold_api": [
-      "GET /data/foundation/catalog/batches/01KP69BPA5ZKFB7HCDYPE4GN6F"
-    ],
-    "gold_sql": "",
-    "query": "Show the details of batch 01KP69BPA5ZKFB7HCDYPE4GN6F.",
-    "query_id": "example_030",
-    "recommended_fix": "Add a query-family answer template that names concrete SQL/API evidence.",
-    "sql_score": 1.0,
-    "strategy": "DETERMINISTIC_ROUTER_SELECTED_METADATA"
-  },
-  {
-    "answer_score": 0.3827,
-    "api_score": 1.0,
-    "failure_category": "ANSWER_TOO_GENERIC",
-    "final_score": 0.7971,
-    "generated_answer": "Batch details and files require live API evidence. Live API verification was not executed because Adobe credentials are unavailable.",
+    "final_score": 0.7969,
+    "generated_answer": "Batch details require live API evidence. Live API verification was not executed because Adobe credentials are unavailable.",
     "generated_api": [
       {
         "method": "GET",
@@ -2334,6 +2253,33 @@
     "recommended_fix": "Add a query-family answer template that names concrete SQL/API evidence.",
     "sql_score": 1.0,
     "strategy": "TEMPLATE_FIRST"
+  },
+  {
+    "answer_score": 0.4419,
+    "api_score": 1.0,
+    "failure_category": "ANSWER_TOO_GENERIC",
+    "final_score": 0.7972,
+    "generated_answer": "The requested segment definition list requires live Adobe API evidence with definition names, IDs, and pagination counts. Live API verification was not executed because Adobe credentials are unavailable.",
+    "generated_api": [
+      {
+        "method": "GET",
+        "params": {
+          "limit": "10"
+        },
+        "path": "/data/core/ups/segment/definitions"
+      }
+    ],
+    "generated_sql": "SELECT \"SEGMENTID\", \"UPDATEDTIME\", \"ISACCOUNTSEGMENT\", \"NAME\", \"EVALUATIONCOMPLETEDTIME\", \"LABELSSEGMENT\", \"LIFECYCLESTATUS\", \"CREATEDTIME\", \"TYPE\", \"MERGEPOLICYID\" FROM \"dim_segment\"",
+    "gold_answer": "There are 13 segment definitions total across 2 pages. The visible segment from the first page is \"Person: Birthday Today 001,\" which targets all profiles whose birthday falls on a specific month/day. The response was paginated with 10 results per page, so additional segment definitions exist on the second page.",
+    "gold_api": [
+      "GET /data/core/ups/segment/definitions?limit=10"
+    ],
+    "gold_sql": "",
+    "query": "List all segment definitions.",
+    "query_id": "example_023",
+    "recommended_fix": "Add a query-family answer template that names concrete SQL/API evidence.",
+    "sql_score": 1.0,
+    "strategy": "LLM_FREE_AGENT_BASELINE"
   },
   {
     "answer_score": 0.3951,
@@ -2408,82 +2354,55 @@
     "strategy": "DETERMINISTIC_ROUTER_SELECTED_METADATA"
   },
   {
-    "answer_score": 0.3871,
+    "answer_score": 0.4308,
     "api_score": 1.0,
     "failure_category": "ANSWER_TOO_GENERIC",
-    "final_score": 0.7983,
-    "generated_answer": "Tag details require live API evidence. Live API verification was not executed because Adobe credentials are unavailable.",
+    "final_score": 0.7979,
+    "generated_answer": "The segment evaluation job count requires live Adobe API evidence. Live API verification was not executed because Adobe credentials are unavailable.",
     "generated_api": [
       {
         "method": "GET",
         "params": {
-          "limit": "25"
+          "limit": "20"
         },
-        "path": "/unifiedtags/tags"
+        "path": "/data/core/ups/segment/jobs"
       }
     ],
-    "generated_sql": null,
-    "gold_answer": "Based on the API response, the sandbox contains at least two tags: \"AI-Generated\" and \"cool\". The response appears to be truncated, so there may be additional tags not shown in the evidence.",
+    "generated_sql": "SELECT COUNT(*) AS count FROM \"dim_segment\"",
+    "gold_answer": "Based on the API response, **zero segment jobs are currently processing**. The only visible job in the response has a status of \"SUCCEEDED,\" indicating it has already completed.",
     "gold_api": [
-      "GET /unifiedtags/tags?limit=25"
+      "GET /data/core/ups/segment/jobs?limit=20"
     ],
     "gold_sql": "",
-    "query": "List all tags in this sandbox.",
-    "query_id": "example_016",
+    "query": "How many segment jobs are currently processing?",
+    "query_id": "example_026",
     "recommended_fix": "Add a query-family answer template that names concrete SQL/API evidence.",
     "sql_score": 1.0,
-    "strategy": "SQL_FIRST_API_VERIFY"
+    "strategy": "LLM_FREE_AGENT_BASELINE"
   },
   {
-    "answer_score": 0.3871,
+    "answer_score": 0.4308,
     "api_score": 1.0,
     "failure_category": "ANSWER_TOO_GENERIC",
-    "final_score": 0.7989,
-    "generated_answer": "Tag details require live API evidence. Live API verification was not executed because Adobe credentials are unavailable.",
+    "final_score": 0.798,
+    "generated_answer": "The segment evaluation job count requires live Adobe API evidence. Live API verification was not executed because Adobe credentials are unavailable.",
     "generated_api": [
       {
         "method": "GET",
         "params": {
-          "limit": "25"
+          "limit": "20"
         },
-        "path": "/unifiedtags/tags"
+        "path": "/data/core/ups/segment/jobs"
       }
     ],
-    "generated_sql": null,
-    "gold_answer": "Based on the API response, the sandbox contains at least two tags: \"AI-Generated\" and \"cool\". The response appears to be truncated, so there may be additional tags not shown in the evidence.",
+    "generated_sql": "SELECT COUNT(*) AS count FROM \"dim_segment\"",
+    "gold_answer": "Based on the API response, **zero segment jobs are currently processing**. The only visible job in the response has a status of \"SUCCEEDED,\" indicating it has already completed.",
     "gold_api": [
-      "GET /unifiedtags/tags?limit=25"
+      "GET /data/core/ups/segment/jobs?limit=20"
     ],
     "gold_sql": "",
-    "query": "List all tags in this sandbox.",
-    "query_id": "example_016",
-    "recommended_fix": "Add a query-family answer template that names concrete SQL/API evidence.",
-    "sql_score": 1.0,
-    "strategy": "DETERMINISTIC_ROUTER_SELECTED_METADATA"
-  },
-  {
-    "answer_score": 0.3871,
-    "api_score": 1.0,
-    "failure_category": "ANSWER_TOO_GENERIC",
-    "final_score": 0.7989,
-    "generated_answer": "Tag details require live API evidence. Live API verification was not executed because Adobe credentials are unavailable.",
-    "generated_api": [
-      {
-        "method": "GET",
-        "params": {
-          "limit": "25"
-        },
-        "path": "/unifiedtags/tags"
-      }
-    ],
-    "generated_sql": null,
-    "gold_answer": "Based on the API response, the sandbox contains at least two tags: \"AI-Generated\" and \"cool\". The response appears to be truncated, so there may be additional tags not shown in the evidence.",
-    "gold_api": [
-      "GET /unifiedtags/tags?limit=25"
-    ],
-    "gold_sql": "",
-    "query": "List all tags in this sandbox.",
-    "query_id": "example_016",
+    "query": "How many segment jobs are currently processing?",
+    "query_id": "example_026",
     "recommended_fix": "Add a query-family answer template that names concrete SQL/API evidence.",
     "sql_score": 1.0,
     "strategy": "TEMPLATE_FIRST"
@@ -2597,55 +2516,80 @@
     "strategy": "TEMPLATE_FIRST"
   },
   {
-    "answer_score": 0.389,
+    "answer_score": 0.3929,
     "api_score": 1.0,
     "failure_category": "ANSWER_TOO_GENERIC",
-    "final_score": 0.8,
-    "generated_answer": "Tag details require live API evidence. Live API verification was not executed because Adobe credentials are unavailable.",
+    "final_score": 0.8009,
+    "generated_answer": "The merge policy count cannot be determined from the available evidence. Live API verification was not executed because Adobe credentials are unavailable.",
     "generated_api": [
       {
         "method": "GET",
         "params": {
-          "limit": "20"
+          "limit": "10"
         },
-        "path": "/unifiedtags/tags"
+        "path": "/data/core/ups/config/mergePolicies"
       }
     ],
     "generated_sql": null,
-    "gold_answer": "Based on the evidence shown, there are at least 2 tags visible in the API response: \"AI-Generated\" and \"cool.\" However, the response appears to be truncated, so the complete tag count from the sandbox cannot be determined from this partial data.",
+    "gold_answer": "Based on the API response provided, there are at least **2 merge policies** configured in the external-benchmarking sandbox. The response shows a \"Default Timebased\" policy and a second policy, though the full response appears to be truncated.",
     "gold_api": [
-      "GET /unifiedtags/tags?limit=20"
+      "GET /data/core/ups/config/mergePolicies?limit=10"
     ],
     "gold_sql": "",
-    "query": "How many tags exist in this sandbox?",
-    "query_id": "example_015",
+    "query": "How many merge policies are configured in this sandbox?",
+    "query_id": "example_020",
     "recommended_fix": "Add a query-family answer template that names concrete SQL/API evidence.",
     "sql_score": 1.0,
     "strategy": "SQL_FIRST_API_VERIFY"
   },
   {
-    "answer_score": 0.389,
+    "answer_score": 0.3985,
     "api_score": 1.0,
     "failure_category": "ANSWER_TOO_GENERIC",
-    "final_score": 0.8005,
-    "generated_answer": "Tag details require live API evidence. Live API verification was not executed because Adobe credentials are unavailable.",
+    "final_score": 0.801,
+    "generated_answer": "Batch file details require live API evidence. Live API verification was not executed because Adobe credentials are unavailable.",
+    "generated_api": [
+      {
+        "method": "GET",
+        "params": {},
+        "path": "/data/foundation/export/batches/69de8a0e0cc6102b5d11f01e/files"
+      }
+    ],
+    "generated_sql": null,
+    "gold_answer": "There is one file available for download in batch 69de8a0e0cc6102b5d11f01e (ID: 69de8a0e0cc6102b5d11f01e-DE1), but it is marked as invalid.",
+    "gold_api": [
+      "GET /data/foundation/export/batches/69de8a0e0cc6102b5d11f01e/files"
+    ],
+    "gold_sql": "",
+    "query": "Which files are available for download in batch 69de8a0e0cc6102b5d11f01e?",
+    "query_id": "example_031",
+    "recommended_fix": "Add a query-family answer template that names concrete SQL/API evidence.",
+    "sql_score": 1.0,
+    "strategy": "SQL_FIRST_API_VERIFY"
+  },
+  {
+    "answer_score": 0.3929,
+    "api_score": 1.0,
+    "failure_category": "ANSWER_TOO_GENERIC",
+    "final_score": 0.8014,
+    "generated_answer": "The merge policy count cannot be determined from the available evidence. Live API verification was not executed because Adobe credentials are unavailable.",
     "generated_api": [
       {
         "method": "GET",
         "params": {
-          "limit": "20"
+          "limit": "10"
         },
-        "path": "/unifiedtags/tags"
+        "path": "/data/core/ups/config/mergePolicies"
       }
     ],
     "generated_sql": null,
-    "gold_answer": "Based on the evidence shown, there are at least 2 tags visible in the API response: \"AI-Generated\" and \"cool.\" However, the response appears to be truncated, so the complete tag count from the sandbox cannot be determined from this partial data.",
+    "gold_answer": "Based on the API response provided, there are at least **2 merge policies** configured in the external-benchmarking sandbox. The response shows a \"Default Timebased\" policy and a second policy, though the full response appears to be truncated.",
     "gold_api": [
-      "GET /unifiedtags/tags?limit=20"
+      "GET /data/core/ups/config/mergePolicies?limit=10"
     ],
     "gold_sql": "",
-    "query": "How many tags exist in this sandbox?",
-    "query_id": "example_015",
+    "query": "How many merge policies are configured in this sandbox?",
+    "query_id": "example_020",
     "recommended_fix": "Add a query-family answer template that names concrete SQL/API evidence.",
     "sql_score": 1.0,
     "strategy": "DETERMINISTIC_ROUTER_SELECTED_METADATA"
@@ -2678,31 +2622,29 @@
     "strategy": "LLM_FREE_AGENT_BASELINE"
   },
   {
-    "answer_score": 0.4426,
+    "answer_score": 0.3985,
     "api_score": 1.0,
     "failure_category": "ANSWER_TOO_GENERIC",
-    "final_score": 0.8014,
-    "generated_answer": "Segment evaluation job IDs, statuses, sandbox, and segment counts require live Adobe API evidence. Live API verification was not executed because Adobe credentials are unavailable.",
+    "final_score": 0.8015,
+    "generated_answer": "Batch file details require live API evidence. Live API verification was not executed because Adobe credentials are unavailable.",
     "generated_api": [
       {
         "method": "GET",
-        "params": {
-          "limit": "20"
-        },
-        "path": "/data/core/ups/segment/jobs"
+        "params": {},
+        "path": "/data/foundation/export/batches/69de8a0e0cc6102b5d11f01e/files"
       }
     ],
-    "generated_sql": "SELECT COUNT(*) AS count FROM \"dim_segment\"",
-    "gold_answer": "Based on the API response, **zero segment jobs are currently processing**. The only visible job in the response has a status of \"SUCCEEDED,\" indicating it has already completed.",
+    "generated_sql": null,
+    "gold_answer": "There is one file available for download in batch 69de8a0e0cc6102b5d11f01e (ID: 69de8a0e0cc6102b5d11f01e-DE1), but it is marked as invalid.",
     "gold_api": [
-      "GET /data/core/ups/segment/jobs?limit=20"
+      "GET /data/foundation/export/batches/69de8a0e0cc6102b5d11f01e/files"
     ],
     "gold_sql": "",
-    "query": "How many segment jobs are currently processing?",
-    "query_id": "example_026",
+    "query": "Which files are available for download in batch 69de8a0e0cc6102b5d11f01e?",
+    "query_id": "example_031",
     "recommended_fix": "Add a query-family answer template that names concrete SQL/API evidence.",
     "sql_score": 1.0,
-    "strategy": "LLM_FREE_AGENT_BASELINE"
+    "strategy": "DETERMINISTIC_ROUTER_SELECTED_METADATA"
   },
   {
     "answer_score": 0.4425,
@@ -2732,28 +2674,26 @@
     "strategy": "TEMPLATE_FIRST"
   },
   {
-    "answer_score": 0.4426,
+    "answer_score": 0.3985,
     "api_score": 1.0,
     "failure_category": "ANSWER_TOO_GENERIC",
-    "final_score": 0.8015,
-    "generated_answer": "Segment evaluation job IDs, statuses, sandbox, and segment counts require live Adobe API evidence. Live API verification was not executed because Adobe credentials are unavailable.",
+    "final_score": 0.8016,
+    "generated_answer": "Batch file details require live API evidence. Live API verification was not executed because Adobe credentials are unavailable.",
     "generated_api": [
       {
         "method": "GET",
-        "params": {
-          "limit": "20"
-        },
-        "path": "/data/core/ups/segment/jobs"
+        "params": {},
+        "path": "/data/foundation/export/batches/69de8a0e0cc6102b5d11f01e/files"
       }
     ],
-    "generated_sql": "SELECT COUNT(*) AS count FROM \"dim_segment\"",
-    "gold_answer": "Based on the API response, **zero segment jobs are currently processing**. The only visible job in the response has a status of \"SUCCEEDED,\" indicating it has already completed.",
+    "generated_sql": null,
+    "gold_answer": "There is one file available for download in batch 69de8a0e0cc6102b5d11f01e (ID: 69de8a0e0cc6102b5d11f01e-DE1), but it is marked as invalid.",
     "gold_api": [
-      "GET /data/core/ups/segment/jobs?limit=20"
+      "GET /data/foundation/export/batches/69de8a0e0cc6102b5d11f01e/files"
     ],
     "gold_sql": "",
-    "query": "How many segment jobs are currently processing?",
-    "query_id": "example_026",
+    "query": "Which files are available for download in batch 69de8a0e0cc6102b5d11f01e?",
+    "query_id": "example_031",
     "recommended_fix": "Add a query-family answer template that names concrete SQL/API evidence.",
     "sql_score": 1.0,
     "strategy": "TEMPLATE_FIRST"
@@ -2842,11 +2782,11 @@
     "strategy": "DETERMINISTIC_ROUTER_SELECTED_METADATA"
   },
   {
-    "answer_score": 0.4036,
+    "answer_score": 0.4037,
     "api_score": 1.0,
     "failure_category": "ANSWER_TOO_GENERIC",
     "final_score": 0.803,
-    "generated_answer": "Batch details and files require live API evidence. Live API verification was not executed because Adobe credentials are unavailable.",
+    "generated_answer": "Batch details require live API evidence. Live API verification was not executed because Adobe credentials are unavailable.",
     "generated_api": [
       {
         "method": "GET",
@@ -2962,31 +2902,6 @@
     "strategy": "SQL_FIRST_API_VERIFY"
   },
   {
-    "answer_score": 0.4059,
-    "api_score": 1.0,
-    "failure_category": "ANSWER_TOO_GENERIC",
-    "final_score": 0.8032,
-    "generated_answer": "Batch details and files require live API evidence. Live API verification was not executed because Adobe credentials are unavailable.",
-    "generated_api": [
-      {
-        "method": "GET",
-        "params": {},
-        "path": "/data/foundation/export/batches/69de8a0e0cc6102b5d11f01e/files"
-      }
-    ],
-    "generated_sql": null,
-    "gold_answer": "There is one file available for download in batch 69de8a0e0cc6102b5d11f01e (ID: 69de8a0e0cc6102b5d11f01e-DE1), but it is marked as invalid.",
-    "gold_api": [
-      "GET /data/foundation/export/batches/69de8a0e0cc6102b5d11f01e/files"
-    ],
-    "gold_sql": "",
-    "query": "Which files are available for download in batch 69de8a0e0cc6102b5d11f01e?",
-    "query_id": "example_031",
-    "recommended_fix": "Add a query-family answer template that names concrete SQL/API evidence.",
-    "sql_score": 1.0,
-    "strategy": "SQL_FIRST_API_VERIFY"
-  },
-  {
     "answer_score": 0.4029,
     "api_score": 1.0,
     "failure_category": "ANSWER_TOO_GENERIC",
@@ -3014,11 +2929,11 @@
     "strategy": "DETERMINISTIC_ROUTER_SELECTED_METADATA"
   },
   {
-    "answer_score": 0.4036,
+    "answer_score": 0.4037,
     "api_score": 1.0,
     "failure_category": "ANSWER_TOO_GENERIC",
     "final_score": 0.8035,
-    "generated_answer": "Batch details and files require live API evidence. Live API verification was not executed because Adobe credentials are unavailable.",
+    "generated_answer": "Batch details require live API evidence. Live API verification was not executed because Adobe credentials are unavailable.",
     "generated_api": [
       {
         "method": "GET",
@@ -3069,11 +2984,67 @@
     "strategy": "TEMPLATE_FIRST"
   },
   {
-    "answer_score": 0.4036,
+    "answer_score": 0.405,
     "api_score": 1.0,
     "failure_category": "ANSWER_TOO_GENERIC",
-    "final_score": 0.8035,
-    "generated_answer": "Batch details and files require live API evidence. Live API verification was not executed because Adobe credentials are unavailable.",
+    "final_score": 0.8036,
+    "generated_answer": "The most recently updated segment definitions require live Adobe API evidence with names, IDs, and update times. Live API verification was not executed because Adobe credentials are unavailable.",
+    "generated_api": [
+      {
+        "method": "GET",
+        "params": {
+          "limit": "3",
+          "orderBy": "updateTime:desc"
+        },
+        "path": "/data/core/ups/segment/definitions"
+      }
+    ],
+    "generated_sql": null,
+    "gold_answer": "Based on the API response sorted by creation time in descending order, the most recently created segment definition is **\"Person: Birthday Today 001\"** (ID: 2fdfefe1-04d0-46ce-9fbd-7611e311dd26) in the external-benchmarking sandbox. The response shows 13 total segment definitions across 5 pages, with this one appearing first in the descending creation time sort.",
+    "gold_api": [
+      "GET /data/core/ups/segment/definitions?limit=3&orderBy=updateTime:desc"
+    ],
+    "gold_sql": "",
+    "query": "Which segment definitions were updated most recently?",
+    "query_id": "example_024",
+    "recommended_fix": "Add a query-family answer template that names concrete SQL/API evidence.",
+    "sql_score": 1.0,
+    "strategy": "DETERMINISTIC_ROUTER_SELECTED_METADATA"
+  },
+  {
+    "answer_score": 0.405,
+    "api_score": 1.0,
+    "failure_category": "ANSWER_TOO_GENERIC",
+    "final_score": 0.8036,
+    "generated_answer": "The most recently updated segment definitions require live Adobe API evidence with names, IDs, and update times. Live API verification was not executed because Adobe credentials are unavailable.",
+    "generated_api": [
+      {
+        "method": "GET",
+        "params": {
+          "limit": "3",
+          "orderBy": "updateTime:desc"
+        },
+        "path": "/data/core/ups/segment/definitions"
+      }
+    ],
+    "generated_sql": null,
+    "gold_answer": "Based on the API response sorted by creation time in descending order, the most recently created segment definition is **\"Person: Birthday Today 001\"** (ID: 2fdfefe1-04d0-46ce-9fbd-7611e311dd26) in the external-benchmarking sandbox. The response shows 13 total segment definitions across 5 pages, with this one appearing first in the descending creation time sort.",
+    "gold_api": [
+      "GET /data/core/ups/segment/definitions?limit=3&orderBy=updateTime:desc"
+    ],
+    "gold_sql": "",
+    "query": "Which segment definitions were updated most recently?",
+    "query_id": "example_024",
+    "recommended_fix": "Add a query-family answer template that names concrete SQL/API evidence.",
+    "sql_score": 1.0,
+    "strategy": "TEMPLATE_FIRST"
+  },
+  {
+    "answer_score": 0.4037,
+    "api_score": 1.0,
+    "failure_category": "ANSWER_TOO_GENERIC",
+    "final_score": 0.8036,
+    "generated_answer": "Batch details require live API evidence. Live API verification was not executed because Adobe credentials are unavailable.",
     "generated_api": [
       {
         "method": "GET",
@@ -3095,87 +3066,6 @@
     "recommended_fix": "Add a query-family answer template that names concrete SQL/API evidence.",
     "sql_score": 1.0,
     "strategy": "TEMPLATE_FIRST"
-  },
-  {
-    "answer_score": 0.405,
-    "api_score": 1.0,
-    "failure_category": "ANSWER_TOO_GENERIC",
-    "final_score": 0.8036,
-    "generated_answer": "The most recently updated segment definitions require live Adobe API evidence with names, IDs, and update times. Live API verification was not executed because Adobe credentials are unavailable.",
-    "generated_api": [
-      {
-        "method": "GET",
-        "params": {
-          "limit": "3",
-          "orderBy": "updateTime:desc"
-        },
-        "path": "/data/core/ups/segment/definitions"
-      }
-    ],
-    "generated_sql": null,
-    "gold_answer": "Based on the API response sorted by creation time in descending order, the most recently created segment definition is **\"Person: Birthday Today 001\"** (ID: 2fdfefe1-04d0-46ce-9fbd-7611e311dd26) in the external-benchmarking sandbox. The response shows 13 total segment definitions across 5 pages, with this one appearing first in the descending creation time sort.",
-    "gold_api": [
-      "GET /data/core/ups/segment/definitions?limit=3&orderBy=updateTime:desc"
-    ],
-    "gold_sql": "",
-    "query": "Which segment definitions were updated most recently?",
-    "query_id": "example_024",
-    "recommended_fix": "Add a query-family answer template that names concrete SQL/API evidence.",
-    "sql_score": 1.0,
-    "strategy": "DETERMINISTIC_ROUTER_SELECTED_METADATA"
-  },
-  {
-    "answer_score": 0.405,
-    "api_score": 1.0,
-    "failure_category": "ANSWER_TOO_GENERIC",
-    "final_score": 0.8036,
-    "generated_answer": "The most recently updated segment definitions require live Adobe API evidence with names, IDs, and update times. Live API verification was not executed because Adobe credentials are unavailable.",
-    "generated_api": [
-      {
-        "method": "GET",
-        "params": {
-          "limit": "3",
-          "orderBy": "updateTime:desc"
-        },
-        "path": "/data/core/ups/segment/definitions"
-      }
-    ],
-    "generated_sql": null,
-    "gold_answer": "Based on the API response sorted by creation time in descending order, the most recently created segment definition is **\"Person: Birthday Today 001\"** (ID: 2fdfefe1-04d0-46ce-9fbd-7611e311dd26) in the external-benchmarking sandbox. The response shows 13 total segment definitions across 5 pages, with this one appearing first in the descending creation time sort.",
-    "gold_api": [
-      "GET /data/core/ups/segment/definitions?limit=3&orderBy=updateTime:desc"
-    ],
-    "gold_sql": "",
-    "query": "Which segment definitions were updated most recently?",
-    "query_id": "example_024",
-    "recommended_fix": "Add a query-family answer template that names concrete SQL/API evidence.",
-    "sql_score": 1.0,
-    "strategy": "TEMPLATE_FIRST"
-  },
-  {
-    "answer_score": 0.4059,
-    "api_score": 1.0,
-    "failure_category": "ANSWER_TOO_GENERIC",
-    "final_score": 0.8037,
-    "generated_answer": "Batch details and files require live API evidence. Live API verification was not executed because Adobe credentials are unavailable.",
-    "generated_api": [
-      {
-        "method": "GET",
-        "params": {},
-        "path": "/data/foundation/export/batches/69de8a0e0cc6102b5d11f01e/files"
-      }
-    ],
-    "generated_sql": null,
-    "gold_answer": "There is one file available for download in batch 69de8a0e0cc6102b5d11f01e (ID: 69de8a0e0cc6102b5d11f01e-DE1), but it is marked as invalid.",
-    "gold_api": [
-      "GET /data/foundation/export/batches/69de8a0e0cc6102b5d11f01e/files"
-    ],
-    "gold_sql": "",
-    "query": "Which files are available for download in batch 69de8a0e0cc6102b5d11f01e?",
-    "query_id": "example_031",
-    "recommended_fix": "Add a query-family answer template that names concrete SQL/API evidence.",
-    "sql_score": 1.0,
-    "strategy": "DETERMINISTIC_ROUTER_SELECTED_METADATA"
   },
   {
     "answer_score": 0.4532,
@@ -3209,31 +3099,6 @@
     "gold_sql": "",
     "query": "Which tags belong to the category 'Uncategorized'?",
     "query_id": "example_017",
-    "recommended_fix": "Add a query-family answer template that names concrete SQL/API evidence.",
-    "sql_score": 1.0,
-    "strategy": "TEMPLATE_FIRST"
-  },
-  {
-    "answer_score": 0.4059,
-    "api_score": 1.0,
-    "failure_category": "ANSWER_TOO_GENERIC",
-    "final_score": 0.8038,
-    "generated_answer": "Batch details and files require live API evidence. Live API verification was not executed because Adobe credentials are unavailable.",
-    "generated_api": [
-      {
-        "method": "GET",
-        "params": {},
-        "path": "/data/foundation/export/batches/69de8a0e0cc6102b5d11f01e/files"
-      }
-    ],
-    "generated_sql": null,
-    "gold_answer": "There is one file available for download in batch 69de8a0e0cc6102b5d11f01e (ID: 69de8a0e0cc6102b5d11f01e-DE1), but it is marked as invalid.",
-    "gold_api": [
-      "GET /data/foundation/export/batches/69de8a0e0cc6102b5d11f01e/files"
-    ],
-    "gold_sql": "",
-    "query": "Which files are available for download in batch 69de8a0e0cc6102b5d11f01e?",
-    "query_id": "example_031",
     "recommended_fix": "Add a query-family answer template that names concrete SQL/API evidence.",
     "sql_score": 1.0,
     "strategy": "TEMPLATE_FIRST"
@@ -3342,6 +3207,33 @@
     "strategy": "SQL_FIRST_API_VERIFY"
   },
   {
+    "answer_score": 0.4161,
+    "api_score": 1.0,
+    "failure_category": "ANSWER_TOO_GENERIC",
+    "final_score": 0.807,
+    "generated_answer": "The requested tag list requires live API evidence. Live API verification was not executed because Adobe credentials are unavailable.",
+    "generated_api": [
+      {
+        "method": "GET",
+        "params": {
+          "limit": "25"
+        },
+        "path": "/unifiedtags/tags"
+      }
+    ],
+    "generated_sql": null,
+    "gold_answer": "Based on the API response, the sandbox contains at least two tags: \"AI-Generated\" and \"cool\". The response appears to be truncated, so there may be additional tags not shown in the evidence.",
+    "gold_api": [
+      "GET /unifiedtags/tags?limit=25"
+    ],
+    "gold_sql": "",
+    "query": "List all tags in this sandbox.",
+    "query_id": "example_016",
+    "recommended_fix": "Add a query-family answer template that names concrete SQL/API evidence.",
+    "sql_score": 1.0,
+    "strategy": "SQL_FIRST_API_VERIFY"
+  },
+  {
     "answer_score": 0.4195,
     "api_score": 1.0,
     "failure_category": "ANSWER_TOO_GENERIC",
@@ -3425,6 +3317,60 @@
     "strategy": "TEMPLATE_FIRST"
   },
   {
+    "answer_score": 0.4161,
+    "api_score": 1.0,
+    "failure_category": "ANSWER_TOO_GENERIC",
+    "final_score": 0.8076,
+    "generated_answer": "The requested tag list requires live API evidence. Live API verification was not executed because Adobe credentials are unavailable.",
+    "generated_api": [
+      {
+        "method": "GET",
+        "params": {
+          "limit": "25"
+        },
+        "path": "/unifiedtags/tags"
+      }
+    ],
+    "generated_sql": null,
+    "gold_answer": "Based on the API response, the sandbox contains at least two tags: \"AI-Generated\" and \"cool\". The response appears to be truncated, so there may be additional tags not shown in the evidence.",
+    "gold_api": [
+      "GET /unifiedtags/tags?limit=25"
+    ],
+    "gold_sql": "",
+    "query": "List all tags in this sandbox.",
+    "query_id": "example_016",
+    "recommended_fix": "Add a query-family answer template that names concrete SQL/API evidence.",
+    "sql_score": 1.0,
+    "strategy": "DETERMINISTIC_ROUTER_SELECTED_METADATA"
+  },
+  {
+    "answer_score": 0.4161,
+    "api_score": 1.0,
+    "failure_category": "ANSWER_TOO_GENERIC",
+    "final_score": 0.8076,
+    "generated_answer": "The requested tag list requires live API evidence. Live API verification was not executed because Adobe credentials are unavailable.",
+    "generated_api": [
+      {
+        "method": "GET",
+        "params": {
+          "limit": "25"
+        },
+        "path": "/unifiedtags/tags"
+      }
+    ],
+    "generated_sql": null,
+    "gold_answer": "Based on the API response, the sandbox contains at least two tags: \"AI-Generated\" and \"cool\". The response appears to be truncated, so there may be additional tags not shown in the evidence.",
+    "gold_api": [
+      "GET /unifiedtags/tags?limit=25"
+    ],
+    "gold_sql": "",
+    "query": "List all tags in this sandbox.",
+    "query_id": "example_016",
+    "recommended_fix": "Add a query-family answer template that names concrete SQL/API evidence.",
+    "sql_score": 1.0,
+    "strategy": "TEMPLATE_FIRST"
+  },
+  {
     "answer_score": 0.4195,
     "api_score": 1.0,
     "failure_category": "ANSWER_TOO_GENERIC",
@@ -3450,6 +3396,33 @@
     "strategy": "DETERMINISTIC_ROUTER_SELECTED_METADATA"
   },
   {
+    "answer_score": 0.4154,
+    "api_score": 1.0,
+    "failure_category": "ANSWER_TOO_GENERIC",
+    "final_score": 0.8078,
+    "generated_answer": "The tag count cannot be determined from the available evidence. Live API verification was not executed because Adobe credentials are unavailable.",
+    "generated_api": [
+      {
+        "method": "GET",
+        "params": {
+          "limit": "20"
+        },
+        "path": "/unifiedtags/tags"
+      }
+    ],
+    "generated_sql": null,
+    "gold_answer": "Based on the evidence shown, there are at least 2 tags visible in the API response: \"AI-Generated\" and \"cool.\" However, the response appears to be truncated, so the complete tag count from the sandbox cannot be determined from this partial data.",
+    "gold_api": [
+      "GET /unifiedtags/tags?limit=20"
+    ],
+    "gold_sql": "",
+    "query": "How many tags exist in this sandbox?",
+    "query_id": "example_015",
+    "recommended_fix": "Add a query-family answer template that names concrete SQL/API evidence.",
+    "sql_score": 1.0,
+    "strategy": "SQL_FIRST_API_VERIFY"
+  },
+  {
     "answer_score": 0.4195,
     "api_score": 1.0,
     "failure_category": "ANSWER_TOO_GENERIC",
@@ -3473,6 +3446,33 @@
     "recommended_fix": "Add a query-family answer template that names concrete SQL/API evidence.",
     "sql_score": 1.0,
     "strategy": "TEMPLATE_FIRST"
+  },
+  {
+    "answer_score": 0.4154,
+    "api_score": 1.0,
+    "failure_category": "ANSWER_TOO_GENERIC",
+    "final_score": 0.8083,
+    "generated_answer": "The tag count cannot be determined from the available evidence. Live API verification was not executed because Adobe credentials are unavailable.",
+    "generated_api": [
+      {
+        "method": "GET",
+        "params": {
+          "limit": "20"
+        },
+        "path": "/unifiedtags/tags"
+      }
+    ],
+    "generated_sql": null,
+    "gold_answer": "Based on the evidence shown, there are at least 2 tags visible in the API response: \"AI-Generated\" and \"cool.\" However, the response appears to be truncated, so the complete tag count from the sandbox cannot be determined from this partial data.",
+    "gold_api": [
+      "GET /unifiedtags/tags?limit=20"
+    ],
+    "gold_sql": "",
+    "query": "How many tags exist in this sandbox?",
+    "query_id": "example_015",
+    "recommended_fix": "Add a query-family answer template that names concrete SQL/API evidence.",
+    "sql_score": 1.0,
+    "strategy": "DETERMINISTIC_ROUTER_SELECTED_METADATA"
   },
   {
     "answer_score": 0.4241,
@@ -3529,33 +3529,6 @@
     "strategy": "DETERMINISTIC_ROUTER_SELECTED_METADATA"
   },
   {
-    "answer_score": 0.426,
-    "api_score": 1.0,
-    "failure_category": "ANSWER_TOO_GENERIC",
-    "final_score": 0.8096,
-    "generated_answer": "Segment definition details require live Adobe API evidence with definition names, IDs, and counts. Live API verification was not executed because Adobe credentials are unavailable.",
-    "generated_api": [
-      {
-        "method": "GET",
-        "params": {
-          "limit": "10"
-        },
-        "path": "/data/core/ups/segment/definitions"
-      }
-    ],
-    "generated_sql": null,
-    "gold_answer": "There are 13 segment definitions total across 2 pages. The visible segment from the first page is \"Person: Birthday Today 001,\" which targets all profiles whose birthday falls on a specific month/day. The response was paginated with 10 results per page, so additional segment definitions exist on the second page.",
-    "gold_api": [
-      "GET /data/core/ups/segment/definitions?limit=10"
-    ],
-    "gold_sql": "",
-    "query": "List all segment definitions.",
-    "query_id": "example_023",
-    "recommended_fix": "Add a query-family answer template that names concrete SQL/API evidence.",
-    "sql_score": 1.0,
-    "strategy": "SQL_FIRST_API_VERIFY"
-  },
-  {
     "answer_score": 0.4329,
     "api_score": 1.0,
     "failure_category": "ANSWER_TOO_GENERIC",
@@ -3595,60 +3568,6 @@
     "recommended_fix": "Add a query-family answer template that names concrete SQL/API evidence.",
     "sql_score": 1.0,
     "strategy": "SQL_FIRST_API_VERIFY"
-  },
-  {
-    "answer_score": 0.426,
-    "api_score": 1.0,
-    "failure_category": "ANSWER_TOO_GENERIC",
-    "final_score": 0.8101,
-    "generated_answer": "Segment definition details require live Adobe API evidence with definition names, IDs, and counts. Live API verification was not executed because Adobe credentials are unavailable.",
-    "generated_api": [
-      {
-        "method": "GET",
-        "params": {
-          "limit": "10"
-        },
-        "path": "/data/core/ups/segment/definitions"
-      }
-    ],
-    "generated_sql": null,
-    "gold_answer": "There are 13 segment definitions total across 2 pages. The visible segment from the first page is \"Person: Birthday Today 001,\" which targets all profiles whose birthday falls on a specific month/day. The response was paginated with 10 results per page, so additional segment definitions exist on the second page.",
-    "gold_api": [
-      "GET /data/core/ups/segment/definitions?limit=10"
-    ],
-    "gold_sql": "",
-    "query": "List all segment definitions.",
-    "query_id": "example_023",
-    "recommended_fix": "Add a query-family answer template that names concrete SQL/API evidence.",
-    "sql_score": 1.0,
-    "strategy": "DETERMINISTIC_ROUTER_SELECTED_METADATA"
-  },
-  {
-    "answer_score": 0.426,
-    "api_score": 1.0,
-    "failure_category": "ANSWER_TOO_GENERIC",
-    "final_score": 0.8102,
-    "generated_answer": "Segment definition details require live Adobe API evidence with definition names, IDs, and counts. Live API verification was not executed because Adobe credentials are unavailable.",
-    "generated_api": [
-      {
-        "method": "GET",
-        "params": {
-          "limit": "10"
-        },
-        "path": "/data/core/ups/segment/definitions"
-      }
-    ],
-    "generated_sql": null,
-    "gold_answer": "There are 13 segment definitions total across 2 pages. The visible segment from the first page is \"Person: Birthday Today 001,\" which targets all profiles whose birthday falls on a specific month/day. The response was paginated with 10 results per page, so additional segment definitions exist on the second page.",
-    "gold_api": [
-      "GET /data/core/ups/segment/definitions?limit=10"
-    ],
-    "gold_sql": "",
-    "query": "List all segment definitions.",
-    "query_id": "example_023",
-    "recommended_fix": "Add a query-family answer template that names concrete SQL/API evidence.",
-    "sql_score": 1.0,
-    "strategy": "TEMPLATE_FIRST"
   },
   {
     "answer_score": 0.4329,
@@ -3692,6 +3611,60 @@
     "strategy": "DETERMINISTIC_ROUTER_SELECTED_METADATA"
   },
   {
+    "answer_score": 0.4308,
+    "api_score": 1.0,
+    "failure_category": "ANSWER_TOO_GENERIC",
+    "final_score": 0.811,
+    "generated_answer": "The segment evaluation job count requires live Adobe API evidence. Live API verification was not executed because Adobe credentials are unavailable.",
+    "generated_api": [
+      {
+        "method": "GET",
+        "params": {
+          "limit": "20"
+        },
+        "path": "/data/core/ups/segment/jobs"
+      }
+    ],
+    "generated_sql": null,
+    "gold_answer": "Based on the API response, **zero segment jobs are currently processing**. The only visible job in the response has a status of \"SUCCEEDED,\" indicating it has already completed.",
+    "gold_api": [
+      "GET /data/core/ups/segment/jobs?limit=20"
+    ],
+    "gold_sql": "",
+    "query": "How many segment jobs are currently processing?",
+    "query_id": "example_026",
+    "recommended_fix": "Add a query-family answer template that names concrete SQL/API evidence.",
+    "sql_score": 1.0,
+    "strategy": "SQL_FIRST_API_VERIFY"
+  },
+  {
+    "answer_score": 0.4308,
+    "api_score": 1.0,
+    "failure_category": "ANSWER_TOO_GENERIC",
+    "final_score": 0.8115,
+    "generated_answer": "The segment evaluation job count requires live Adobe API evidence. Live API verification was not executed because Adobe credentials are unavailable.",
+    "generated_api": [
+      {
+        "method": "GET",
+        "params": {
+          "limit": "20"
+        },
+        "path": "/data/core/ups/segment/jobs"
+      }
+    ],
+    "generated_sql": null,
+    "gold_answer": "Based on the API response, **zero segment jobs are currently processing**. The only visible job in the response has a status of \"SUCCEEDED,\" indicating it has already completed.",
+    "gold_api": [
+      "GET /data/core/ups/segment/jobs?limit=20"
+    ],
+    "gold_sql": "",
+    "query": "How many segment jobs are currently processing?",
+    "query_id": "example_026",
+    "recommended_fix": "Add a query-family answer template that names concrete SQL/API evidence.",
+    "sql_score": 1.0,
+    "strategy": "DETERMINISTIC_ROUTER_SELECTED_METADATA"
+  },
+  {
     "answer_score": 0.4408,
     "api_score": 1.0,
     "failure_category": "ANSWER_TOO_GENERIC",
@@ -3719,28 +3692,28 @@
     "strategy": "SQL_FIRST_API_VERIFY"
   },
   {
-    "answer_score": 0.4426,
+    "answer_score": 0.4419,
     "api_score": 1.0,
     "failure_category": "ANSWER_TOO_GENERIC",
     "final_score": 0.8144,
-    "generated_answer": "Segment evaluation job IDs, statuses, sandbox, and segment counts require live Adobe API evidence. Live API verification was not executed because Adobe credentials are unavailable.",
+    "generated_answer": "The requested segment definition list requires live Adobe API evidence with definition names, IDs, and pagination counts. Live API verification was not executed because Adobe credentials are unavailable.",
     "generated_api": [
       {
         "method": "GET",
         "params": {
-          "limit": "20"
+          "limit": "10"
         },
-        "path": "/data/core/ups/segment/jobs"
+        "path": "/data/core/ups/segment/definitions"
       }
     ],
     "generated_sql": null,
-    "gold_answer": "Based on the API response, **zero segment jobs are currently processing**. The only visible job in the response has a status of \"SUCCEEDED,\" indicating it has already completed.",
+    "gold_answer": "There are 13 segment definitions total across 2 pages. The visible segment from the first page is \"Person: Birthday Today 001,\" which targets all profiles whose birthday falls on a specific month/day. The response was paginated with 10 results per page, so additional segment definitions exist on the second page.",
     "gold_api": [
-      "GET /data/core/ups/segment/jobs?limit=20"
+      "GET /data/core/ups/segment/definitions?limit=10"
     ],
     "gold_sql": "",
-    "query": "How many segment jobs are currently processing?",
-    "query_id": "example_026",
+    "query": "List all segment definitions.",
+    "query_id": "example_023",
     "recommended_fix": "Add a query-family answer template that names concrete SQL/API evidence.",
     "sql_score": 1.0,
     "strategy": "SQL_FIRST_API_VERIFY"
@@ -3773,6 +3746,33 @@
     "strategy": "SQL_FIRST_API_VERIFY"
   },
   {
+    "answer_score": 0.4419,
+    "api_score": 1.0,
+    "failure_category": "ANSWER_TOO_GENERIC",
+    "final_score": 0.8149,
+    "generated_answer": "The requested segment definition list requires live Adobe API evidence with definition names, IDs, and pagination counts. Live API verification was not executed because Adobe credentials are unavailable.",
+    "generated_api": [
+      {
+        "method": "GET",
+        "params": {
+          "limit": "10"
+        },
+        "path": "/data/core/ups/segment/definitions"
+      }
+    ],
+    "generated_sql": null,
+    "gold_answer": "There are 13 segment definitions total across 2 pages. The visible segment from the first page is \"Person: Birthday Today 001,\" which targets all profiles whose birthday falls on a specific month/day. The response was paginated with 10 results per page, so additional segment definitions exist on the second page.",
+    "gold_api": [
+      "GET /data/core/ups/segment/definitions?limit=10"
+    ],
+    "gold_sql": "",
+    "query": "List all segment definitions.",
+    "query_id": "example_023",
+    "recommended_fix": "Add a query-family answer template that names concrete SQL/API evidence.",
+    "sql_score": 1.0,
+    "strategy": "DETERMINISTIC_ROUTER_SELECTED_METADATA"
+  },
+  {
     "answer_score": 0.4425,
     "api_score": 1.0,
     "failure_category": "ANSWER_TOO_GENERIC",
@@ -3800,31 +3800,31 @@
     "strategy": "DETERMINISTIC_ROUTER_SELECTED_METADATA"
   },
   {
-    "answer_score": 0.4426,
+    "answer_score": 0.4419,
     "api_score": 1.0,
     "failure_category": "ANSWER_TOO_GENERIC",
     "final_score": 0.815,
-    "generated_answer": "Segment evaluation job IDs, statuses, sandbox, and segment counts require live Adobe API evidence. Live API verification was not executed because Adobe credentials are unavailable.",
+    "generated_answer": "The requested segment definition list requires live Adobe API evidence with definition names, IDs, and pagination counts. Live API verification was not executed because Adobe credentials are unavailable.",
     "generated_api": [
       {
         "method": "GET",
         "params": {
-          "limit": "20"
+          "limit": "10"
         },
-        "path": "/data/core/ups/segment/jobs"
+        "path": "/data/core/ups/segment/definitions"
       }
     ],
     "generated_sql": null,
-    "gold_answer": "Based on the API response, **zero segment jobs are currently processing**. The only visible job in the response has a status of \"SUCCEEDED,\" indicating it has already completed.",
+    "gold_answer": "There are 13 segment definitions total across 2 pages. The visible segment from the first page is \"Person: Birthday Today 001,\" which targets all profiles whose birthday falls on a specific month/day. The response was paginated with 10 results per page, so additional segment definitions exist on the second page.",
     "gold_api": [
-      "GET /data/core/ups/segment/jobs?limit=20"
+      "GET /data/core/ups/segment/definitions?limit=10"
     ],
     "gold_sql": "",
-    "query": "How many segment jobs are currently processing?",
-    "query_id": "example_026",
+    "query": "List all segment definitions.",
+    "query_id": "example_023",
     "recommended_fix": "Add a query-family answer template that names concrete SQL/API evidence.",
     "sql_score": 1.0,
-    "strategy": "DETERMINISTIC_ROUTER_SELECTED_METADATA"
+    "strategy": "TEMPLATE_FIRST"
   },
   {
     "answer_score": 0.5144,
@@ -4237,11 +4237,11 @@
     "strategy": "SQL_ONLY_BASELINE"
   },
   {
-    "answer_score": 0.6538,
+    "answer_score": 0.663,
     "api_score": 1.0,
     "failure_category": "DRY_RUN_ONLY",
-    "final_score": 0.8603,
-    "generated_answer": "Based on the evidence provided, 1 destination(s) were found. The most recent is \"Activate segments to S3 Feed\" (amazon-s3 target) with a modification timestamp of 2026-04-14 16:15:03.000 UTC. Live API evidence is needed to validate the requested sandbox. Live API verification was not executed because Adobe credentials are unavailable.",
+    "final_score": 0.8631,
+    "generated_answer": "Based on the evidence provided, 1 destination was found. The most recent is \"Activate segments to S3 Feed\" (amazon-s3 target) with a modification timestamp of 2026-04-14 16:15:03.000 UTC. Live API evidence is needed to validate the requested sandbox. Live API verification was not executed because Adobe credentials are unavailable.",
     "generated_api": [
       {
         "method": "GET",
@@ -4266,11 +4266,11 @@
     "strategy": "SQL_FIRST_API_VERIFY"
   },
   {
-    "answer_score": 0.6538,
+    "answer_score": 0.663,
     "api_score": 1.0,
     "failure_category": "DRY_RUN_ONLY",
-    "final_score": 0.8609,
-    "generated_answer": "Based on the evidence provided, 1 destination(s) were found. The most recent is \"Activate segments to S3 Feed\" (amazon-s3 target) with a modification timestamp of 2026-04-14 16:15:03.000 UTC. Live API evidence is needed to validate the requested sandbox. Live API verification was not executed because Adobe credentials are unavailable.",
+    "final_score": 0.8637,
+    "generated_answer": "Based on the evidence provided, 1 destination was found. The most recent is \"Activate segments to S3 Feed\" (amazon-s3 target) with a modification timestamp of 2026-04-14 16:15:03.000 UTC. Live API evidence is needed to validate the requested sandbox. Live API verification was not executed because Adobe credentials are unavailable.",
     "generated_api": [
       {
         "method": "GET",
@@ -4295,11 +4295,11 @@
     "strategy": "DETERMINISTIC_ROUTER_SELECTED_METADATA"
   },
   {
-    "answer_score": 0.6538,
+    "answer_score": 0.663,
     "api_score": 1.0,
     "failure_category": "DRY_RUN_ONLY",
-    "final_score": 0.861,
-    "generated_answer": "Based on the evidence provided, 1 destination(s) were found. The most recent is \"Activate segments to S3 Feed\" (amazon-s3 target) with a modification timestamp of 2026-04-14 16:15:03.000 UTC. Live API evidence is needed to validate the requested sandbox. Live API verification was not executed because Adobe credentials are unavailable.",
+    "final_score": 0.8638,
+    "generated_answer": "Based on the evidence provided, 1 destination was found. The most recent is \"Activate segments to S3 Feed\" (amazon-s3 target) with a modification timestamp of 2026-04-14 16:15:03.000 UTC. Live API evidence is needed to validate the requested sandbox. Live API verification was not executed because Adobe credentials are unavailable.",
     "generated_api": [
       {
         "method": "GET",

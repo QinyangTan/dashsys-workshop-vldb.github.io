@@ -6,7 +6,7 @@ import time
 from pathlib import Path
 from typing import Any
 
-from .answer_synthesizer import synthesize_answer
+from .answer_synthesizer import synthesize_answer_with_diagnostics
 from .api_client import AdobeAPIClient
 from .cache import (
     api_response_cache_key,
@@ -211,7 +211,9 @@ class AgentExecutor:
         trajectory.set_timing("execution_time", time.perf_counter() - execution_start)
 
         answer_start = time.perf_counter()
-        final_answer = synthesize_answer(query, tool_results)
+        answer_result = synthesize_answer_with_diagnostics(query, tool_results)
+        final_answer = answer_result.answer
+        trajectory.add_step("answer_diagnostics", answer_result.diagnostics)
         trajectory.set_timing("answer_time", time.perf_counter() - answer_start)
         trajectory_payload = trajectory.save(out_dir / "trajectory.json", final_answer)
         return {

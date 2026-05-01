@@ -1,11 +1,29 @@
 from __future__ import annotations
 
+from dataclasses import dataclass
 from typing import Any
 
+from .answer_reranker import select_best_answer
 from .answer_templates import render_answer_template
 
 
+@dataclass
+class AnswerResult:
+    answer: str
+    diagnostics: dict[str, Any]
+
+
 def synthesize_answer(query: str, tool_results: list[dict[str, Any]]) -> str:
+    return synthesize_answer_with_diagnostics(query, tool_results).answer
+
+
+def synthesize_answer_with_diagnostics(query: str, tool_results: list[dict[str, Any]]) -> AnswerResult:
+    base_answer = synthesize_base_answer(query, tool_results)
+    selection = select_best_answer(query, tool_results, base_answer)
+    return AnswerResult(answer=selection.answer, diagnostics=selection.diagnostics)
+
+
+def synthesize_base_answer(query: str, tool_results: list[dict[str, Any]]) -> str:
     sql_results = [result for result in tool_results if result.get("type") == "sql"]
     api_results = [result for result in tool_results if result.get("type") == "api"]
 

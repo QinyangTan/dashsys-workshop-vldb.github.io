@@ -13,6 +13,7 @@ if str(ROOT) not in sys.path:
 from dashagent.config import Config
 from dashagent.eval_harness import EvalHarness
 from dashagent.planner import STRATEGIES
+from dashagent.answer_style_miner import write_answer_style_patterns
 
 
 def main() -> int:
@@ -26,6 +27,7 @@ def main() -> int:
     args = parser.parse_args()
 
     config = Config.from_env(ROOT)
+    write_answer_style_patterns(config)
     harness = EvalHarness(config)
     result = harness.run(strategies=args.strategy or STRATEGIES, include_live_api_metrics=args.live_api)
     print(

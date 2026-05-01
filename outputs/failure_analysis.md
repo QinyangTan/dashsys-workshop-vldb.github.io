@@ -18,23 +18,23 @@ Rows are sorted from lowest final score to highest.
 | 12 | example_011 | DETERMINISTIC_ROUTER_SELECTED_METADATA | 0.4503 | 0.9000 | 0.0000 | 0.3590 | API_CALL_COUNT_MISMATCH | Emit the expected sequence of API calls or intentionally document why a call is skipped. |
 | 13 | example_011 | SQL_ONLY_BASELINE | 0.4503 | 0.9000 | 0.0000 | 0.3590 | API_CALL_COUNT_MISMATCH | Emit the expected sequence of API calls or intentionally document why a call is skipped. |
 | 14 | example_002 | LLM_FREE_AGENT_BASELINE | 0.4663 | 0.0000 | 1.0000 | 0.6654 | SQL_COLUMN_MISMATCH | Align the selected projection/aliases with the requested fields and known gold-style columns. |
-| 15 | example_015 | SQL_ONLY_BASELINE | 0.4757 | 1.0000 | 0.0000 | 0.3048 | API_CALL_COUNT_MISMATCH | Emit the expected sequence of API calls or intentionally document why a call is skipped. |
-| 16 | example_016 | SQL_ONLY_BASELINE | 0.4800 | 1.0000 | 0.0000 | 0.3308 | API_CALL_COUNT_MISMATCH | Emit the expected sequence of API calls or intentionally document why a call is skipped. |
-| 17 | example_019 | SQL_ONLY_BASELINE | 0.4816 | 1.0000 | 0.0000 | 0.3361 | API_CALL_COUNT_MISMATCH | Emit the expected sequence of API calls or intentionally document why a call is skipped. |
-| 18 | example_020 | SQL_ONLY_BASELINE | 0.4867 | 1.0000 | 0.0000 | 0.3415 | API_CALL_COUNT_MISMATCH | Emit the expected sequence of API calls or intentionally document why a call is skipped. |
-| 19 | example_030 | SQL_ONLY_BASELINE | 0.4872 | 1.0000 | 0.0000 | 0.3551 | API_CALL_COUNT_MISMATCH | Emit the expected sequence of API calls or intentionally document why a call is skipped. |
-| 20 | example_028 | SQL_ONLY_BASELINE | 0.4894 | 1.0000 | 0.0000 | 0.3624 | API_CALL_COUNT_MISMATCH | Emit the expected sequence of API calls or intentionally document why a call is skipped. |
-| 21 | example_031 | SQL_ONLY_BASELINE | 0.4919 | 1.0000 | 0.0000 | 0.3710 | API_CALL_COUNT_MISMATCH | Emit the expected sequence of API calls or intentionally document why a call is skipped. |
-| 22 | example_033 | SQL_ONLY_BASELINE | 0.4923 | 1.0000 | 0.0000 | 0.3716 | API_CALL_COUNT_MISMATCH | Emit the expected sequence of API calls or intentionally document why a call is skipped. |
-| 23 | example_023 | SQL_ONLY_BASELINE | 0.4944 | 1.0000 | 0.0000 | 0.3837 | API_CALL_COUNT_MISMATCH | Emit the expected sequence of API calls or intentionally document why a call is skipped. |
-| 24 | example_024 | SQL_ONLY_BASELINE | 0.4950 | 1.0000 | 0.0000 | 0.3858 | API_CALL_COUNT_MISMATCH | Emit the expected sequence of API calls or intentionally document why a call is skipped. |
-| 25 | example_021 | SQL_ONLY_BASELINE | 0.4951 | 1.0000 | 0.0000 | 0.3780 | API_CALL_COUNT_MISMATCH | Emit the expected sequence of API calls or intentionally document why a call is skipped. |
-| 26 | example_025 | SQL_ONLY_BASELINE | 0.5012 | 1.0000 | 0.0000 | 0.4067 | API_CALL_COUNT_MISMATCH | Emit the expected sequence of API calls or intentionally document why a call is skipped. |
-| 27 | example_018 | SQL_ONLY_BASELINE | 0.5023 | 1.0000 | 0.0000 | 0.3993 | API_CALL_COUNT_MISMATCH | Emit the expected sequence of API calls or intentionally document why a call is skipped. |
-| 28 | example_029 | SQL_ONLY_BASELINE | 0.5030 | 1.0000 | 0.0000 | 0.3975 | API_CALL_COUNT_MISMATCH | Emit the expected sequence of API calls or intentionally document why a call is skipped. |
-| 29 | example_012 | SQL_ONLY_BASELINE | 0.5051 | 1.0000 | 0.0000 | 0.4163 | API_CALL_COUNT_MISMATCH | Emit the expected sequence of API calls or intentionally document why a call is skipped. |
-| 30 | example_000 | LLM_FREE_AGENT_BASELINE | 0.5063 | 0.0000 | 1.0000 | 0.7922 | SQL_COLUMN_MISMATCH | Align the selected projection/aliases with the requested fields and known gold-style columns. |
-| 31 | example_026 | SQL_ONLY_BASELINE | 0.5118 | 1.0000 | 0.0000 | 0.4300 | API_CALL_COUNT_MISMATCH | Emit the expected sequence of API calls or intentionally document why a call is skipped. |
+| 15 | example_019 | SQL_ONLY_BASELINE | 0.4816 | 1.0000 | 0.0000 | 0.3361 | API_CALL_COUNT_MISMATCH | Emit the expected sequence of API calls or intentionally document why a call is skipped. |
+| 16 | example_030 | SQL_ONLY_BASELINE | 0.4830 | 1.0000 | 0.0000 | 0.3408 | API_CALL_COUNT_MISMATCH | Emit the expected sequence of API calls or intentionally document why a call is skipped. |
+| 17 | example_028 | SQL_ONLY_BASELINE | 0.4847 | 1.0000 | 0.0000 | 0.3466 | API_CALL_COUNT_MISMATCH | Emit the expected sequence of API calls or intentionally document why a call is skipped. |
+| 18 | example_015 | SQL_ONLY_BASELINE | 0.4848 | 1.0000 | 0.0000 | 0.3353 | API_CALL_COUNT_MISMATCH | Emit the expected sequence of API calls or intentionally document why a call is skipped. |
+| 19 | example_031 | SQL_ONLY_BASELINE | 0.4889 | 1.0000 | 0.0000 | 0.3611 | API_CALL_COUNT_MISMATCH | Emit the expected sequence of API calls or intentionally document why a call is skipped. |
+| 20 | example_033 | SQL_ONLY_BASELINE | 0.4923 | 1.0000 | 0.0000 | 0.3716 | API_CALL_COUNT_MISMATCH | Emit the expected sequence of API calls or intentionally document why a call is skipped. |
+| 21 | example_016 | SQL_ONLY_BASELINE | 0.4933 | 1.0000 | 0.0000 | 0.3750 | API_CALL_COUNT_MISMATCH | Emit the expected sequence of API calls or intentionally document why a call is skipped. |
+| 22 | example_024 | SQL_ONLY_BASELINE | 0.4950 | 1.0000 | 0.0000 | 0.3858 | API_CALL_COUNT_MISMATCH | Emit the expected sequence of API calls or intentionally document why a call is skipped. |
+| 23 | example_021 | SQL_ONLY_BASELINE | 0.4951 | 1.0000 | 0.0000 | 0.3780 | API_CALL_COUNT_MISMATCH | Emit the expected sequence of API calls or intentionally document why a call is skipped. |
+| 24 | example_025 | SQL_ONLY_BASELINE | 0.5012 | 1.0000 | 0.0000 | 0.4067 | API_CALL_COUNT_MISMATCH | Emit the expected sequence of API calls or intentionally document why a call is skipped. |
+| 25 | example_020 | SQL_ONLY_BASELINE | 0.5018 | 1.0000 | 0.0000 | 0.3919 | API_CALL_COUNT_MISMATCH | Emit the expected sequence of API calls or intentionally document why a call is skipped. |
+| 26 | example_018 | SQL_ONLY_BASELINE | 0.5023 | 1.0000 | 0.0000 | 0.3993 | API_CALL_COUNT_MISMATCH | Emit the expected sequence of API calls or intentionally document why a call is skipped. |
+| 27 | example_023 | SQL_ONLY_BASELINE | 0.5042 | 1.0000 | 0.0000 | 0.4163 | API_CALL_COUNT_MISMATCH | Emit the expected sequence of API calls or intentionally document why a call is skipped. |
+| 28 | example_012 | SQL_ONLY_BASELINE | 0.5051 | 1.0000 | 0.0000 | 0.4163 | API_CALL_COUNT_MISMATCH | Emit the expected sequence of API calls or intentionally document why a call is skipped. |
+| 29 | example_000 | LLM_FREE_AGENT_BASELINE | 0.5063 | 0.0000 | 1.0000 | 0.7922 | SQL_COLUMN_MISMATCH | Align the selected projection/aliases with the requested fields and known gold-style columns. |
+| 30 | example_029 | SQL_ONLY_BASELINE | 0.5084 | 1.0000 | 0.0000 | 0.4156 | API_CALL_COUNT_MISMATCH | Emit the expected sequence of API calls or intentionally document why a call is skipped. |
+| 31 | example_026 | SQL_ONLY_BASELINE | 0.5094 | 1.0000 | 0.0000 | 0.4218 | API_CALL_COUNT_MISMATCH | Emit the expected sequence of API calls or intentionally document why a call is skipped. |
 | 32 | example_034 | SQL_ONLY_BASELINE | 0.5124 | 1.0000 | 0.0000 | 0.4283 | API_CALL_COUNT_MISMATCH | Emit the expected sequence of API calls or intentionally document why a call is skipped. |
 | 33 | example_013 | DETERMINISTIC_ROUTER_SELECTED_METADATA | 0.5157 | 1.0000 | 0.0000 | 0.4549 | API_CALL_COUNT_MISMATCH | Emit the expected sequence of API calls or intentionally document why a call is skipped. |
 | 34 | example_013 | SQL_ONLY_BASELINE | 0.5157 | 1.0000 | 0.0000 | 0.4549 | API_CALL_COUNT_MISMATCH | Emit the expected sequence of API calls or intentionally document why a call is skipped. |
@@ -50,7 +50,7 @@ Rows are sorted from lowest final score to highest.
 | 44 | example_010 | LLM_FREE_AGENT_BASELINE | 0.5588 | 0.0000 | 1.0000 | 0.9694 | SQL_COLUMN_MISMATCH | Align the selected projection/aliases with the requested fields and known gold-style columns. |
 | 45 | example_014 | DETERMINISTIC_ROUTER_SELECTED_METADATA | 0.5612 | 0.9000 | 0.0000 | 0.7283 | API_CALL_COUNT_MISMATCH | Emit the expected sequence of API calls or intentionally document why a call is skipped. |
 | 46 | example_014 | SQL_ONLY_BASELINE | 0.5612 | 0.9000 | 0.0000 | 0.7283 | API_CALL_COUNT_MISMATCH | Emit the expected sequence of API calls or intentionally document why a call is skipped. |
-| 47 | example_005 | SQL_ONLY_BASELINE | 0.5769 | 1.0000 | 0.0000 | 0.6578 | API_CALL_COUNT_MISMATCH | Emit the expected sequence of API calls or intentionally document why a call is skipped. |
+| 47 | example_005 | SQL_ONLY_BASELINE | 0.5799 | 1.0000 | 0.0000 | 0.6677 | API_CALL_COUNT_MISMATCH | Emit the expected sequence of API calls or intentionally document why a call is skipped. |
 | 48 | example_007 | DETERMINISTIC_ROUTER_SELECTED_METADATA | 0.5911 | 0.9000 | 0.0000 | 0.8333 | API_CALL_COUNT_MISMATCH | Emit the expected sequence of API calls or intentionally document why a call is skipped. |
 | 49 | example_007 | SQL_ONLY_BASELINE | 0.5911 | 0.9000 | 0.0000 | 0.8333 | API_CALL_COUNT_MISMATCH | Emit the expected sequence of API calls or intentionally document why a call is skipped. |
 | 50 | example_006 | SQL_ONLY_BASELINE | 0.6264 | 1.0000 | 0.0000 | 0.8204 | API_CALL_COUNT_MISMATCH | Emit the expected sequence of API calls or intentionally document why a call is skipped. |
@@ -60,96 +60,96 @@ Rows are sorted from lowest final score to highest.
 | 54 | example_017 | DETERMINISTIC_ROUTER_SELECTED_METADATA | 0.7284 | 1.0000 | 0.7000 | 0.4532 | API_CALL_COUNT_MISMATCH | Emit the expected sequence of API calls or intentionally document why a call is skipped. |
 | 55 | example_032 | LLM_FREE_AGENT_BASELINE | 0.7471 | 1.0000 | 1.0000 | 0.2736 | ANSWER_WRONG_FACT | Audit answer template field selection and avoid summarizing the wrong row/value. |
 | 56 | example_021 | DETERMINISTIC_ROUTER_SELECTED_METADATA | 0.7634 | 1.0000 | 0.8304 | 0.4408 | ANSWER_TOO_GENERIC | Add a query-family answer template that names concrete SQL/API evidence. |
-| 57 | example_029 | LLM_FREE_AGENT_BASELINE | 0.7775 | 1.0000 | 1.0000 | 0.3602 | ANSWER_TOO_GENERIC | Add a query-family answer template that names concrete SQL/API evidence. |
-| 58 | example_029 | TEMPLATE_FIRST | 0.7776 | 1.0000 | 1.0000 | 0.3602 | ANSWER_TOO_GENERIC | Add a query-family answer template that names concrete SQL/API evidence. |
-| 59 | example_030 | LLM_FREE_AGENT_BASELINE | 0.7809 | 1.0000 | 1.0000 | 0.3827 | ANSWER_TOO_GENERIC | Add a query-family answer template that names concrete SQL/API evidence. |
+| 57 | example_030 | LLM_FREE_AGENT_BASELINE | 0.7808 | 1.0000 | 1.0000 | 0.3823 | ANSWER_TOO_GENERIC | Add a query-family answer template that names concrete SQL/API evidence. |
+| 58 | example_029 | LLM_FREE_AGENT_BASELINE | 0.7812 | 1.0000 | 1.0000 | 0.3725 | ANSWER_TOO_GENERIC | Add a query-family answer template that names concrete SQL/API evidence. |
+| 59 | example_029 | TEMPLATE_FIRST | 0.7813 | 1.0000 | 1.0000 | 0.3725 | ANSWER_TOO_GENERIC | Add a query-family answer template that names concrete SQL/API evidence. |
 | 60 | example_025 | LLM_FREE_AGENT_BASELINE | 0.7820 | 1.0000 | 1.0000 | 0.3912 | ANSWER_TOO_GENERIC | Add a query-family answer template that names concrete SQL/API evidence. |
 | 61 | example_011 | SQL_FIRST_API_VERIFY | 0.7823 | 0.9000 | 1.0000 | 0.5141 | DRY_RUN_ONLY | Run with Adobe credentials for live evidence, or make the answer explicitly describe dry-run limitations. |
-| 62 | example_020 | LLM_FREE_AGENT_BASELINE | 0.7826 | 1.0000 | 1.0000 | 0.3757 | ANSWER_TOO_GENERIC | Add a query-family answer template that names concrete SQL/API evidence. |
-| 63 | example_016 | LLM_FREE_AGENT_BASELINE | 0.7828 | 1.0000 | 1.0000 | 0.3871 | ANSWER_TOO_GENERIC | Add a query-family answer template that names concrete SQL/API evidence. |
-| 64 | example_020 | TEMPLATE_FIRST | 0.7828 | 1.0000 | 1.0000 | 0.3757 | ANSWER_TOO_GENERIC | Add a query-family answer template that names concrete SQL/API evidence. |
-| 65 | example_011 | TEMPLATE_FIRST | 0.7830 | 0.9000 | 1.0000 | 0.5141 | DRY_RUN_ONLY | Run with Adobe credentials for live evidence, or make the answer explicitly describe dry-run limitations. |
-| 66 | example_033 | TEMPLATE_FIRST | 0.7832 | 1.0000 | 1.0000 | 0.3951 | ANSWER_TOO_GENERIC | Add a query-family answer template that names concrete SQL/API evidence. |
-| 67 | example_033 | LLM_FREE_AGENT_BASELINE | 0.7838 | 1.0000 | 1.0000 | 0.3951 | ANSWER_TOO_GENERIC | Add a query-family answer template that names concrete SQL/API evidence. |
-| 68 | example_024 | LLM_FREE_AGENT_BASELINE | 0.7859 | 1.0000 | 1.0000 | 0.4050 | ANSWER_TOO_GENERIC | Add a query-family answer template that names concrete SQL/API evidence. |
-| 69 | example_015 | LLM_FREE_AGENT_BASELINE | 0.7869 | 1.0000 | 1.0000 | 0.3890 | ANSWER_TOO_GENERIC | Add a query-family answer template that names concrete SQL/API evidence. |
-| 70 | example_015 | TEMPLATE_FIRST | 0.7870 | 1.0000 | 1.0000 | 0.3890 | ANSWER_TOO_GENERIC | Add a query-family answer template that names concrete SQL/API evidence. |
-| 71 | example_019 | LLM_FREE_AGENT_BASELINE | 0.7874 | 1.0000 | 1.0000 | 0.4029 | ANSWER_TOO_GENERIC | Add a query-family answer template that names concrete SQL/API evidence. |
-| 72 | example_028 | LLM_FREE_AGENT_BASELINE | 0.7874 | 1.0000 | 1.0000 | 0.4036 | ANSWER_TOO_GENERIC | Add a query-family answer template that names concrete SQL/API evidence. |
-| 73 | example_031 | LLM_FREE_AGENT_BASELINE | 0.7877 | 1.0000 | 1.0000 | 0.4059 | ANSWER_TOO_GENERIC | Add a query-family answer template that names concrete SQL/API evidence. |
-| 74 | example_017 | LLM_FREE_AGENT_BASELINE | 0.7897 | 1.0000 | 1.0000 | 0.4532 | ANSWER_TOO_GENERIC | Add a query-family answer template that names concrete SQL/API evidence. |
-| 75 | example_029 | SQL_FIRST_API_VERIFY | 0.7909 | 1.0000 | 1.0000 | 0.3602 | ANSWER_TOO_GENERIC | Add a query-family answer template that names concrete SQL/API evidence. |
-| 76 | example_001 | SQL_FIRST_API_VERIFY | 0.7910 | 0.9000 | 1.0000 | 0.5468 | DRY_RUN_ONLY | Run with Adobe credentials for live evidence, or make the answer explicitly describe dry-run limitations. |
-| 77 | example_029 | DETERMINISTIC_ROUTER_SELECTED_METADATA | 0.7914 | 1.0000 | 1.0000 | 0.3602 | ANSWER_TOO_GENERIC | Add a query-family answer template that names concrete SQL/API evidence. |
-| 78 | example_001 | DETERMINISTIC_ROUTER_SELECTED_METADATA | 0.7917 | 0.9000 | 1.0000 | 0.5468 | DRY_RUN_ONLY | Run with Adobe credentials for live evidence, or make the answer explicitly describe dry-run limitations. |
-| 79 | example_001 | TEMPLATE_FIRST | 0.7917 | 0.9000 | 1.0000 | 0.5468 | DRY_RUN_ONLY | Run with Adobe credentials for live evidence, or make the answer explicitly describe dry-run limitations. |
-| 80 | example_023 | LLM_FREE_AGENT_BASELINE | 0.7925 | 1.0000 | 1.0000 | 0.4260 | ANSWER_TOO_GENERIC | Add a query-family answer template that names concrete SQL/API evidence. |
-| 81 | example_018 | LLM_FREE_AGENT_BASELINE | 0.7938 | 1.0000 | 1.0000 | 0.4195 | ANSWER_TOO_GENERIC | Add a query-family answer template that names concrete SQL/API evidence. |
-| 82 | example_013 | SQL_FIRST_API_VERIFY | 0.7938 | 1.0000 | 1.0000 | 0.4324 | ANSWER_TOO_GENERIC | Add a query-family answer template that names concrete SQL/API evidence. |
-| 83 | example_013 | TEMPLATE_FIRST | 0.7947 | 1.0000 | 1.0000 | 0.4324 | ANSWER_TOO_GENERIC | Add a query-family answer template that names concrete SQL/API evidence. |
-| 84 | example_027 | LLM_FREE_AGENT_BASELINE | 0.7953 | 1.0000 | 1.0000 | 0.4241 | ANSWER_TOO_GENERIC | Add a query-family answer template that names concrete SQL/API evidence. |
-| 85 | example_027 | TEMPLATE_FIRST | 0.7954 | 1.0000 | 1.0000 | 0.4241 | ANSWER_TOO_GENERIC | Add a query-family answer template that names concrete SQL/API evidence. |
-| 86 | example_020 | SQL_FIRST_API_VERIFY | 0.7957 | 1.0000 | 1.0000 | 0.3757 | ANSWER_TOO_GENERIC | Add a query-family answer template that names concrete SQL/API evidence. |
-| 87 | example_007 | SQL_FIRST_API_VERIFY | 0.7959 | 0.9000 | 0.7760 | 0.7902 | API_PATH_MISMATCH | Add endpoint selection rules or endpoint catalog coverage for this query family. |
-| 88 | example_020 | DETERMINISTIC_ROUTER_SELECTED_METADATA | 0.7962 | 1.0000 | 1.0000 | 0.3757 | ANSWER_TOO_GENERIC | Add a query-family answer template that names concrete SQL/API evidence. |
-| 89 | example_030 | SQL_FIRST_API_VERIFY | 0.7965 | 1.0000 | 1.0000 | 0.3827 | ANSWER_TOO_GENERIC | Add a query-family answer template that names concrete SQL/API evidence. |
-| 90 | example_007 | TEMPLATE_FIRST | 0.7965 | 0.9000 | 0.7760 | 0.7902 | API_PATH_MISMATCH | Add endpoint selection rules or endpoint catalog coverage for this query family. |
-| 91 | example_034 | LLM_FREE_AGENT_BASELINE | 0.7969 | 1.0000 | 1.0000 | 0.4329 | ANSWER_TOO_GENERIC | Add a query-family answer template that names concrete SQL/API evidence. |
-| 92 | example_030 | DETERMINISTIC_ROUTER_SELECTED_METADATA | 0.7970 | 1.0000 | 1.0000 | 0.3827 | ANSWER_TOO_GENERIC | Add a query-family answer template that names concrete SQL/API evidence. |
-| 93 | example_030 | TEMPLATE_FIRST | 0.7971 | 1.0000 | 1.0000 | 0.3827 | ANSWER_TOO_GENERIC | Add a query-family answer template that names concrete SQL/API evidence. |
-| 94 | example_034 | TEMPLATE_FIRST | 0.7971 | 1.0000 | 1.0000 | 0.4329 | ANSWER_TOO_GENERIC | Add a query-family answer template that names concrete SQL/API evidence. |
-| 95 | example_033 | SQL_FIRST_API_VERIFY | 0.7973 | 1.0000 | 1.0000 | 0.3951 | ANSWER_TOO_GENERIC | Add a query-family answer template that names concrete SQL/API evidence. |
-| 96 | example_033 | DETERMINISTIC_ROUTER_SELECTED_METADATA | 0.7978 | 1.0000 | 1.0000 | 0.3951 | ANSWER_TOO_GENERIC | Add a query-family answer template that names concrete SQL/API evidence. |
-| 97 | example_016 | SQL_FIRST_API_VERIFY | 0.7983 | 1.0000 | 1.0000 | 0.3871 | ANSWER_TOO_GENERIC | Add a query-family answer template that names concrete SQL/API evidence. |
-| 98 | example_016 | DETERMINISTIC_ROUTER_SELECTED_METADATA | 0.7989 | 1.0000 | 1.0000 | 0.3871 | ANSWER_TOO_GENERIC | Add a query-family answer template that names concrete SQL/API evidence. |
-| 99 | example_016 | TEMPLATE_FIRST | 0.7989 | 1.0000 | 1.0000 | 0.3871 | ANSWER_TOO_GENERIC | Add a query-family answer template that names concrete SQL/API evidence. |
-| 100 | example_025 | SQL_FIRST_API_VERIFY | 0.7991 | 1.0000 | 1.0000 | 0.3912 | ANSWER_TOO_GENERIC | Add a query-family answer template that names concrete SQL/API evidence. |
-| 101 | example_025 | DETERMINISTIC_ROUTER_SELECTED_METADATA | 0.7996 | 1.0000 | 1.0000 | 0.3912 | ANSWER_TOO_GENERIC | Add a query-family answer template that names concrete SQL/API evidence. |
-| 102 | example_025 | TEMPLATE_FIRST | 0.7997 | 1.0000 | 1.0000 | 0.3912 | ANSWER_TOO_GENERIC | Add a query-family answer template that names concrete SQL/API evidence. |
-| 103 | example_021 | TEMPLATE_FIRST | 0.7998 | 1.0000 | 1.0000 | 0.4408 | ANSWER_TOO_GENERIC | Add a query-family answer template that names concrete SQL/API evidence. |
-| 104 | example_015 | SQL_FIRST_API_VERIFY | 0.8000 | 1.0000 | 1.0000 | 0.3890 | ANSWER_TOO_GENERIC | Add a query-family answer template that names concrete SQL/API evidence. |
-| 105 | example_015 | DETERMINISTIC_ROUTER_SELECTED_METADATA | 0.8005 | 1.0000 | 1.0000 | 0.3890 | ANSWER_TOO_GENERIC | Add a query-family answer template that names concrete SQL/API evidence. |
-| 106 | example_022 | LLM_FREE_AGENT_BASELINE | 0.8014 | 1.0000 | 1.0000 | 0.4425 | ANSWER_TOO_GENERIC | Add a query-family answer template that names concrete SQL/API evidence. |
-| 107 | example_026 | LLM_FREE_AGENT_BASELINE | 0.8014 | 1.0000 | 1.0000 | 0.4426 | ANSWER_TOO_GENERIC | Add a query-family answer template that names concrete SQL/API evidence. |
-| 108 | example_022 | TEMPLATE_FIRST | 0.8015 | 1.0000 | 1.0000 | 0.4425 | ANSWER_TOO_GENERIC | Add a query-family answer template that names concrete SQL/API evidence. |
-| 109 | example_026 | TEMPLATE_FIRST | 0.8015 | 1.0000 | 1.0000 | 0.4426 | ANSWER_TOO_GENERIC | Add a query-family answer template that names concrete SQL/API evidence. |
-| 110 | example_012 | SQL_FIRST_API_VERIFY | 0.8024 | 1.0000 | 1.0000 | 0.4574 | ANSWER_WRONG_FACT | Audit answer template field selection and avoid summarizing the wrong row/value. |
-| 111 | example_019 | SQL_FIRST_API_VERIFY | 0.8029 | 1.0000 | 1.0000 | 0.4029 | ANSWER_TOO_GENERIC | Add a query-family answer template that names concrete SQL/API evidence. |
-| 112 | example_012 | DETERMINISTIC_ROUTER_SELECTED_METADATA | 0.8030 | 1.0000 | 1.0000 | 0.4574 | ANSWER_WRONG_FACT | Audit answer template field selection and avoid summarizing the wrong row/value. |
-| 113 | example_028 | SQL_FIRST_API_VERIFY | 0.8030 | 1.0000 | 1.0000 | 0.4036 | ANSWER_TOO_GENERIC | Add a query-family answer template that names concrete SQL/API evidence. |
-| 114 | example_024 | SQL_FIRST_API_VERIFY | 0.8031 | 1.0000 | 1.0000 | 0.4050 | ANSWER_TOO_GENERIC | Add a query-family answer template that names concrete SQL/API evidence. |
-| 115 | example_012 | TEMPLATE_FIRST | 0.8031 | 1.0000 | 1.0000 | 0.4574 | ANSWER_WRONG_FACT | Audit answer template field selection and avoid summarizing the wrong row/value. |
-| 116 | example_017 | SQL_FIRST_API_VERIFY | 0.8032 | 1.0000 | 1.0000 | 0.4532 | ANSWER_TOO_GENERIC | Add a query-family answer template that names concrete SQL/API evidence. |
-| 117 | example_031 | SQL_FIRST_API_VERIFY | 0.8032 | 1.0000 | 1.0000 | 0.4059 | ANSWER_TOO_GENERIC | Add a query-family answer template that names concrete SQL/API evidence. |
-| 118 | example_019 | DETERMINISTIC_ROUTER_SELECTED_METADATA | 0.8034 | 1.0000 | 1.0000 | 0.4029 | ANSWER_TOO_GENERIC | Add a query-family answer template that names concrete SQL/API evidence. |
-| 119 | example_028 | DETERMINISTIC_ROUTER_SELECTED_METADATA | 0.8035 | 1.0000 | 1.0000 | 0.4036 | ANSWER_TOO_GENERIC | Add a query-family answer template that names concrete SQL/API evidence. |
-| 120 | example_019 | TEMPLATE_FIRST | 0.8035 | 1.0000 | 1.0000 | 0.4029 | ANSWER_TOO_GENERIC | Add a query-family answer template that names concrete SQL/API evidence. |
-| 121 | example_028 | TEMPLATE_FIRST | 0.8035 | 1.0000 | 1.0000 | 0.4036 | ANSWER_TOO_GENERIC | Add a query-family answer template that names concrete SQL/API evidence. |
-| 122 | example_024 | DETERMINISTIC_ROUTER_SELECTED_METADATA | 0.8036 | 1.0000 | 1.0000 | 0.4050 | ANSWER_TOO_GENERIC | Add a query-family answer template that names concrete SQL/API evidence. |
-| 123 | example_024 | TEMPLATE_FIRST | 0.8036 | 1.0000 | 1.0000 | 0.4050 | ANSWER_TOO_GENERIC | Add a query-family answer template that names concrete SQL/API evidence. |
-| 124 | example_031 | DETERMINISTIC_ROUTER_SELECTED_METADATA | 0.8037 | 1.0000 | 1.0000 | 0.4059 | ANSWER_TOO_GENERIC | Add a query-family answer template that names concrete SQL/API evidence. |
-| 125 | example_017 | TEMPLATE_FIRST | 0.8038 | 1.0000 | 1.0000 | 0.4532 | ANSWER_TOO_GENERIC | Add a query-family answer template that names concrete SQL/API evidence. |
-| 126 | example_031 | TEMPLATE_FIRST | 0.8038 | 1.0000 | 1.0000 | 0.4059 | ANSWER_TOO_GENERIC | Add a query-family answer template that names concrete SQL/API evidence. |
-| 127 | example_003 | SQL_FIRST_API_VERIFY | 0.8046 | 0.9000 | 1.0000 | 0.6473 | DRY_RUN_ONLY | Run with Adobe credentials for live evidence, or make the answer explicitly describe dry-run limitations. |
-| 128 | example_003 | TEMPLATE_FIRST | 0.8053 | 0.9000 | 1.0000 | 0.6473 | DRY_RUN_ONLY | Run with Adobe credentials for live evidence, or make the answer explicitly describe dry-run limitations. |
-| 129 | example_006 | SQL_FIRST_API_VERIFY | 0.8068 | 1.0000 | 0.7480 | 0.7234 | API_CALL_COUNT_MISMATCH | Emit the expected sequence of API calls or intentionally document why a call is skipped. |
-| 130 | example_018 | SQL_FIRST_API_VERIFY | 0.8073 | 1.0000 | 1.0000 | 0.4195 | ANSWER_TOO_GENERIC | Add a query-family answer template that names concrete SQL/API evidence. |
-| 131 | example_006 | DETERMINISTIC_ROUTER_SELECTED_METADATA | 0.8074 | 1.0000 | 0.7480 | 0.7234 | API_CALL_COUNT_MISMATCH | Emit the expected sequence of API calls or intentionally document why a call is skipped. |
-| 132 | example_006 | TEMPLATE_FIRST | 0.8075 | 1.0000 | 0.7480 | 0.7234 | API_CALL_COUNT_MISMATCH | Emit the expected sequence of API calls or intentionally document why a call is skipped. |
-| 133 | example_018 | DETERMINISTIC_ROUTER_SELECTED_METADATA | 0.8078 | 1.0000 | 1.0000 | 0.4195 | ANSWER_TOO_GENERIC | Add a query-family answer template that names concrete SQL/API evidence. |
-| 134 | example_018 | TEMPLATE_FIRST | 0.8079 | 1.0000 | 1.0000 | 0.4195 | ANSWER_TOO_GENERIC | Add a query-family answer template that names concrete SQL/API evidence. |
+| 62 | example_011 | TEMPLATE_FIRST | 0.7830 | 0.9000 | 1.0000 | 0.5141 | DRY_RUN_ONLY | Run with Adobe credentials for live evidence, or make the answer explicitly describe dry-run limitations. |
+| 63 | example_033 | TEMPLATE_FIRST | 0.7832 | 1.0000 | 1.0000 | 0.3951 | ANSWER_TOO_GENERIC | Add a query-family answer template that names concrete SQL/API evidence. |
+| 64 | example_033 | LLM_FREE_AGENT_BASELINE | 0.7838 | 1.0000 | 1.0000 | 0.3951 | ANSWER_TOO_GENERIC | Add a query-family answer template that names concrete SQL/API evidence. |
+| 65 | example_031 | LLM_FREE_AGENT_BASELINE | 0.7855 | 1.0000 | 1.0000 | 0.3985 | ANSWER_TOO_GENERIC | Add a query-family answer template that names concrete SQL/API evidence. |
+| 66 | example_024 | LLM_FREE_AGENT_BASELINE | 0.7859 | 1.0000 | 1.0000 | 0.4050 | ANSWER_TOO_GENERIC | Add a query-family answer template that names concrete SQL/API evidence. |
+| 67 | example_019 | LLM_FREE_AGENT_BASELINE | 0.7874 | 1.0000 | 1.0000 | 0.4029 | ANSWER_TOO_GENERIC | Add a query-family answer template that names concrete SQL/API evidence. |
+| 68 | example_028 | LLM_FREE_AGENT_BASELINE | 0.7875 | 1.0000 | 1.0000 | 0.4037 | ANSWER_TOO_GENERIC | Add a query-family answer template that names concrete SQL/API evidence. |
+| 69 | example_020 | LLM_FREE_AGENT_BASELINE | 0.7878 | 1.0000 | 1.0000 | 0.3929 | ANSWER_TOO_GENERIC | Add a query-family answer template that names concrete SQL/API evidence. |
+| 70 | example_020 | TEMPLATE_FIRST | 0.7879 | 1.0000 | 1.0000 | 0.3929 | ANSWER_TOO_GENERIC | Add a query-family answer template that names concrete SQL/API evidence. |
+| 71 | example_017 | LLM_FREE_AGENT_BASELINE | 0.7897 | 1.0000 | 1.0000 | 0.4532 | ANSWER_TOO_GENERIC | Add a query-family answer template that names concrete SQL/API evidence. |
+| 72 | example_001 | SQL_FIRST_API_VERIFY | 0.7910 | 0.9000 | 1.0000 | 0.5468 | DRY_RUN_ONLY | Run with Adobe credentials for live evidence, or make the answer explicitly describe dry-run limitations. |
+| 73 | example_016 | LLM_FREE_AGENT_BASELINE | 0.7915 | 1.0000 | 1.0000 | 0.4161 | ANSWER_TOO_GENERIC | Add a query-family answer template that names concrete SQL/API evidence. |
+| 74 | example_001 | DETERMINISTIC_ROUTER_SELECTED_METADATA | 0.7917 | 0.9000 | 1.0000 | 0.5468 | DRY_RUN_ONLY | Run with Adobe credentials for live evidence, or make the answer explicitly describe dry-run limitations. |
+| 75 | example_001 | TEMPLATE_FIRST | 0.7917 | 0.9000 | 1.0000 | 0.5468 | DRY_RUN_ONLY | Run with Adobe credentials for live evidence, or make the answer explicitly describe dry-run limitations. |
+| 76 | example_018 | LLM_FREE_AGENT_BASELINE | 0.7938 | 1.0000 | 1.0000 | 0.4195 | ANSWER_TOO_GENERIC | Add a query-family answer template that names concrete SQL/API evidence. |
+| 77 | example_013 | SQL_FIRST_API_VERIFY | 0.7938 | 1.0000 | 1.0000 | 0.4324 | ANSWER_TOO_GENERIC | Add a query-family answer template that names concrete SQL/API evidence. |
+| 78 | example_029 | SQL_FIRST_API_VERIFY | 0.7946 | 1.0000 | 1.0000 | 0.3725 | ANSWER_TOO_GENERIC | Add a query-family answer template that names concrete SQL/API evidence. |
+| 79 | example_013 | TEMPLATE_FIRST | 0.7946 | 1.0000 | 1.0000 | 0.4324 | ANSWER_TOO_GENERIC | Add a query-family answer template that names concrete SQL/API evidence. |
+| 80 | example_015 | LLM_FREE_AGENT_BASELINE | 0.7947 | 1.0000 | 1.0000 | 0.4154 | ANSWER_TOO_GENERIC | Add a query-family answer template that names concrete SQL/API evidence. |
+| 81 | example_015 | TEMPLATE_FIRST | 0.7949 | 1.0000 | 1.0000 | 0.4154 | ANSWER_TOO_GENERIC | Add a query-family answer template that names concrete SQL/API evidence. |
+| 82 | example_029 | DETERMINISTIC_ROUTER_SELECTED_METADATA | 0.7951 | 1.0000 | 1.0000 | 0.3725 | ANSWER_TOO_GENERIC | Add a query-family answer template that names concrete SQL/API evidence. |
+| 83 | example_027 | LLM_FREE_AGENT_BASELINE | 0.7953 | 1.0000 | 1.0000 | 0.4241 | ANSWER_TOO_GENERIC | Add a query-family answer template that names concrete SQL/API evidence. |
+| 84 | example_027 | TEMPLATE_FIRST | 0.7954 | 1.0000 | 1.0000 | 0.4241 | ANSWER_TOO_GENERIC | Add a query-family answer template that names concrete SQL/API evidence. |
+| 85 | example_007 | SQL_FIRST_API_VERIFY | 0.7959 | 0.9000 | 0.7760 | 0.7902 | API_PATH_MISMATCH | Add endpoint selection rules or endpoint catalog coverage for this query family. |
+| 86 | example_030 | SQL_FIRST_API_VERIFY | 0.7964 | 1.0000 | 1.0000 | 0.3823 | ANSWER_TOO_GENERIC | Add a query-family answer template that names concrete SQL/API evidence. |
+| 87 | example_007 | TEMPLATE_FIRST | 0.7965 | 0.9000 | 0.7760 | 0.7902 | API_PATH_MISMATCH | Add endpoint selection rules or endpoint catalog coverage for this query family. |
+| 88 | example_030 | DETERMINISTIC_ROUTER_SELECTED_METADATA | 0.7969 | 1.0000 | 1.0000 | 0.3823 | ANSWER_TOO_GENERIC | Add a query-family answer template that names concrete SQL/API evidence. |
+| 89 | example_034 | LLM_FREE_AGENT_BASELINE | 0.7969 | 1.0000 | 1.0000 | 0.4329 | ANSWER_TOO_GENERIC | Add a query-family answer template that names concrete SQL/API evidence. |
+| 90 | example_030 | TEMPLATE_FIRST | 0.7969 | 1.0000 | 1.0000 | 0.3823 | ANSWER_TOO_GENERIC | Add a query-family answer template that names concrete SQL/API evidence. |
+| 91 | example_034 | TEMPLATE_FIRST | 0.7971 | 1.0000 | 1.0000 | 0.4329 | ANSWER_TOO_GENERIC | Add a query-family answer template that names concrete SQL/API evidence. |
+| 92 | example_023 | LLM_FREE_AGENT_BASELINE | 0.7972 | 1.0000 | 1.0000 | 0.4419 | ANSWER_TOO_GENERIC | Add a query-family answer template that names concrete SQL/API evidence. |
+| 93 | example_033 | SQL_FIRST_API_VERIFY | 0.7973 | 1.0000 | 1.0000 | 0.3951 | ANSWER_TOO_GENERIC | Add a query-family answer template that names concrete SQL/API evidence. |
+| 94 | example_033 | DETERMINISTIC_ROUTER_SELECTED_METADATA | 0.7978 | 1.0000 | 1.0000 | 0.3951 | ANSWER_TOO_GENERIC | Add a query-family answer template that names concrete SQL/API evidence. |
+| 95 | example_026 | LLM_FREE_AGENT_BASELINE | 0.7979 | 1.0000 | 1.0000 | 0.4308 | ANSWER_TOO_GENERIC | Add a query-family answer template that names concrete SQL/API evidence. |
+| 96 | example_026 | TEMPLATE_FIRST | 0.7980 | 1.0000 | 1.0000 | 0.4308 | ANSWER_TOO_GENERIC | Add a query-family answer template that names concrete SQL/API evidence. |
+| 97 | example_025 | SQL_FIRST_API_VERIFY | 0.7991 | 1.0000 | 1.0000 | 0.3912 | ANSWER_TOO_GENERIC | Add a query-family answer template that names concrete SQL/API evidence. |
+| 98 | example_025 | DETERMINISTIC_ROUTER_SELECTED_METADATA | 0.7996 | 1.0000 | 1.0000 | 0.3912 | ANSWER_TOO_GENERIC | Add a query-family answer template that names concrete SQL/API evidence. |
+| 99 | example_025 | TEMPLATE_FIRST | 0.7997 | 1.0000 | 1.0000 | 0.3912 | ANSWER_TOO_GENERIC | Add a query-family answer template that names concrete SQL/API evidence. |
+| 100 | example_021 | TEMPLATE_FIRST | 0.7998 | 1.0000 | 1.0000 | 0.4408 | ANSWER_TOO_GENERIC | Add a query-family answer template that names concrete SQL/API evidence. |
+| 101 | example_020 | SQL_FIRST_API_VERIFY | 0.8009 | 1.0000 | 1.0000 | 0.3929 | ANSWER_TOO_GENERIC | Add a query-family answer template that names concrete SQL/API evidence. |
+| 102 | example_031 | SQL_FIRST_API_VERIFY | 0.8010 | 1.0000 | 1.0000 | 0.3985 | ANSWER_TOO_GENERIC | Add a query-family answer template that names concrete SQL/API evidence. |
+| 103 | example_020 | DETERMINISTIC_ROUTER_SELECTED_METADATA | 0.8014 | 1.0000 | 1.0000 | 0.3929 | ANSWER_TOO_GENERIC | Add a query-family answer template that names concrete SQL/API evidence. |
+| 104 | example_022 | LLM_FREE_AGENT_BASELINE | 0.8014 | 1.0000 | 1.0000 | 0.4425 | ANSWER_TOO_GENERIC | Add a query-family answer template that names concrete SQL/API evidence. |
+| 105 | example_031 | DETERMINISTIC_ROUTER_SELECTED_METADATA | 0.8015 | 1.0000 | 1.0000 | 0.3985 | ANSWER_TOO_GENERIC | Add a query-family answer template that names concrete SQL/API evidence. |
+| 106 | example_022 | TEMPLATE_FIRST | 0.8015 | 1.0000 | 1.0000 | 0.4425 | ANSWER_TOO_GENERIC | Add a query-family answer template that names concrete SQL/API evidence. |
+| 107 | example_031 | TEMPLATE_FIRST | 0.8016 | 1.0000 | 1.0000 | 0.3985 | ANSWER_TOO_GENERIC | Add a query-family answer template that names concrete SQL/API evidence. |
+| 108 | example_012 | SQL_FIRST_API_VERIFY | 0.8024 | 1.0000 | 1.0000 | 0.4574 | ANSWER_WRONG_FACT | Audit answer template field selection and avoid summarizing the wrong row/value. |
+| 109 | example_019 | SQL_FIRST_API_VERIFY | 0.8029 | 1.0000 | 1.0000 | 0.4029 | ANSWER_TOO_GENERIC | Add a query-family answer template that names concrete SQL/API evidence. |
+| 110 | example_012 | DETERMINISTIC_ROUTER_SELECTED_METADATA | 0.8030 | 1.0000 | 1.0000 | 0.4574 | ANSWER_WRONG_FACT | Audit answer template field selection and avoid summarizing the wrong row/value. |
+| 111 | example_028 | SQL_FIRST_API_VERIFY | 0.8030 | 1.0000 | 1.0000 | 0.4037 | ANSWER_TOO_GENERIC | Add a query-family answer template that names concrete SQL/API evidence. |
+| 112 | example_024 | SQL_FIRST_API_VERIFY | 0.8031 | 1.0000 | 1.0000 | 0.4050 | ANSWER_TOO_GENERIC | Add a query-family answer template that names concrete SQL/API evidence. |
+| 113 | example_012 | TEMPLATE_FIRST | 0.8031 | 1.0000 | 1.0000 | 0.4574 | ANSWER_WRONG_FACT | Audit answer template field selection and avoid summarizing the wrong row/value. |
+| 114 | example_017 | SQL_FIRST_API_VERIFY | 0.8032 | 1.0000 | 1.0000 | 0.4532 | ANSWER_TOO_GENERIC | Add a query-family answer template that names concrete SQL/API evidence. |
+| 115 | example_019 | DETERMINISTIC_ROUTER_SELECTED_METADATA | 0.8034 | 1.0000 | 1.0000 | 0.4029 | ANSWER_TOO_GENERIC | Add a query-family answer template that names concrete SQL/API evidence. |
+| 116 | example_028 | DETERMINISTIC_ROUTER_SELECTED_METADATA | 0.8035 | 1.0000 | 1.0000 | 0.4037 | ANSWER_TOO_GENERIC | Add a query-family answer template that names concrete SQL/API evidence. |
+| 117 | example_019 | TEMPLATE_FIRST | 0.8035 | 1.0000 | 1.0000 | 0.4029 | ANSWER_TOO_GENERIC | Add a query-family answer template that names concrete SQL/API evidence. |
+| 118 | example_024 | DETERMINISTIC_ROUTER_SELECTED_METADATA | 0.8036 | 1.0000 | 1.0000 | 0.4050 | ANSWER_TOO_GENERIC | Add a query-family answer template that names concrete SQL/API evidence. |
+| 119 | example_024 | TEMPLATE_FIRST | 0.8036 | 1.0000 | 1.0000 | 0.4050 | ANSWER_TOO_GENERIC | Add a query-family answer template that names concrete SQL/API evidence. |
+| 120 | example_028 | TEMPLATE_FIRST | 0.8036 | 1.0000 | 1.0000 | 0.4037 | ANSWER_TOO_GENERIC | Add a query-family answer template that names concrete SQL/API evidence. |
+| 121 | example_017 | TEMPLATE_FIRST | 0.8038 | 1.0000 | 1.0000 | 0.4532 | ANSWER_TOO_GENERIC | Add a query-family answer template that names concrete SQL/API evidence. |
+| 122 | example_003 | SQL_FIRST_API_VERIFY | 0.8046 | 0.9000 | 1.0000 | 0.6473 | DRY_RUN_ONLY | Run with Adobe credentials for live evidence, or make the answer explicitly describe dry-run limitations. |
+| 123 | example_003 | TEMPLATE_FIRST | 0.8053 | 0.9000 | 1.0000 | 0.6473 | DRY_RUN_ONLY | Run with Adobe credentials for live evidence, or make the answer explicitly describe dry-run limitations. |
+| 124 | example_006 | SQL_FIRST_API_VERIFY | 0.8068 | 1.0000 | 0.7480 | 0.7234 | API_CALL_COUNT_MISMATCH | Emit the expected sequence of API calls or intentionally document why a call is skipped. |
+| 125 | example_016 | SQL_FIRST_API_VERIFY | 0.8070 | 1.0000 | 1.0000 | 0.4161 | ANSWER_TOO_GENERIC | Add a query-family answer template that names concrete SQL/API evidence. |
+| 126 | example_018 | SQL_FIRST_API_VERIFY | 0.8073 | 1.0000 | 1.0000 | 0.4195 | ANSWER_TOO_GENERIC | Add a query-family answer template that names concrete SQL/API evidence. |
+| 127 | example_006 | DETERMINISTIC_ROUTER_SELECTED_METADATA | 0.8074 | 1.0000 | 0.7480 | 0.7234 | API_CALL_COUNT_MISMATCH | Emit the expected sequence of API calls or intentionally document why a call is skipped. |
+| 128 | example_006 | TEMPLATE_FIRST | 0.8075 | 1.0000 | 0.7480 | 0.7234 | API_CALL_COUNT_MISMATCH | Emit the expected sequence of API calls or intentionally document why a call is skipped. |
+| 129 | example_016 | DETERMINISTIC_ROUTER_SELECTED_METADATA | 0.8076 | 1.0000 | 1.0000 | 0.4161 | ANSWER_TOO_GENERIC | Add a query-family answer template that names concrete SQL/API evidence. |
+| 130 | example_016 | TEMPLATE_FIRST | 0.8076 | 1.0000 | 1.0000 | 0.4161 | ANSWER_TOO_GENERIC | Add a query-family answer template that names concrete SQL/API evidence. |
+| 131 | example_018 | DETERMINISTIC_ROUTER_SELECTED_METADATA | 0.8078 | 1.0000 | 1.0000 | 0.4195 | ANSWER_TOO_GENERIC | Add a query-family answer template that names concrete SQL/API evidence. |
+| 132 | example_015 | SQL_FIRST_API_VERIFY | 0.8078 | 1.0000 | 1.0000 | 0.4154 | ANSWER_TOO_GENERIC | Add a query-family answer template that names concrete SQL/API evidence. |
+| 133 | example_018 | TEMPLATE_FIRST | 0.8079 | 1.0000 | 1.0000 | 0.4195 | ANSWER_TOO_GENERIC | Add a query-family answer template that names concrete SQL/API evidence. |
+| 134 | example_015 | DETERMINISTIC_ROUTER_SELECTED_METADATA | 0.8083 | 1.0000 | 1.0000 | 0.4154 | ANSWER_TOO_GENERIC | Add a query-family answer template that names concrete SQL/API evidence. |
 | 135 | example_027 | SQL_FIRST_API_VERIFY | 0.8088 | 1.0000 | 1.0000 | 0.4241 | ANSWER_TOO_GENERIC | Add a query-family answer template that names concrete SQL/API evidence. |
 | 136 | example_027 | DETERMINISTIC_ROUTER_SELECTED_METADATA | 0.8093 | 1.0000 | 1.0000 | 0.4241 | ANSWER_TOO_GENERIC | Add a query-family answer template that names concrete SQL/API evidence. |
-| 137 | example_023 | SQL_FIRST_API_VERIFY | 0.8096 | 1.0000 | 1.0000 | 0.4260 | ANSWER_TOO_GENERIC | Add a query-family answer template that names concrete SQL/API evidence. |
-| 138 | example_034 | SQL_FIRST_API_VERIFY | 0.8100 | 1.0000 | 1.0000 | 0.4329 | ANSWER_TOO_GENERIC | Add a query-family answer template that names concrete SQL/API evidence. |
-| 139 | example_023 | DETERMINISTIC_ROUTER_SELECTED_METADATA | 0.8101 | 1.0000 | 1.0000 | 0.4260 | ANSWER_TOO_GENERIC | Add a query-family answer template that names concrete SQL/API evidence. |
-| 140 | example_023 | TEMPLATE_FIRST | 0.8102 | 1.0000 | 1.0000 | 0.4260 | ANSWER_TOO_GENERIC | Add a query-family answer template that names concrete SQL/API evidence. |
-| 141 | example_034 | DETERMINISTIC_ROUTER_SELECTED_METADATA | 0.8105 | 1.0000 | 1.0000 | 0.4329 | ANSWER_TOO_GENERIC | Add a query-family answer template that names concrete SQL/API evidence. |
-| 142 | example_021 | SQL_FIRST_API_VERIFY | 0.8137 | 1.0000 | 1.0000 | 0.4408 | ANSWER_TOO_GENERIC | Add a query-family answer template that names concrete SQL/API evidence. |
-| 143 | example_026 | SQL_FIRST_API_VERIFY | 0.8144 | 1.0000 | 1.0000 | 0.4426 | ANSWER_TOO_GENERIC | Add a query-family answer template that names concrete SQL/API evidence. |
-| 144 | example_022 | SQL_FIRST_API_VERIFY | 0.8145 | 1.0000 | 1.0000 | 0.4425 | ANSWER_TOO_GENERIC | Add a query-family answer template that names concrete SQL/API evidence. |
+| 137 | example_034 | SQL_FIRST_API_VERIFY | 0.8100 | 1.0000 | 1.0000 | 0.4329 | ANSWER_TOO_GENERIC | Add a query-family answer template that names concrete SQL/API evidence. |
+| 138 | example_034 | DETERMINISTIC_ROUTER_SELECTED_METADATA | 0.8105 | 1.0000 | 1.0000 | 0.4329 | ANSWER_TOO_GENERIC | Add a query-family answer template that names concrete SQL/API evidence. |
+| 139 | example_026 | SQL_FIRST_API_VERIFY | 0.8110 | 1.0000 | 1.0000 | 0.4308 | ANSWER_TOO_GENERIC | Add a query-family answer template that names concrete SQL/API evidence. |
+| 140 | example_026 | DETERMINISTIC_ROUTER_SELECTED_METADATA | 0.8115 | 1.0000 | 1.0000 | 0.4308 | ANSWER_TOO_GENERIC | Add a query-family answer template that names concrete SQL/API evidence. |
+| 141 | example_021 | SQL_FIRST_API_VERIFY | 0.8137 | 1.0000 | 1.0000 | 0.4408 | ANSWER_TOO_GENERIC | Add a query-family answer template that names concrete SQL/API evidence. |
+| 142 | example_023 | SQL_FIRST_API_VERIFY | 0.8144 | 1.0000 | 1.0000 | 0.4419 | ANSWER_TOO_GENERIC | Add a query-family answer template that names concrete SQL/API evidence. |
+| 143 | example_022 | SQL_FIRST_API_VERIFY | 0.8145 | 1.0000 | 1.0000 | 0.4425 | ANSWER_TOO_GENERIC | Add a query-family answer template that names concrete SQL/API evidence. |
+| 144 | example_023 | DETERMINISTIC_ROUTER_SELECTED_METADATA | 0.8149 | 1.0000 | 1.0000 | 0.4419 | ANSWER_TOO_GENERIC | Add a query-family answer template that names concrete SQL/API evidence. |
 | 145 | example_022 | DETERMINISTIC_ROUTER_SELECTED_METADATA | 0.8150 | 1.0000 | 1.0000 | 0.4425 | ANSWER_TOO_GENERIC | Add a query-family answer template that names concrete SQL/API evidence. |
-| 146 | example_026 | DETERMINISTIC_ROUTER_SELECTED_METADATA | 0.8150 | 1.0000 | 1.0000 | 0.4426 | ANSWER_TOO_GENERIC | Add a query-family answer template that names concrete SQL/API evidence. |
+| 146 | example_023 | TEMPLATE_FIRST | 0.8150 | 1.0000 | 1.0000 | 0.4419 | ANSWER_TOO_GENERIC | Add a query-family answer template that names concrete SQL/API evidence. |
 | 147 | example_009 | SQL_FIRST_API_VERIFY | 0.8182 | 1.0000 | 1.0000 | 0.5144 | DRY_RUN_ONLY | Run with Adobe credentials for live evidence, or make the answer explicitly describe dry-run limitations. |
 | 148 | example_009 | TEMPLATE_FIRST | 0.8189 | 1.0000 | 1.0000 | 0.5144 | DRY_RUN_ONLY | Run with Adobe credentials for live evidence, or make the answer explicitly describe dry-run limitations. |
 | 149 | example_032 | SQL_FIRST_API_VERIFY | 0.8218 | 1.0000 | 1.0000 | 0.4686 | ANSWER_TOO_GENERIC | Add a query-family answer template that names concrete SQL/API evidence. |
@@ -166,9 +166,9 @@ Rows are sorted from lowest final score to highest.
 | 160 | example_014 | SQL_FIRST_API_VERIFY | 0.8429 | 0.9000 | 1.0000 | 0.7172 | DRY_RUN_ONLY | Run with Adobe credentials for live evidence, or make the answer explicitly describe dry-run limitations. |
 | 161 | example_014 | TEMPLATE_FIRST | 0.8436 | 0.9000 | 1.0000 | 0.7172 | DRY_RUN_ONLY | Run with Adobe credentials for live evidence, or make the answer explicitly describe dry-run limitations. |
 | 162 | example_004 | SQL_ONLY_BASELINE | 0.8489 | 0.9000 | 1.0000 | 0.6867 | UNKNOWN | Inspect trajectory manually and add a targeted deterministic rule only if it generalizes. |
-| 163 | example_005 | SQL_FIRST_API_VERIFY | 0.8603 | 1.0000 | 1.0000 | 0.6538 | DRY_RUN_ONLY | Run with Adobe credentials for live evidence, or make the answer explicitly describe dry-run limitations. |
-| 164 | example_005 | DETERMINISTIC_ROUTER_SELECTED_METADATA | 0.8609 | 1.0000 | 1.0000 | 0.6538 | DRY_RUN_ONLY | Run with Adobe credentials for live evidence, or make the answer explicitly describe dry-run limitations. |
-| 165 | example_005 | TEMPLATE_FIRST | 0.8610 | 1.0000 | 1.0000 | 0.6538 | DRY_RUN_ONLY | Run with Adobe credentials for live evidence, or make the answer explicitly describe dry-run limitations. |
+| 163 | example_005 | SQL_FIRST_API_VERIFY | 0.8631 | 1.0000 | 1.0000 | 0.6630 | DRY_RUN_ONLY | Run with Adobe credentials for live evidence, or make the answer explicitly describe dry-run limitations. |
+| 164 | example_005 | DETERMINISTIC_ROUTER_SELECTED_METADATA | 0.8637 | 1.0000 | 1.0000 | 0.6630 | DRY_RUN_ONLY | Run with Adobe credentials for live evidence, or make the answer explicitly describe dry-run limitations. |
+| 165 | example_005 | TEMPLATE_FIRST | 0.8638 | 1.0000 | 1.0000 | 0.6630 | DRY_RUN_ONLY | Run with Adobe credentials for live evidence, or make the answer explicitly describe dry-run limitations. |
 | 166 | example_000 | SQL_FIRST_API_VERIFY | 0.8663 | 0.9000 | 1.0000 | 0.7922 | DRY_RUN_ONLY | Run with Adobe credentials for live evidence, or make the answer explicitly describe dry-run limitations. |
 | 167 | example_000 | DETERMINISTIC_ROUTER_SELECTED_METADATA | 0.8670 | 0.9000 | 1.0000 | 0.7922 | DRY_RUN_ONLY | Run with Adobe credentials for live evidence, or make the answer explicitly describe dry-run limitations. |
 | 168 | example_000 | TEMPLATE_FIRST | 0.8670 | 0.9000 | 1.0000 | 0.7922 | DRY_RUN_ONLY | Run with Adobe credentials for live evidence, or make the answer explicitly describe dry-run limitations. |
@@ -868,74 +868,6 @@ Generated answer: Based on the available evidence, there are 2 journeys found in
 
 Gold answer: Based on the available evidence, there are two journeys found in the database: Birthday Message and Gold Tier Welcome Email. However, the Adobe Journey Optimizer API returned no results when queried, suggesting a potential discrepancy between the database records and what the API is currently returning.
 
-### example_015 / SQL_ONLY_BASELINE / 0.4757
-
-Query: How many tags exist in this sandbox?
-
-Failure category: `API_CALL_COUNT_MISMATCH`
-
-Recommended fix: Emit the expected sequence of API calls or intentionally document why a call is skipped.
-
-Generated SQL:
-```sql
-SELECT COUNT(*) AS count FROM "br_campaign_segment"
-```
-
-Gold SQL:
-```sql
-
-```
-
-Generated API:
-```json
-[]
-```
-
-Gold API:
-```json
-[
-  "GET /unifiedtags/tags?limit=20"
-]
-```
-
-Generated answer: Tag details require live API evidence. API evidence was not requested.
-
-Gold answer: Based on the evidence shown, there are at least 2 tags visible in the API response: "AI-Generated" and "cool." However, the response appears to be truncated, so the complete tag count from the sandbox cannot be determined from this partial data.
-
-### example_016 / SQL_ONLY_BASELINE / 0.4800
-
-Query: List all tags in this sandbox.
-
-Failure category: `API_CALL_COUNT_MISMATCH`
-
-Recommended fix: Emit the expected sequence of API calls or intentionally document why a call is skipped.
-
-Generated SQL:
-```sql
-SELECT "SEGMENTID", "CAMPAIGNID", "LABELSSEGMENT", "LABELSCAMPAIGN" FROM "br_campaign_segment"
-```
-
-Gold SQL:
-```sql
-
-```
-
-Generated API:
-```json
-[]
-```
-
-Gold API:
-```json
-[
-  "GET /unifiedtags/tags?limit=25"
-]
-```
-
-Generated answer: Tag details require live API evidence. API evidence was not requested.
-
-Gold answer: Based on the API response, the sandbox contains at least two tags: "AI-Generated" and "cool". The response appears to be truncated, so there may be additional tags not shown in the evidence.
-
 ### example_019 / SQL_ONLY_BASELINE / 0.4816
 
 Query: List all merge policies in this sandbox.
@@ -970,41 +902,7 @@ Generated answer: Merge policy information requires Adobe API evidence. API evid
 
 Gold answer: The sandbox has at least two merge policies. The primary one is "Default Timebased," which uses timestamp-ordered attribute merging and is set as the default policy for this sandbox. A second merge policy also exists, though the full details are truncated in the response.
 
-### example_020 / SQL_ONLY_BASELINE / 0.4867
-
-Query: How many merge policies are configured in this sandbox?
-
-Failure category: `API_CALL_COUNT_MISMATCH`
-
-Recommended fix: Emit the expected sequence of API calls or intentionally document why a call is skipped.
-
-Generated SQL:
-```sql
-SELECT COUNT(*) AS count FROM "br_campaign_segment"
-```
-
-Gold SQL:
-```sql
-
-```
-
-Generated API:
-```json
-[]
-```
-
-Gold API:
-```json
-[
-  "GET /data/core/ups/config/mergePolicies?limit=10"
-]
-```
-
-Generated answer: Merge policy information requires Adobe API evidence. API evidence was not requested.
-
-Gold answer: Based on the API response provided, there are at least **2 merge policies** configured in the external-benchmarking sandbox. The response shows a "Default Timebased" policy and a second policy, though the full response appears to be truncated.
-
-### example_030 / SQL_ONLY_BASELINE / 0.4872
+### example_030 / SQL_ONLY_BASELINE / 0.4830
 
 Query: Show the details of batch 01KP69BPA5ZKFB7HCDYPE4GN6F.
 
@@ -1034,11 +932,11 @@ Gold API:
 ]
 ```
 
-Generated answer: Batch details and files require live API evidence. API evidence was not requested.
+Generated answer: Batch details require live API evidence. API evidence was not requested.
 
 Gold answer: Batch 01KP69BPA5ZKFB7HCDYPE4GN6F is currently inactive. It's a replay batch created by the Adobe Unified Profile export service for dataset 69c8d6c9b9966265fc8e4ea4, and it appears to have predecessor batches as part of its replay history.
 
-### example_028 / SQL_ONLY_BASELINE / 0.4894
+### example_028 / SQL_ONLY_BASELINE / 0.4847
 
 Query: List the most recently created batches.
 
@@ -1068,11 +966,45 @@ Gold API:
 ]
 ```
 
-Generated answer: Batch details and files require live API evidence. API evidence was not requested.
+Generated answer: Batch details require live API evidence. API evidence was not requested.
 
 Gold answer: Based on the API response, there is one batch currently visible with a processing status. The batch is actively being ingested with some datasets completing successfully while others are still in progress.
 
-### example_031 / SQL_ONLY_BASELINE / 0.4919
+### example_015 / SQL_ONLY_BASELINE / 0.4848
+
+Query: How many tags exist in this sandbox?
+
+Failure category: `API_CALL_COUNT_MISMATCH`
+
+Recommended fix: Emit the expected sequence of API calls or intentionally document why a call is skipped.
+
+Generated SQL:
+```sql
+SELECT COUNT(*) AS count FROM "br_campaign_segment"
+```
+
+Gold SQL:
+```sql
+
+```
+
+Generated API:
+```json
+[]
+```
+
+Gold API:
+```json
+[
+  "GET /unifiedtags/tags?limit=20"
+]
+```
+
+Generated answer: The tag count cannot be determined from the available evidence. API evidence was not requested.
+
+Gold answer: Based on the evidence shown, there are at least 2 tags visible in the API response: "AI-Generated" and "cool." However, the response appears to be truncated, so the complete tag count from the sandbox cannot be determined from this partial data.
+
+### example_031 / SQL_ONLY_BASELINE / 0.4889
 
 Query: Which files are available for download in batch 69de8a0e0cc6102b5d11f01e?
 
@@ -1102,7 +1034,7 @@ Gold API:
 ]
 ```
 
-Generated answer: Batch details and files require live API evidence. API evidence was not requested.
+Generated answer: Batch file details require live API evidence. API evidence was not requested.
 
 Gold answer: There is one file available for download in batch 69de8a0e0cc6102b5d11f01e (ID: 69de8a0e0cc6102b5d11f01e-DE1), but it is marked as invalid.
 
@@ -1140,9 +1072,9 @@ Generated answer: Values for timeseries.ingestion.dataset.recordsuccess.count be
 
 Gold answer: Between March 15 and March 31, 2026, the record success count was 0 for all days except March 29th (152,120 records) and March 31st (2,701 records). The data shows virtually no ingestion activity for the first two weeks of the period, with a sudden increase near the end of the month.
 
-### example_023 / SQL_ONLY_BASELINE / 0.4944
+### example_016 / SQL_ONLY_BASELINE / 0.4933
 
-Query: List all segment definitions.
+Query: List all tags in this sandbox.
 
 Failure category: `API_CALL_COUNT_MISMATCH`
 
@@ -1150,7 +1082,7 @@ Recommended fix: Emit the expected sequence of API calls or intentionally docume
 
 Generated SQL:
 ```sql
-SELECT "SEGMENTID", "UPDATEDTIME", "ISACCOUNTSEGMENT", "NAME", "EVALUATIONCOMPLETEDTIME", "LABELSSEGMENT", "LIFECYCLESTATUS", "CREATEDTIME" FROM "dim_segment"
+SELECT "SEGMENTID", "CAMPAIGNID", "LABELSSEGMENT", "LABELSCAMPAIGN" FROM "br_campaign_segment"
 ```
 
 Gold SQL:
@@ -1166,13 +1098,13 @@ Generated API:
 Gold API:
 ```json
 [
-  "GET /data/core/ups/segment/definitions?limit=10"
+  "GET /unifiedtags/tags?limit=25"
 ]
 ```
 
-Generated answer: Segment definition details require live Adobe API evidence with definition names, IDs, and counts. API evidence was not requested.
+Generated answer: The requested tag list requires live API evidence. API evidence was not requested.
 
-Gold answer: There are 13 segment definitions total across 2 pages. The visible segment from the first page is "Person: Birthday Today 001," which targets all profiles whose birthday falls on a specific month/day. The response was paginated with 10 results per page, so additional segment definitions exist on the second page.
+Gold answer: Based on the API response, the sandbox contains at least two tags: "AI-Generated" and "cool". The response appears to be truncated, so there may be additional tags not shown in the evidence.
 
 ### example_024 / SQL_ONLY_BASELINE / 0.4950
 
@@ -1276,6 +1208,40 @@ Generated answer: Segment evaluation job IDs, statuses, sandbox, and segment cou
 
 Gold answer: Based on the API response, there is one segment evaluation job with status SUCCEEDED. It ran in the external-benchmarking sandbox and evaluated three segments, completing successfully with ID 63c6f78a-3a81-4bff-bc14-8b818b6774b3.
 
+### example_020 / SQL_ONLY_BASELINE / 0.5018
+
+Query: How many merge policies are configured in this sandbox?
+
+Failure category: `API_CALL_COUNT_MISMATCH`
+
+Recommended fix: Emit the expected sequence of API calls or intentionally document why a call is skipped.
+
+Generated SQL:
+```sql
+SELECT COUNT(*) AS count FROM "br_campaign_segment"
+```
+
+Gold SQL:
+```sql
+
+```
+
+Generated API:
+```json
+[]
+```
+
+Gold API:
+```json
+[
+  "GET /data/core/ups/config/mergePolicies?limit=10"
+]
+```
+
+Generated answer: The merge policy count cannot be determined from the available evidence. API evidence was not requested.
+
+Gold answer: Based on the API response provided, there are at least **2 merge policies** configured in the external-benchmarking sandbox. The response shows a "Default Timebased" policy and a second policy, though the full response appears to be truncated.
+
 ### example_018 / SQL_ONLY_BASELINE / 0.5023
 
 Query: Show me the details of the tag named 'cool'.
@@ -1310,9 +1276,9 @@ Generated answer: Details for the tag named 'cool' require live API evidence, in
 
 Gold answer: I notice a discrepancy: the question asks for a tag named 'cool', but the API response shows details for a tag named 'sublist' (ID: 51175a7f-aa60-4533-bef1-717b3cef7818). The tag 'sublist' belongs to the Uncategorized category in the Adobe organization 87891E4066602D250A495F91@AdobeOrg. If you intended to look up a different tag named 'cool', that information isn't in the evidence provided.
 
-### example_029 / SQL_ONLY_BASELINE / 0.5030
+### example_023 / SQL_ONLY_BASELINE / 0.5042
 
-Query: How many batches have status 'success'?
+Query: List all segment definitions.
 
 Failure category: `API_CALL_COUNT_MISMATCH`
 
@@ -1320,7 +1286,7 @@ Recommended fix: Emit the expected sequence of API calls or intentionally docume
 
 Generated SQL:
 ```sql
-SELECT COUNT(*) AS count FROM "br_campaign_segment" WHERE LOWER(CAST("LABELSSEGMENT" AS VARCHAR)) LIKE LOWER('%success%')
+SELECT "SEGMENTID", "UPDATEDTIME", "ISACCOUNTSEGMENT", "NAME", "EVALUATIONCOMPLETEDTIME", "LABELSSEGMENT", "LIFECYCLESTATUS", "CREATEDTIME" FROM "dim_segment"
 ```
 
 Gold SQL:
@@ -1336,13 +1302,13 @@ Generated API:
 Gold API:
 ```json
 [
-  "GET /data/foundation/catalog/batches?limit=10&status=success"
+  "GET /data/core/ups/segment/definitions?limit=10"
 ]
 ```
 
-Generated answer: Batch details and files require live API evidence. API evidence was not requested.
+Generated answer: The requested segment definition list requires live Adobe API evidence with definition names, IDs, and pagination counts. API evidence was not requested.
 
-Gold answer: Based on the API response provided, there is **1 batch** with status 'success'.
+Gold answer: There are 13 segment definitions total across 2 pages. The visible segment from the first page is "Person: Birthday Today 001," which targets all profiles whose birthday falls on a specific month/day. The response was paginated with 10 results per page, so additional segment definitions exist on the second page.
 
 ### example_012 / SQL_ONLY_BASELINE / 0.5051
 
@@ -1429,7 +1395,41 @@ Generated answer: The journey "Birthday Message" has not been published. The dat
 
 Gold answer: The journey "Birthday Message" has not been published. The database shows a null published_time for this journey, and the Adobe AJO API returns no results for it.
 
-### example_026 / SQL_ONLY_BASELINE / 0.5118
+### example_029 / SQL_ONLY_BASELINE / 0.5084
+
+Query: How many batches have status 'success'?
+
+Failure category: `API_CALL_COUNT_MISMATCH`
+
+Recommended fix: Emit the expected sequence of API calls or intentionally document why a call is skipped.
+
+Generated SQL:
+```sql
+SELECT COUNT(*) AS count FROM "br_campaign_segment" WHERE LOWER(CAST("LABELSSEGMENT" AS VARCHAR)) LIKE LOWER('%success%')
+```
+
+Gold SQL:
+```sql
+
+```
+
+Generated API:
+```json
+[]
+```
+
+Gold API:
+```json
+[
+  "GET /data/foundation/catalog/batches?limit=10&status=success"
+]
+```
+
+Generated answer: The batch count requires live API evidence. API evidence was not requested.
+
+Gold answer: Based on the API response provided, there is **1 batch** with status 'success'.
+
+### example_026 / SQL_ONLY_BASELINE / 0.5094
 
 Query: How many segment jobs are currently processing?
 
@@ -1459,7 +1459,7 @@ Gold API:
 ]
 ```
 
-Generated answer: Segment evaluation job IDs, statuses, sandbox, and segment counts require live Adobe API evidence. API evidence was not requested.
+Generated answer: The segment evaluation job count requires live Adobe API evidence. API evidence was not requested.
 
 Gold answer: Based on the API response, **zero segment jobs are currently processing**. The only visible job in the response has a status of "SUCCEEDED," indicating it has already completed.
 
@@ -2038,7 +2038,7 @@ Generated answer: Based on the evidence provided, no entities were created by do
 
 Gold answer: Based on the evidence provided, no entities were created by download. The SQL query returned zero results, and the audit log shows only a Segment entity that was created by a user, not by a download process.
 
-### example_005 / SQL_ONLY_BASELINE / 0.5769
+### example_005 / SQL_ONLY_BASELINE / 0.5799
 
 Query: Export a list of all destinations in the b2b-prod sandbox, sorted by most recently modified, including all columns associated with each destination, and include the 'modified' column for validation.
 
@@ -2080,7 +2080,7 @@ Gold API:
 ]
 ```
 
-Generated answer: Based on the evidence provided, 1 destination(s) were found. The most recent is "Activate segments to S3 Feed" (amazon-s3 target) with a modification timestamp of 2026-04-14 16:15:03.000 UTC. Live API evidence is needed to validate the requested sandbox. API evidence was not requested.
+Generated answer: Based on the evidence provided, 1 destination was found. The most recent is "Activate segments to S3 Feed" (amazon-s3 target) with a modification timestamp of 2026-04-14 16:15:03.000 UTC. Live API evidence is needed to validate the requested sandbox. API evidence was not requested.
 
 Gold answer: Based on the evidence provided, only one destination was found: "Activate segments to S3 Feed" (amazon-s3 target) with a modification timestamp of 2026-04-14 at 16:15:03 UTC. However, this result is from the "external-benchmarking" sandbox rather than the "b2b-prod" sandbox you requested, and the API response is incomplete, so the full export cannot be validated from the evidence shown.
 
@@ -2459,93 +2459,7 @@ Generated answer: The default merge policy requires live Adobe API evidence. Liv
 
 Gold answer: The default merge policy for the schema class '_xdm.context.profile' is called **Default Timebased**. It uses timestamp-ordered attribute merging, where conflicting attributes are resolved by selecting the most recent value, and relies on the Personalized Data Graph for identity resolution.
 
-### example_029 / LLM_FREE_AGENT_BASELINE / 0.7775
-
-Query: How many batches have status 'success'?
-
-Failure category: `ANSWER_TOO_GENERIC`
-
-Recommended fix: Add a query-family answer template that names concrete SQL/API evidence.
-
-Generated SQL:
-```sql
-SELECT COUNT(*) AS count FROM "br_campaign_segment" WHERE LOWER(CAST("LABELSSEGMENT" AS VARCHAR)) LIKE LOWER('%success%')
-```
-
-Gold SQL:
-```sql
-
-```
-
-Generated API:
-```json
-[
-  {
-    "method": "GET",
-    "path": "/data/foundation/catalog/batches",
-    "params": {
-      "limit": "10",
-      "status": "success"
-    }
-  }
-]
-```
-
-Gold API:
-```json
-[
-  "GET /data/foundation/catalog/batches?limit=10&status=success"
-]
-```
-
-Generated answer: Batch details and files require live API evidence. Live API verification was not executed because Adobe credentials are unavailable.
-
-Gold answer: Based on the API response provided, there is **1 batch** with status 'success'.
-
-### example_029 / TEMPLATE_FIRST / 0.7776
-
-Query: How many batches have status 'success'?
-
-Failure category: `ANSWER_TOO_GENERIC`
-
-Recommended fix: Add a query-family answer template that names concrete SQL/API evidence.
-
-Generated SQL:
-```sql
-SELECT COUNT(*) AS count FROM "br_campaign_segment" WHERE LOWER(CAST("LABELSSEGMENT" AS VARCHAR)) LIKE LOWER('%success%')
-```
-
-Gold SQL:
-```sql
-
-```
-
-Generated API:
-```json
-[
-  {
-    "method": "GET",
-    "path": "/data/foundation/catalog/batches",
-    "params": {
-      "limit": "10",
-      "status": "success"
-    }
-  }
-]
-```
-
-Gold API:
-```json
-[
-  "GET /data/foundation/catalog/batches?limit=10&status=success"
-]
-```
-
-Generated answer: Batch details and files require live API evidence. Live API verification was not executed because Adobe credentials are unavailable.
-
-Gold answer: Based on the API response provided, there is **1 batch** with status 'success'.
-
-### example_030 / LLM_FREE_AGENT_BASELINE / 0.7809
+### example_030 / LLM_FREE_AGENT_BASELINE / 0.7808
 
 Query: Show the details of batch 01KP69BPA5ZKFB7HCDYPE4GN6F.
 
@@ -2581,9 +2495,95 @@ Gold API:
 ]
 ```
 
-Generated answer: Batch details and files require live API evidence. Live API verification was not executed because Adobe credentials are unavailable.
+Generated answer: Batch details require live API evidence. Live API verification was not executed because Adobe credentials are unavailable.
 
 Gold answer: Batch 01KP69BPA5ZKFB7HCDYPE4GN6F is currently inactive. It's a replay batch created by the Adobe Unified Profile export service for dataset 69c8d6c9b9966265fc8e4ea4, and it appears to have predecessor batches as part of its replay history.
+
+### example_029 / LLM_FREE_AGENT_BASELINE / 0.7812
+
+Query: How many batches have status 'success'?
+
+Failure category: `ANSWER_TOO_GENERIC`
+
+Recommended fix: Add a query-family answer template that names concrete SQL/API evidence.
+
+Generated SQL:
+```sql
+SELECT COUNT(*) AS count FROM "br_campaign_segment" WHERE LOWER(CAST("LABELSSEGMENT" AS VARCHAR)) LIKE LOWER('%success%')
+```
+
+Gold SQL:
+```sql
+
+```
+
+Generated API:
+```json
+[
+  {
+    "method": "GET",
+    "path": "/data/foundation/catalog/batches",
+    "params": {
+      "limit": "10",
+      "status": "success"
+    }
+  }
+]
+```
+
+Gold API:
+```json
+[
+  "GET /data/foundation/catalog/batches?limit=10&status=success"
+]
+```
+
+Generated answer: The batch count requires live API evidence. Live API verification was not executed because Adobe credentials are unavailable.
+
+Gold answer: Based on the API response provided, there is **1 batch** with status 'success'.
+
+### example_029 / TEMPLATE_FIRST / 0.7813
+
+Query: How many batches have status 'success'?
+
+Failure category: `ANSWER_TOO_GENERIC`
+
+Recommended fix: Add a query-family answer template that names concrete SQL/API evidence.
+
+Generated SQL:
+```sql
+SELECT COUNT(*) AS count FROM "br_campaign_segment" WHERE LOWER(CAST("LABELSSEGMENT" AS VARCHAR)) LIKE LOWER('%success%')
+```
+
+Gold SQL:
+```sql
+
+```
+
+Generated API:
+```json
+[
+  {
+    "method": "GET",
+    "path": "/data/foundation/catalog/batches",
+    "params": {
+      "limit": "10",
+      "status": "success"
+    }
+  }
+]
+```
+
+Gold API:
+```json
+[
+  "GET /data/foundation/catalog/batches?limit=10&status=success"
+]
+```
+
+Generated answer: The batch count requires live API evidence. Live API verification was not executed because Adobe credentials are unavailable.
+
+Gold answer: Based on the API response provided, there is **1 batch** with status 'success'.
 
 ### example_025 / LLM_FREE_AGENT_BASELINE / 0.7820
 
@@ -2669,132 +2669,6 @@ Gold API:
 Generated answer: You have 74 schemas. Live API verification was not executed because Adobe credentials are unavailable.
 
 Gold answer: You have **74 schemas**. This count comes from your blueprint query, and is confirmed by the API response from Adobe's Schema Registry, which shows your tenant schemas are available.
-
-### example_020 / LLM_FREE_AGENT_BASELINE / 0.7826
-
-Query: How many merge policies are configured in this sandbox?
-
-Failure category: `ANSWER_TOO_GENERIC`
-
-Recommended fix: Add a query-family answer template that names concrete SQL/API evidence.
-
-Generated SQL:
-```sql
-SELECT COUNT(*) AS count FROM "br_campaign_segment"
-```
-
-Gold SQL:
-```sql
-
-```
-
-Generated API:
-```json
-[
-  {
-    "method": "GET",
-    "path": "/data/core/ups/config/mergePolicies",
-    "params": {
-      "limit": "10"
-    }
-  }
-]
-```
-
-Gold API:
-```json
-[
-  "GET /data/core/ups/config/mergePolicies?limit=10"
-]
-```
-
-Generated answer: Merge policy information requires Adobe API evidence. Live API verification was not executed because Adobe credentials are unavailable.
-
-Gold answer: Based on the API response provided, there are at least **2 merge policies** configured in the external-benchmarking sandbox. The response shows a "Default Timebased" policy and a second policy, though the full response appears to be truncated.
-
-### example_016 / LLM_FREE_AGENT_BASELINE / 0.7828
-
-Query: List all tags in this sandbox.
-
-Failure category: `ANSWER_TOO_GENERIC`
-
-Recommended fix: Add a query-family answer template that names concrete SQL/API evidence.
-
-Generated SQL:
-```sql
-SELECT "SEGMENTID", "CAMPAIGNID", "LABELSSEGMENT", "LABELSCAMPAIGN" FROM "br_campaign_segment"
-```
-
-Gold SQL:
-```sql
-
-```
-
-Generated API:
-```json
-[
-  {
-    "method": "GET",
-    "path": "/unifiedtags/tags",
-    "params": {
-      "limit": "25"
-    }
-  }
-]
-```
-
-Gold API:
-```json
-[
-  "GET /unifiedtags/tags?limit=25"
-]
-```
-
-Generated answer: Tag details require live API evidence. Live API verification was not executed because Adobe credentials are unavailable.
-
-Gold answer: Based on the API response, the sandbox contains at least two tags: "AI-Generated" and "cool". The response appears to be truncated, so there may be additional tags not shown in the evidence.
-
-### example_020 / TEMPLATE_FIRST / 0.7828
-
-Query: How many merge policies are configured in this sandbox?
-
-Failure category: `ANSWER_TOO_GENERIC`
-
-Recommended fix: Add a query-family answer template that names concrete SQL/API evidence.
-
-Generated SQL:
-```sql
-SELECT COUNT(*) AS count FROM "br_campaign_segment"
-```
-
-Gold SQL:
-```sql
-
-```
-
-Generated API:
-```json
-[
-  {
-    "method": "GET",
-    "path": "/data/core/ups/config/mergePolicies",
-    "params": {
-      "limit": "10"
-    }
-  }
-]
-```
-
-Gold API:
-```json
-[
-  "GET /data/core/ups/config/mergePolicies?limit=10"
-]
-```
-
-Generated answer: Merge policy information requires Adobe API evidence. Live API verification was not executed because Adobe credentials are unavailable.
-
-Gold answer: Based on the API response provided, there are at least **2 merge policies** configured in the external-benchmarking sandbox. The response shows a "Default Timebased" policy and a second policy, though the full response appears to be truncated.
 
 ### example_011 / TEMPLATE_FIRST / 0.7830
 
@@ -2941,6 +2815,46 @@ Generated answer: Values for timeseries.ingestion.dataset.recordsuccess.count be
 
 Gold answer: Between March 15 and March 31, 2026, the record success count was 0 for all days except March 29th (152,120 records) and March 31st (2,701 records). The data shows virtually no ingestion activity for the first two weeks of the period, with a sudden increase near the end of the month.
 
+### example_031 / LLM_FREE_AGENT_BASELINE / 0.7855
+
+Query: Which files are available for download in batch 69de8a0e0cc6102b5d11f01e?
+
+Failure category: `ANSWER_TOO_GENERIC`
+
+Recommended fix: Add a query-family answer template that names concrete SQL/API evidence.
+
+Generated SQL:
+```sql
+SELECT "SEGMENTID", "CAMPAIGNID", "LABELSSEGMENT", "LABELSCAMPAIGN" FROM "br_campaign_segment" LIMIT 50
+```
+
+Gold SQL:
+```sql
+
+```
+
+Generated API:
+```json
+[
+  {
+    "method": "GET",
+    "path": "/data/foundation/export/batches/69de8a0e0cc6102b5d11f01e/files",
+    "params": {}
+  }
+]
+```
+
+Gold API:
+```json
+[
+  "GET /data/foundation/export/batches/69de8a0e0cc6102b5d11f01e/files"
+]
+```
+
+Generated answer: Batch file details require live API evidence. Live API verification was not executed because Adobe credentials are unavailable.
+
+Gold answer: There is one file available for download in batch 69de8a0e0cc6102b5d11f01e (ID: 69de8a0e0cc6102b5d11f01e-DE1), but it is marked as invalid.
+
 ### example_024 / LLM_FREE_AGENT_BASELINE / 0.7859
 
 Query: Which segment definitions were updated most recently?
@@ -2984,90 +2898,6 @@ Generated answer: The most recently updated segment definitions require live Ado
 
 Gold answer: Based on the API response sorted by creation time in descending order, the most recently created segment definition is **"Person: Birthday Today 001"** (ID: 2fdfefe1-04d0-46ce-9fbd-7611e311dd26) in the external-benchmarking sandbox. The response shows 13 total segment definitions across 5 pages, with this one appearing first in the descending creation time sort.
 
-### example_015 / LLM_FREE_AGENT_BASELINE / 0.7869
-
-Query: How many tags exist in this sandbox?
-
-Failure category: `ANSWER_TOO_GENERIC`
-
-Recommended fix: Add a query-family answer template that names concrete SQL/API evidence.
-
-Generated SQL:
-```sql
-SELECT COUNT(*) AS count FROM "br_campaign_segment"
-```
-
-Gold SQL:
-```sql
-
-```
-
-Generated API:
-```json
-[
-  {
-    "method": "GET",
-    "path": "/unifiedtags/tags",
-    "params": {
-      "limit": "20"
-    }
-  }
-]
-```
-
-Gold API:
-```json
-[
-  "GET /unifiedtags/tags?limit=20"
-]
-```
-
-Generated answer: Tag details require live API evidence. Live API verification was not executed because Adobe credentials are unavailable.
-
-Gold answer: Based on the evidence shown, there are at least 2 tags visible in the API response: "AI-Generated" and "cool." However, the response appears to be truncated, so the complete tag count from the sandbox cannot be determined from this partial data.
-
-### example_015 / TEMPLATE_FIRST / 0.7870
-
-Query: How many tags exist in this sandbox?
-
-Failure category: `ANSWER_TOO_GENERIC`
-
-Recommended fix: Add a query-family answer template that names concrete SQL/API evidence.
-
-Generated SQL:
-```sql
-SELECT COUNT(*) AS count FROM "br_campaign_segment"
-```
-
-Gold SQL:
-```sql
-
-```
-
-Generated API:
-```json
-[
-  {
-    "method": "GET",
-    "path": "/unifiedtags/tags",
-    "params": {
-      "limit": "20"
-    }
-  }
-]
-```
-
-Gold API:
-```json
-[
-  "GET /unifiedtags/tags?limit=20"
-]
-```
-
-Generated answer: Tag details require live API evidence. Live API verification was not executed because Adobe credentials are unavailable.
-
-Gold answer: Based on the evidence shown, there are at least 2 tags visible in the API response: "AI-Generated" and "cool." However, the response appears to be truncated, so the complete tag count from the sandbox cannot be determined from this partial data.
-
 ### example_019 / LLM_FREE_AGENT_BASELINE / 0.7874
 
 Query: List all merge policies in this sandbox.
@@ -3110,7 +2940,7 @@ Generated answer: Merge policy information requires Adobe API evidence. Live API
 
 Gold answer: The sandbox has at least two merge policies. The primary one is "Default Timebased," which uses timestamp-ordered attribute merging and is set as the default policy for this sandbox. A second merge policy also exists, though the full details are truncated in the response.
 
-### example_028 / LLM_FREE_AGENT_BASELINE / 0.7874
+### example_028 / LLM_FREE_AGENT_BASELINE / 0.7875
 
 Query: List the most recently created batches.
 
@@ -3149,13 +2979,13 @@ Gold API:
 ]
 ```
 
-Generated answer: Batch details and files require live API evidence. Live API verification was not executed because Adobe credentials are unavailable.
+Generated answer: Batch details require live API evidence. Live API verification was not executed because Adobe credentials are unavailable.
 
 Gold answer: Based on the API response, there is one batch currently visible with a processing status. The batch is actively being ingested with some datasets completing successfully while others are still in progress.
 
-### example_031 / LLM_FREE_AGENT_BASELINE / 0.7877
+### example_020 / LLM_FREE_AGENT_BASELINE / 0.7878
 
-Query: Which files are available for download in batch 69de8a0e0cc6102b5d11f01e?
+Query: How many merge policies are configured in this sandbox?
 
 Failure category: `ANSWER_TOO_GENERIC`
 
@@ -3163,7 +2993,7 @@ Recommended fix: Add a query-family answer template that names concrete SQL/API 
 
 Generated SQL:
 ```sql
-SELECT "SEGMENTID", "CAMPAIGNID", "LABELSSEGMENT", "LABELSCAMPAIGN" FROM "br_campaign_segment" LIMIT 50
+SELECT COUNT(*) AS count FROM "br_campaign_segment"
 ```
 
 Gold SQL:
@@ -3176,8 +3006,10 @@ Generated API:
 [
   {
     "method": "GET",
-    "path": "/data/foundation/export/batches/69de8a0e0cc6102b5d11f01e/files",
-    "params": {}
+    "path": "/data/core/ups/config/mergePolicies",
+    "params": {
+      "limit": "10"
+    }
   }
 ]
 ```
@@ -3185,13 +3017,55 @@ Generated API:
 Gold API:
 ```json
 [
-  "GET /data/foundation/export/batches/69de8a0e0cc6102b5d11f01e/files"
+  "GET /data/core/ups/config/mergePolicies?limit=10"
 ]
 ```
 
-Generated answer: Batch details and files require live API evidence. Live API verification was not executed because Adobe credentials are unavailable.
+Generated answer: The merge policy count cannot be determined from the available evidence. Live API verification was not executed because Adobe credentials are unavailable.
 
-Gold answer: There is one file available for download in batch 69de8a0e0cc6102b5d11f01e (ID: 69de8a0e0cc6102b5d11f01e-DE1), but it is marked as invalid.
+Gold answer: Based on the API response provided, there are at least **2 merge policies** configured in the external-benchmarking sandbox. The response shows a "Default Timebased" policy and a second policy, though the full response appears to be truncated.
+
+### example_020 / TEMPLATE_FIRST / 0.7879
+
+Query: How many merge policies are configured in this sandbox?
+
+Failure category: `ANSWER_TOO_GENERIC`
+
+Recommended fix: Add a query-family answer template that names concrete SQL/API evidence.
+
+Generated SQL:
+```sql
+SELECT COUNT(*) AS count FROM "br_campaign_segment"
+```
+
+Gold SQL:
+```sql
+
+```
+
+Generated API:
+```json
+[
+  {
+    "method": "GET",
+    "path": "/data/core/ups/config/mergePolicies",
+    "params": {
+      "limit": "10"
+    }
+  }
+]
+```
+
+Gold API:
+```json
+[
+  "GET /data/core/ups/config/mergePolicies?limit=10"
+]
+```
+
+Generated answer: The merge policy count cannot be determined from the available evidence. Live API verification was not executed because Adobe credentials are unavailable.
+
+Gold answer: Based on the API response provided, there are at least **2 merge policies** configured in the external-benchmarking sandbox. The response shows a "Default Timebased" policy and a second policy, though the full response appears to be truncated.
 
 ### example_017 / LLM_FREE_AGENT_BASELINE / 0.7897
 
@@ -3244,49 +3118,6 @@ Generated answer: Details for the tag named 'Uncategorized' require live API evi
 
 Gold answer: Based on the evidence, the Uncategorized category contains at least the tags "AI-Generated" and "cool." However, the API response is incomplete—the category metadata indicates there are 5 tags total, but only 2 are shown in the truncated evidence.
 
-### example_029 / SQL_FIRST_API_VERIFY / 0.7909
-
-Query: How many batches have status 'success'?
-
-Failure category: `ANSWER_TOO_GENERIC`
-
-Recommended fix: Add a query-family answer template that names concrete SQL/API evidence.
-
-Generated SQL:
-```sql
-
-```
-
-Gold SQL:
-```sql
-
-```
-
-Generated API:
-```json
-[
-  {
-    "method": "GET",
-    "path": "/data/foundation/catalog/batches",
-    "params": {
-      "limit": "10",
-      "status": "success"
-    }
-  }
-]
-```
-
-Gold API:
-```json
-[
-  "GET /data/foundation/catalog/batches?limit=10&status=success"
-]
-```
-
-Generated answer: Batch details and files require live API evidence. Live API verification was not executed because Adobe credentials are unavailable.
-
-Gold answer: Based on the API response provided, there is **1 batch** with status 'success'.
-
 ### example_001 / SQL_FIRST_API_VERIFY / 0.7910
 
 Query: Give me inactive journeys
@@ -3335,9 +3166,9 @@ Generated answer: There are 2 inactive campaigns: Birthday Message (last updated
 
 Gold answer: There are no active journeys currently. However, there are 2 inactive campaigns: the Birthday Message campaign (last updated March 31) and the Gold Tier Welcome Email campaign (created March 31).
 
-### example_029 / DETERMINISTIC_ROUTER_SELECTED_METADATA / 0.7914
+### example_016 / LLM_FREE_AGENT_BASELINE / 0.7915
 
-Query: How many batches have status 'success'?
+Query: List all tags in this sandbox.
 
 Failure category: `ANSWER_TOO_GENERIC`
 
@@ -3345,7 +3176,7 @@ Recommended fix: Add a query-family answer template that names concrete SQL/API 
 
 Generated SQL:
 ```sql
-
+SELECT "SEGMENTID", "CAMPAIGNID", "LABELSSEGMENT", "LABELSCAMPAIGN" FROM "br_campaign_segment"
 ```
 
 Gold SQL:
@@ -3358,10 +3189,9 @@ Generated API:
 [
   {
     "method": "GET",
-    "path": "/data/foundation/catalog/batches",
+    "path": "/unifiedtags/tags",
     "params": {
-      "limit": "10",
-      "status": "success"
+      "limit": "25"
     }
   }
 ]
@@ -3370,13 +3200,13 @@ Generated API:
 Gold API:
 ```json
 [
-  "GET /data/foundation/catalog/batches?limit=10&status=success"
+  "GET /unifiedtags/tags?limit=25"
 ]
 ```
 
-Generated answer: Batch details and files require live API evidence. Live API verification was not executed because Adobe credentials are unavailable.
+Generated answer: The requested tag list requires live API evidence. Live API verification was not executed because Adobe credentials are unavailable.
 
-Gold answer: Based on the API response provided, there is **1 batch** with status 'success'.
+Gold answer: Based on the API response, the sandbox contains at least two tags: "AI-Generated" and "cool". The response appears to be truncated, so there may be additional tags not shown in the evidence.
 
 ### example_001 / DETERMINISTIC_ROUTER_SELECTED_METADATA / 0.7917
 
@@ -3474,48 +3304,6 @@ Generated answer: There are 2 inactive campaigns: Birthday Message (last updated
 
 Gold answer: There are no active journeys currently. However, there are 2 inactive campaigns: the Birthday Message campaign (last updated March 31) and the Gold Tier Welcome Email campaign (created March 31).
 
-### example_023 / LLM_FREE_AGENT_BASELINE / 0.7925
-
-Query: List all segment definitions.
-
-Failure category: `ANSWER_TOO_GENERIC`
-
-Recommended fix: Add a query-family answer template that names concrete SQL/API evidence.
-
-Generated SQL:
-```sql
-SELECT "SEGMENTID", "UPDATEDTIME", "ISACCOUNTSEGMENT", "NAME", "EVALUATIONCOMPLETEDTIME", "LABELSSEGMENT", "LIFECYCLESTATUS", "CREATEDTIME", "TYPE", "MERGEPOLICYID" FROM "dim_segment"
-```
-
-Gold SQL:
-```sql
-
-```
-
-Generated API:
-```json
-[
-  {
-    "method": "GET",
-    "path": "/data/core/ups/segment/definitions",
-    "params": {
-      "limit": "10"
-    }
-  }
-]
-```
-
-Gold API:
-```json
-[
-  "GET /data/core/ups/segment/definitions?limit=10"
-]
-```
-
-Generated answer: Segment definition details require live Adobe API evidence with definition names, IDs, and counts. Live API verification was not executed because Adobe credentials are unavailable.
-
-Gold answer: There are 13 segment definitions total across 2 pages. The visible segment from the first page is "Person: Birthday Today 001," which targets all profiles whose birthday falls on a specific month/day. The response was paginated with 10 results per page, so additional segment definitions exist on the second page.
-
 ### example_018 / LLM_FREE_AGENT_BASELINE / 0.7938
 
 Query: Show me the details of the tag named 'cool'.
@@ -3606,7 +3394,50 @@ Generated answer: Based on the evidence provided, matching datasets are: hkg_adl
 
 Gold answer: The most recent dataset changes occurred on April 14, 2026, with the latest updates to **hkg_adls_segment_profile_history** (9:08 PM UTC) and **hkg_adls_profile_count_history** (9:08 PM UTC). Several profile and segment snapshots were also updated throughout that day, with the audit log showing a dataset update permission granted on March 29 for the "weRetail: Customer Actions" dataset.
 
-### example_013 / TEMPLATE_FIRST / 0.7947
+### example_029 / SQL_FIRST_API_VERIFY / 0.7946
+
+Query: How many batches have status 'success'?
+
+Failure category: `ANSWER_TOO_GENERIC`
+
+Recommended fix: Add a query-family answer template that names concrete SQL/API evidence.
+
+Generated SQL:
+```sql
+
+```
+
+Gold SQL:
+```sql
+
+```
+
+Generated API:
+```json
+[
+  {
+    "method": "GET",
+    "path": "/data/foundation/catalog/batches",
+    "params": {
+      "limit": "10",
+      "status": "success"
+    }
+  }
+]
+```
+
+Gold API:
+```json
+[
+  "GET /data/foundation/catalog/batches?limit=10&status=success"
+]
+```
+
+Generated answer: The batch count requires live API evidence. Live API verification was not executed because Adobe credentials are unavailable.
+
+Gold answer: Based on the API response provided, there is **1 batch** with status 'success'.
+
+### example_013 / TEMPLATE_FIRST / 0.7946
 
 Query: Show recent changes in datasets.
 
@@ -3655,6 +3486,133 @@ Gold API:
 Generated answer: Based on the evidence provided, matching datasets are: hkg_adls_segment_profile_history, hkg_adls_profile_count_history, Profile-Snapshot-Export-486e2a5e-dc46-4ab6-ad5f-9cdd16db869d, Profile Export For Destination - Merge Policy - 22a941a9-e598-45f8-846b-c9a8889f5035, BR_Segment_Destination, DIM_Destination, BR_Namespace_Destination, Segmentdefinition-Snapshot-Export-3405afd1-7c78-4aff-84e6-d2136ffcea93, weRetail: CRM, and weRetail: Customer Actions. Live API verification was not executed because Adobe credentials are unavailable.
 
 Gold answer: The most recent dataset changes occurred on April 14, 2026, with the latest updates to **hkg_adls_segment_profile_history** (9:08 PM UTC) and **hkg_adls_profile_count_history** (9:08 PM UTC). Several profile and segment snapshots were also updated throughout that day, with the audit log showing a dataset update permission granted on March 29 for the "weRetail: Customer Actions" dataset.
+
+### example_015 / LLM_FREE_AGENT_BASELINE / 0.7947
+
+Query: How many tags exist in this sandbox?
+
+Failure category: `ANSWER_TOO_GENERIC`
+
+Recommended fix: Add a query-family answer template that names concrete SQL/API evidence.
+
+Generated SQL:
+```sql
+SELECT COUNT(*) AS count FROM "br_campaign_segment"
+```
+
+Gold SQL:
+```sql
+
+```
+
+Generated API:
+```json
+[
+  {
+    "method": "GET",
+    "path": "/unifiedtags/tags",
+    "params": {
+      "limit": "20"
+    }
+  }
+]
+```
+
+Gold API:
+```json
+[
+  "GET /unifiedtags/tags?limit=20"
+]
+```
+
+Generated answer: The tag count cannot be determined from the available evidence. Live API verification was not executed because Adobe credentials are unavailable.
+
+Gold answer: Based on the evidence shown, there are at least 2 tags visible in the API response: "AI-Generated" and "cool." However, the response appears to be truncated, so the complete tag count from the sandbox cannot be determined from this partial data.
+
+### example_015 / TEMPLATE_FIRST / 0.7949
+
+Query: How many tags exist in this sandbox?
+
+Failure category: `ANSWER_TOO_GENERIC`
+
+Recommended fix: Add a query-family answer template that names concrete SQL/API evidence.
+
+Generated SQL:
+```sql
+SELECT COUNT(*) AS count FROM "br_campaign_segment"
+```
+
+Gold SQL:
+```sql
+
+```
+
+Generated API:
+```json
+[
+  {
+    "method": "GET",
+    "path": "/unifiedtags/tags",
+    "params": {
+      "limit": "20"
+    }
+  }
+]
+```
+
+Gold API:
+```json
+[
+  "GET /unifiedtags/tags?limit=20"
+]
+```
+
+Generated answer: The tag count cannot be determined from the available evidence. Live API verification was not executed because Adobe credentials are unavailable.
+
+Gold answer: Based on the evidence shown, there are at least 2 tags visible in the API response: "AI-Generated" and "cool." However, the response appears to be truncated, so the complete tag count from the sandbox cannot be determined from this partial data.
+
+### example_029 / DETERMINISTIC_ROUTER_SELECTED_METADATA / 0.7951
+
+Query: How many batches have status 'success'?
+
+Failure category: `ANSWER_TOO_GENERIC`
+
+Recommended fix: Add a query-family answer template that names concrete SQL/API evidence.
+
+Generated SQL:
+```sql
+
+```
+
+Gold SQL:
+```sql
+
+```
+
+Generated API:
+```json
+[
+  {
+    "method": "GET",
+    "path": "/data/foundation/catalog/batches",
+    "params": {
+      "limit": "10",
+      "status": "success"
+    }
+  }
+]
+```
+
+Gold API:
+```json
+[
+  "GET /data/foundation/catalog/batches?limit=10&status=success"
+]
+```
+
+Generated answer: The batch count requires live API evidence. Live API verification was not executed because Adobe credentials are unavailable.
+
+Gold answer: Based on the API response provided, there is **1 batch** with status 'success'.
 
 ### example_027 / LLM_FREE_AGENT_BASELINE / 0.7953
 
@@ -3740,48 +3698,6 @@ Generated answer: Segment evaluation job IDs, statuses, sandbox, and segment cou
 
 Gold answer: Based on the API response provided, there are no segment jobs with status 'QUEUED'. The single job returned has a status of 'SUCCEEDED'.
 
-### example_020 / SQL_FIRST_API_VERIFY / 0.7957
-
-Query: How many merge policies are configured in this sandbox?
-
-Failure category: `ANSWER_TOO_GENERIC`
-
-Recommended fix: Add a query-family answer template that names concrete SQL/API evidence.
-
-Generated SQL:
-```sql
-
-```
-
-Gold SQL:
-```sql
-
-```
-
-Generated API:
-```json
-[
-  {
-    "method": "GET",
-    "path": "/data/core/ups/config/mergePolicies",
-    "params": {
-      "limit": "10"
-    }
-  }
-]
-```
-
-Gold API:
-```json
-[
-  "GET /data/core/ups/config/mergePolicies?limit=10"
-]
-```
-
-Generated answer: Merge policy information requires Adobe API evidence. Live API verification was not executed because Adobe credentials are unavailable.
-
-Gold answer: Based on the API response provided, there are at least **2 merge policies** configured in the external-benchmarking sandbox. The response shows a "Default Timebased" policy and a second policy, though the full response appears to be truncated.
-
 ### example_007 / SQL_FIRST_API_VERIFY / 0.7959
 
 Query: List all datasets that use the schema 'hkg_adls_profile_count_history'.
@@ -3832,49 +3748,7 @@ Generated answer: Based on the evidence provided, no datasets use the schema 'hk
 
 Gold answer: Based on the evidence provided, no datasets use the schema 'hkg_adls_profile_count_history'. The SQL query returned zero results, and the dataset returned from the API does not match this schema.
 
-### example_020 / DETERMINISTIC_ROUTER_SELECTED_METADATA / 0.7962
-
-Query: How many merge policies are configured in this sandbox?
-
-Failure category: `ANSWER_TOO_GENERIC`
-
-Recommended fix: Add a query-family answer template that names concrete SQL/API evidence.
-
-Generated SQL:
-```sql
-
-```
-
-Gold SQL:
-```sql
-
-```
-
-Generated API:
-```json
-[
-  {
-    "method": "GET",
-    "path": "/data/core/ups/config/mergePolicies",
-    "params": {
-      "limit": "10"
-    }
-  }
-]
-```
-
-Gold API:
-```json
-[
-  "GET /data/core/ups/config/mergePolicies?limit=10"
-]
-```
-
-Generated answer: Merge policy information requires Adobe API evidence. Live API verification was not executed because Adobe credentials are unavailable.
-
-Gold answer: Based on the API response provided, there are at least **2 merge policies** configured in the external-benchmarking sandbox. The response shows a "Default Timebased" policy and a second policy, though the full response appears to be truncated.
-
-### example_030 / SQL_FIRST_API_VERIFY / 0.7965
+### example_030 / SQL_FIRST_API_VERIFY / 0.7964
 
 Query: Show the details of batch 01KP69BPA5ZKFB7HCDYPE4GN6F.
 
@@ -3910,7 +3784,7 @@ Gold API:
 ]
 ```
 
-Generated answer: Batch details and files require live API evidence. Live API verification was not executed because Adobe credentials are unavailable.
+Generated answer: Batch details require live API evidence. Live API verification was not executed because Adobe credentials are unavailable.
 
 Gold answer: Batch 01KP69BPA5ZKFB7HCDYPE4GN6F is currently inactive. It's a replay batch created by the Adobe Unified Profile export service for dataset 69c8d6c9b9966265fc8e4ea4, and it appears to have predecessor batches as part of its replay history.
 
@@ -3963,6 +3837,46 @@ Gold API:
 Generated answer: Based on the evidence provided, no datasets use the schema 'hkg_adls_profile_count_history'. The SQL query returned zero results, and live API verification was not executed because Adobe credentials are unavailable.
 
 Gold answer: Based on the evidence provided, no datasets use the schema 'hkg_adls_profile_count_history'. The SQL query returned zero results, and the dataset returned from the API does not match this schema.
+
+### example_030 / DETERMINISTIC_ROUTER_SELECTED_METADATA / 0.7969
+
+Query: Show the details of batch 01KP69BPA5ZKFB7HCDYPE4GN6F.
+
+Failure category: `ANSWER_TOO_GENERIC`
+
+Recommended fix: Add a query-family answer template that names concrete SQL/API evidence.
+
+Generated SQL:
+```sql
+
+```
+
+Gold SQL:
+```sql
+
+```
+
+Generated API:
+```json
+[
+  {
+    "method": "GET",
+    "path": "/data/foundation/catalog/batches/01KP69BPA5ZKFB7HCDYPE4GN6F",
+    "params": {}
+  }
+]
+```
+
+Gold API:
+```json
+[
+  "GET /data/foundation/catalog/batches/01KP69BPA5ZKFB7HCDYPE4GN6F"
+]
+```
+
+Generated answer: Batch details require live API evidence. Live API verification was not executed because Adobe credentials are unavailable.
+
+Gold answer: Batch 01KP69BPA5ZKFB7HCDYPE4GN6F is currently inactive. It's a replay batch created by the Adobe Unified Profile export service for dataset 69c8d6c9b9966265fc8e4ea4, and it appears to have predecessor batches as part of its replay history.
 
 ### example_034 / LLM_FREE_AGENT_BASELINE / 0.7969
 
@@ -4020,7 +3934,7 @@ Generated answer: Values for timeseries.ingestion.dataset.recordsuccess.count an
 
 Gold answer: Based on the available data for the last 90 days, ingestion record success counts are minimal, with zero successful records recorded for most dates in March 2026. Only March 31st shows activity with 2,701 successfully ingested records. No batch success count data is included in the metrics response provided.
 
-### example_030 / DETERMINISTIC_ROUTER_SELECTED_METADATA / 0.7970
+### example_030 / TEMPLATE_FIRST / 0.7969
 
 Query: Show the details of batch 01KP69BPA5ZKFB7HCDYPE4GN6F.
 
@@ -4056,47 +3970,7 @@ Gold API:
 ]
 ```
 
-Generated answer: Batch details and files require live API evidence. Live API verification was not executed because Adobe credentials are unavailable.
-
-Gold answer: Batch 01KP69BPA5ZKFB7HCDYPE4GN6F is currently inactive. It's a replay batch created by the Adobe Unified Profile export service for dataset 69c8d6c9b9966265fc8e4ea4, and it appears to have predecessor batches as part of its replay history.
-
-### example_030 / TEMPLATE_FIRST / 0.7971
-
-Query: Show the details of batch 01KP69BPA5ZKFB7HCDYPE4GN6F.
-
-Failure category: `ANSWER_TOO_GENERIC`
-
-Recommended fix: Add a query-family answer template that names concrete SQL/API evidence.
-
-Generated SQL:
-```sql
-
-```
-
-Gold SQL:
-```sql
-
-```
-
-Generated API:
-```json
-[
-  {
-    "method": "GET",
-    "path": "/data/foundation/catalog/batches/01KP69BPA5ZKFB7HCDYPE4GN6F",
-    "params": {}
-  }
-]
-```
-
-Gold API:
-```json
-[
-  "GET /data/foundation/catalog/batches/01KP69BPA5ZKFB7HCDYPE4GN6F"
-]
-```
-
-Generated answer: Batch details and files require live API evidence. Live API verification was not executed because Adobe credentials are unavailable.
+Generated answer: Batch details require live API evidence. Live API verification was not executed because Adobe credentials are unavailable.
 
 Gold answer: Batch 01KP69BPA5ZKFB7HCDYPE4GN6F is currently inactive. It's a replay batch created by the Adobe Unified Profile export service for dataset 69c8d6c9b9966265fc8e4ea4, and it appears to have predecessor batches as part of its replay history.
 
@@ -4155,6 +4029,48 @@ Gold API:
 Generated answer: Values for timeseries.ingestion.dataset.recordsuccess.count and timeseries.ingestion.dataset.batchsuccess.count for the requested time window require live API evidence. Live API verification was not executed because Adobe credentials are unavailable.
 
 Gold answer: Based on the available data for the last 90 days, ingestion record success counts are minimal, with zero successful records recorded for most dates in March 2026. Only March 31st shows activity with 2,701 successfully ingested records. No batch success count data is included in the metrics response provided.
+
+### example_023 / LLM_FREE_AGENT_BASELINE / 0.7972
+
+Query: List all segment definitions.
+
+Failure category: `ANSWER_TOO_GENERIC`
+
+Recommended fix: Add a query-family answer template that names concrete SQL/API evidence.
+
+Generated SQL:
+```sql
+SELECT "SEGMENTID", "UPDATEDTIME", "ISACCOUNTSEGMENT", "NAME", "EVALUATIONCOMPLETEDTIME", "LABELSSEGMENT", "LIFECYCLESTATUS", "CREATEDTIME", "TYPE", "MERGEPOLICYID" FROM "dim_segment"
+```
+
+Gold SQL:
+```sql
+
+```
+
+Generated API:
+```json
+[
+  {
+    "method": "GET",
+    "path": "/data/core/ups/segment/definitions",
+    "params": {
+      "limit": "10"
+    }
+  }
+]
+```
+
+Gold API:
+```json
+[
+  "GET /data/core/ups/segment/definitions?limit=10"
+]
+```
+
+Generated answer: The requested segment definition list requires live Adobe API evidence with definition names, IDs, and pagination counts. Live API verification was not executed because Adobe credentials are unavailable.
+
+Gold answer: There are 13 segment definitions total across 2 pages. The visible segment from the first page is "Person: Birthday Today 001," which targets all profiles whose birthday falls on a specific month/day. The response was paginated with 10 results per page, so additional segment definitions exist on the second page.
 
 ### example_033 / SQL_FIRST_API_VERIFY / 0.7973
 
@@ -4258,9 +4174,9 @@ Generated answer: Values for timeseries.ingestion.dataset.recordsuccess.count be
 
 Gold answer: Between March 15 and March 31, 2026, the record success count was 0 for all days except March 29th (152,120 records) and March 31st (2,701 records). The data shows virtually no ingestion activity for the first two weeks of the period, with a sudden increase near the end of the month.
 
-### example_016 / SQL_FIRST_API_VERIFY / 0.7983
+### example_026 / LLM_FREE_AGENT_BASELINE / 0.7979
 
-Query: List all tags in this sandbox.
+Query: How many segment jobs are currently processing?
 
 Failure category: `ANSWER_TOO_GENERIC`
 
@@ -4268,7 +4184,7 @@ Recommended fix: Add a query-family answer template that names concrete SQL/API 
 
 Generated SQL:
 ```sql
-
+SELECT COUNT(*) AS count FROM "dim_segment"
 ```
 
 Gold SQL:
@@ -4281,9 +4197,9 @@ Generated API:
 [
   {
     "method": "GET",
-    "path": "/unifiedtags/tags",
+    "path": "/data/core/ups/segment/jobs",
     "params": {
-      "limit": "25"
+      "limit": "20"
     }
   }
 ]
@@ -4292,17 +4208,17 @@ Generated API:
 Gold API:
 ```json
 [
-  "GET /unifiedtags/tags?limit=25"
+  "GET /data/core/ups/segment/jobs?limit=20"
 ]
 ```
 
-Generated answer: Tag details require live API evidence. Live API verification was not executed because Adobe credentials are unavailable.
+Generated answer: The segment evaluation job count requires live Adobe API evidence. Live API verification was not executed because Adobe credentials are unavailable.
 
-Gold answer: Based on the API response, the sandbox contains at least two tags: "AI-Generated" and "cool". The response appears to be truncated, so there may be additional tags not shown in the evidence.
+Gold answer: Based on the API response, **zero segment jobs are currently processing**. The only visible job in the response has a status of "SUCCEEDED," indicating it has already completed.
 
-### example_016 / DETERMINISTIC_ROUTER_SELECTED_METADATA / 0.7989
+### example_026 / TEMPLATE_FIRST / 0.7980
 
-Query: List all tags in this sandbox.
+Query: How many segment jobs are currently processing?
 
 Failure category: `ANSWER_TOO_GENERIC`
 
@@ -4310,7 +4226,7 @@ Recommended fix: Add a query-family answer template that names concrete SQL/API 
 
 Generated SQL:
 ```sql
-
+SELECT COUNT(*) AS count FROM "dim_segment"
 ```
 
 Gold SQL:
@@ -4323,9 +4239,9 @@ Generated API:
 [
   {
     "method": "GET",
-    "path": "/unifiedtags/tags",
+    "path": "/data/core/ups/segment/jobs",
     "params": {
-      "limit": "25"
+      "limit": "20"
     }
   }
 ]
@@ -4334,55 +4250,13 @@ Generated API:
 Gold API:
 ```json
 [
-  "GET /unifiedtags/tags?limit=25"
+  "GET /data/core/ups/segment/jobs?limit=20"
 ]
 ```
 
-Generated answer: Tag details require live API evidence. Live API verification was not executed because Adobe credentials are unavailable.
+Generated answer: The segment evaluation job count requires live Adobe API evidence. Live API verification was not executed because Adobe credentials are unavailable.
 
-Gold answer: Based on the API response, the sandbox contains at least two tags: "AI-Generated" and "cool". The response appears to be truncated, so there may be additional tags not shown in the evidence.
-
-### example_016 / TEMPLATE_FIRST / 0.7989
-
-Query: List all tags in this sandbox.
-
-Failure category: `ANSWER_TOO_GENERIC`
-
-Recommended fix: Add a query-family answer template that names concrete SQL/API evidence.
-
-Generated SQL:
-```sql
-
-```
-
-Gold SQL:
-```sql
-
-```
-
-Generated API:
-```json
-[
-  {
-    "method": "GET",
-    "path": "/unifiedtags/tags",
-    "params": {
-      "limit": "25"
-    }
-  }
-]
-```
-
-Gold API:
-```json
-[
-  "GET /unifiedtags/tags?limit=25"
-]
-```
-
-Generated answer: Tag details require live API evidence. Live API verification was not executed because Adobe credentials are unavailable.
-
-Gold answer: Based on the API response, the sandbox contains at least two tags: "AI-Generated" and "cool". The response appears to be truncated, so there may be additional tags not shown in the evidence.
+Gold answer: Based on the API response, **zero segment jobs are currently processing**. The only visible job in the response has a status of "SUCCEEDED," indicating it has already completed.
 
 ### example_025 / SQL_FIRST_API_VERIFY / 0.7991
 
@@ -4552,51 +4426,9 @@ Generated answer: The default merge policy requires live Adobe API evidence. Liv
 
 Gold answer: The default merge policy for the schema class '_xdm.context.profile' is called **Default Timebased**. It uses timestamp-ordered attribute merging, where conflicting attributes are resolved by selecting the most recent value, and relies on the Personalized Data Graph for identity resolution.
 
-### example_015 / SQL_FIRST_API_VERIFY / 0.8000
+### example_020 / SQL_FIRST_API_VERIFY / 0.8009
 
-Query: How many tags exist in this sandbox?
-
-Failure category: `ANSWER_TOO_GENERIC`
-
-Recommended fix: Add a query-family answer template that names concrete SQL/API evidence.
-
-Generated SQL:
-```sql
-
-```
-
-Gold SQL:
-```sql
-
-```
-
-Generated API:
-```json
-[
-  {
-    "method": "GET",
-    "path": "/unifiedtags/tags",
-    "params": {
-      "limit": "20"
-    }
-  }
-]
-```
-
-Gold API:
-```json
-[
-  "GET /unifiedtags/tags?limit=20"
-]
-```
-
-Generated answer: Tag details require live API evidence. Live API verification was not executed because Adobe credentials are unavailable.
-
-Gold answer: Based on the evidence shown, there are at least 2 tags visible in the API response: "AI-Generated" and "cool." However, the response appears to be truncated, so the complete tag count from the sandbox cannot be determined from this partial data.
-
-### example_015 / DETERMINISTIC_ROUTER_SELECTED_METADATA / 0.8005
-
-Query: How many tags exist in this sandbox?
+Query: How many merge policies are configured in this sandbox?
 
 Failure category: `ANSWER_TOO_GENERIC`
 
@@ -4617,9 +4449,9 @@ Generated API:
 [
   {
     "method": "GET",
-    "path": "/unifiedtags/tags",
+    "path": "/data/core/ups/config/mergePolicies",
     "params": {
-      "limit": "20"
+      "limit": "10"
     }
   }
 ]
@@ -4628,13 +4460,95 @@ Generated API:
 Gold API:
 ```json
 [
-  "GET /unifiedtags/tags?limit=20"
+  "GET /data/core/ups/config/mergePolicies?limit=10"
 ]
 ```
 
-Generated answer: Tag details require live API evidence. Live API verification was not executed because Adobe credentials are unavailable.
+Generated answer: The merge policy count cannot be determined from the available evidence. Live API verification was not executed because Adobe credentials are unavailable.
 
-Gold answer: Based on the evidence shown, there are at least 2 tags visible in the API response: "AI-Generated" and "cool." However, the response appears to be truncated, so the complete tag count from the sandbox cannot be determined from this partial data.
+Gold answer: Based on the API response provided, there are at least **2 merge policies** configured in the external-benchmarking sandbox. The response shows a "Default Timebased" policy and a second policy, though the full response appears to be truncated.
+
+### example_031 / SQL_FIRST_API_VERIFY / 0.8010
+
+Query: Which files are available for download in batch 69de8a0e0cc6102b5d11f01e?
+
+Failure category: `ANSWER_TOO_GENERIC`
+
+Recommended fix: Add a query-family answer template that names concrete SQL/API evidence.
+
+Generated SQL:
+```sql
+
+```
+
+Gold SQL:
+```sql
+
+```
+
+Generated API:
+```json
+[
+  {
+    "method": "GET",
+    "path": "/data/foundation/export/batches/69de8a0e0cc6102b5d11f01e/files",
+    "params": {}
+  }
+]
+```
+
+Gold API:
+```json
+[
+  "GET /data/foundation/export/batches/69de8a0e0cc6102b5d11f01e/files"
+]
+```
+
+Generated answer: Batch file details require live API evidence. Live API verification was not executed because Adobe credentials are unavailable.
+
+Gold answer: There is one file available for download in batch 69de8a0e0cc6102b5d11f01e (ID: 69de8a0e0cc6102b5d11f01e-DE1), but it is marked as invalid.
+
+### example_020 / DETERMINISTIC_ROUTER_SELECTED_METADATA / 0.8014
+
+Query: How many merge policies are configured in this sandbox?
+
+Failure category: `ANSWER_TOO_GENERIC`
+
+Recommended fix: Add a query-family answer template that names concrete SQL/API evidence.
+
+Generated SQL:
+```sql
+
+```
+
+Gold SQL:
+```sql
+
+```
+
+Generated API:
+```json
+[
+  {
+    "method": "GET",
+    "path": "/data/core/ups/config/mergePolicies",
+    "params": {
+      "limit": "10"
+    }
+  }
+]
+```
+
+Gold API:
+```json
+[
+  "GET /data/core/ups/config/mergePolicies?limit=10"
+]
+```
+
+Generated answer: The merge policy count cannot be determined from the available evidence. Live API verification was not executed because Adobe credentials are unavailable.
+
+Gold answer: Based on the API response provided, there are at least **2 merge policies** configured in the external-benchmarking sandbox. The response shows a "Default Timebased" policy and a second policy, though the full response appears to be truncated.
 
 ### example_022 / LLM_FREE_AGENT_BASELINE / 0.8014
 
@@ -4678,9 +4592,9 @@ Generated answer: Segment definition details require live Adobe API evidence wit
 
 Gold answer: Based on the API response, there are **13 segment definitions** in the external-benchmarking sandbox, as indicated by the `totalCount` field in the pagination metadata.
 
-### example_026 / LLM_FREE_AGENT_BASELINE / 0.8014
+### example_031 / DETERMINISTIC_ROUTER_SELECTED_METADATA / 0.8015
 
-Query: How many segment jobs are currently processing?
+Query: Which files are available for download in batch 69de8a0e0cc6102b5d11f01e?
 
 Failure category: `ANSWER_TOO_GENERIC`
 
@@ -4688,7 +4602,7 @@ Recommended fix: Add a query-family answer template that names concrete SQL/API 
 
 Generated SQL:
 ```sql
-SELECT COUNT(*) AS count FROM "dim_segment"
+
 ```
 
 Gold SQL:
@@ -4701,10 +4615,8 @@ Generated API:
 [
   {
     "method": "GET",
-    "path": "/data/core/ups/segment/jobs",
-    "params": {
-      "limit": "20"
-    }
+    "path": "/data/foundation/export/batches/69de8a0e0cc6102b5d11f01e/files",
+    "params": {}
   }
 ]
 ```
@@ -4712,13 +4624,13 @@ Generated API:
 Gold API:
 ```json
 [
-  "GET /data/core/ups/segment/jobs?limit=20"
+  "GET /data/foundation/export/batches/69de8a0e0cc6102b5d11f01e/files"
 ]
 ```
 
-Generated answer: Segment evaluation job IDs, statuses, sandbox, and segment counts require live Adobe API evidence. Live API verification was not executed because Adobe credentials are unavailable.
+Generated answer: Batch file details require live API evidence. Live API verification was not executed because Adobe credentials are unavailable.
 
-Gold answer: Based on the API response, **zero segment jobs are currently processing**. The only visible job in the response has a status of "SUCCEEDED," indicating it has already completed.
+Gold answer: There is one file available for download in batch 69de8a0e0cc6102b5d11f01e (ID: 69de8a0e0cc6102b5d11f01e-DE1), but it is marked as invalid.
 
 ### example_022 / TEMPLATE_FIRST / 0.8015
 
@@ -4762,9 +4674,9 @@ Generated answer: Segment definition details require live Adobe API evidence wit
 
 Gold answer: Based on the API response, there are **13 segment definitions** in the external-benchmarking sandbox, as indicated by the `totalCount` field in the pagination metadata.
 
-### example_026 / TEMPLATE_FIRST / 0.8015
+### example_031 / TEMPLATE_FIRST / 0.8016
 
-Query: How many segment jobs are currently processing?
+Query: Which files are available for download in batch 69de8a0e0cc6102b5d11f01e?
 
 Failure category: `ANSWER_TOO_GENERIC`
 
@@ -4772,7 +4684,7 @@ Recommended fix: Add a query-family answer template that names concrete SQL/API 
 
 Generated SQL:
 ```sql
-SELECT COUNT(*) AS count FROM "dim_segment"
+
 ```
 
 Gold SQL:
@@ -4785,10 +4697,8 @@ Generated API:
 [
   {
     "method": "GET",
-    "path": "/data/core/ups/segment/jobs",
-    "params": {
-      "limit": "20"
-    }
+    "path": "/data/foundation/export/batches/69de8a0e0cc6102b5d11f01e/files",
+    "params": {}
   }
 ]
 ```
@@ -4796,13 +4706,13 @@ Generated API:
 Gold API:
 ```json
 [
-  "GET /data/core/ups/segment/jobs?limit=20"
+  "GET /data/foundation/export/batches/69de8a0e0cc6102b5d11f01e/files"
 ]
 ```
 
-Generated answer: Segment evaluation job IDs, statuses, sandbox, and segment counts require live Adobe API evidence. Live API verification was not executed because Adobe credentials are unavailable.
+Generated answer: Batch file details require live API evidence. Live API verification was not executed because Adobe credentials are unavailable.
 
-Gold answer: Based on the API response, **zero segment jobs are currently processing**. The only visible job in the response has a status of "SUCCEEDED," indicating it has already completed.
+Gold answer: There is one file available for download in batch 69de8a0e0cc6102b5d11f01e (ID: 69de8a0e0cc6102b5d11f01e-DE1), but it is marked as invalid.
 
 ### example_012 / SQL_FIRST_API_VERIFY / 0.8024
 
@@ -4981,7 +4891,7 @@ Gold API:
 ]
 ```
 
-Generated answer: Batch details and files require live API evidence. Live API verification was not executed because Adobe credentials are unavailable.
+Generated answer: Batch details require live API evidence. Live API verification was not executed because Adobe credentials are unavailable.
 
 Gold answer: Based on the API response, there is one batch currently visible with a processing status. The batch is actively being ingested with some datasets completing successfully while others are still in progress.
 
@@ -5127,46 +5037,6 @@ Generated answer: Details for the tag named 'Uncategorized' require live API evi
 
 Gold answer: Based on the evidence, the Uncategorized category contains at least the tags "AI-Generated" and "cool." However, the API response is incomplete—the category metadata indicates there are 5 tags total, but only 2 are shown in the truncated evidence.
 
-### example_031 / SQL_FIRST_API_VERIFY / 0.8032
-
-Query: Which files are available for download in batch 69de8a0e0cc6102b5d11f01e?
-
-Failure category: `ANSWER_TOO_GENERIC`
-
-Recommended fix: Add a query-family answer template that names concrete SQL/API evidence.
-
-Generated SQL:
-```sql
-
-```
-
-Gold SQL:
-```sql
-
-```
-
-Generated API:
-```json
-[
-  {
-    "method": "GET",
-    "path": "/data/foundation/export/batches/69de8a0e0cc6102b5d11f01e/files",
-    "params": {}
-  }
-]
-```
-
-Gold API:
-```json
-[
-  "GET /data/foundation/export/batches/69de8a0e0cc6102b5d11f01e/files"
-]
-```
-
-Generated answer: Batch details and files require live API evidence. Live API verification was not executed because Adobe credentials are unavailable.
-
-Gold answer: There is one file available for download in batch 69de8a0e0cc6102b5d11f01e (ID: 69de8a0e0cc6102b5d11f01e-DE1), but it is marked as invalid.
-
 ### example_019 / DETERMINISTIC_ROUTER_SELECTED_METADATA / 0.8034
 
 Query: List all merge policies in this sandbox.
@@ -5248,7 +5118,7 @@ Gold API:
 ]
 ```
 
-Generated answer: Batch details and files require live API evidence. Live API verification was not executed because Adobe credentials are unavailable.
+Generated answer: Batch details require live API evidence. Live API verification was not executed because Adobe credentials are unavailable.
 
 Gold answer: Based on the API response, there is one batch currently visible with a processing status. The batch is actively being ingested with some datasets completing successfully while others are still in progress.
 
@@ -5293,49 +5163,6 @@ Gold API:
 Generated answer: Merge policy information requires Adobe API evidence. Live API verification was not executed because Adobe credentials are unavailable.
 
 Gold answer: The sandbox has at least two merge policies. The primary one is "Default Timebased," which uses timestamp-ordered attribute merging and is set as the default policy for this sandbox. A second merge policy also exists, though the full details are truncated in the response.
-
-### example_028 / TEMPLATE_FIRST / 0.8035
-
-Query: List the most recently created batches.
-
-Failure category: `ANSWER_TOO_GENERIC`
-
-Recommended fix: Add a query-family answer template that names concrete SQL/API evidence.
-
-Generated SQL:
-```sql
-
-```
-
-Gold SQL:
-```sql
-
-```
-
-Generated API:
-```json
-[
-  {
-    "method": "GET",
-    "path": "/data/foundation/catalog/batches",
-    "params": {
-      "limit": "100",
-      "orderBy": "desc:created"
-    }
-  }
-]
-```
-
-Gold API:
-```json
-[
-  "GET /data/foundation/catalog/batches?limit=100&orderBy=desc:created"
-]
-```
-
-Generated answer: Batch details and files require live API evidence. Live API verification was not executed because Adobe credentials are unavailable.
-
-Gold answer: Based on the API response, there is one batch currently visible with a processing status. The batch is actively being ingested with some datasets completing successfully while others are still in progress.
 
 ### example_024 / DETERMINISTIC_ROUTER_SELECTED_METADATA / 0.8036
 
@@ -5423,9 +5250,9 @@ Generated answer: The most recently updated segment definitions require live Ado
 
 Gold answer: Based on the API response sorted by creation time in descending order, the most recently created segment definition is **"Person: Birthday Today 001"** (ID: 2fdfefe1-04d0-46ce-9fbd-7611e311dd26) in the external-benchmarking sandbox. The response shows 13 total segment definitions across 5 pages, with this one appearing first in the descending creation time sort.
 
-### example_031 / DETERMINISTIC_ROUTER_SELECTED_METADATA / 0.8037
+### example_028 / TEMPLATE_FIRST / 0.8036
 
-Query: Which files are available for download in batch 69de8a0e0cc6102b5d11f01e?
+Query: List the most recently created batches.
 
 Failure category: `ANSWER_TOO_GENERIC`
 
@@ -5446,8 +5273,11 @@ Generated API:
 [
   {
     "method": "GET",
-    "path": "/data/foundation/export/batches/69de8a0e0cc6102b5d11f01e/files",
-    "params": {}
+    "path": "/data/foundation/catalog/batches",
+    "params": {
+      "limit": "100",
+      "orderBy": "desc:created"
+    }
   }
 ]
 ```
@@ -5455,13 +5285,13 @@ Generated API:
 Gold API:
 ```json
 [
-  "GET /data/foundation/export/batches/69de8a0e0cc6102b5d11f01e/files"
+  "GET /data/foundation/catalog/batches?limit=100&orderBy=desc:created"
 ]
 ```
 
-Generated answer: Batch details and files require live API evidence. Live API verification was not executed because Adobe credentials are unavailable.
+Generated answer: Batch details require live API evidence. Live API verification was not executed because Adobe credentials are unavailable.
 
-Gold answer: There is one file available for download in batch 69de8a0e0cc6102b5d11f01e (ID: 69de8a0e0cc6102b5d11f01e-DE1), but it is marked as invalid.
+Gold answer: Based on the API response, there is one batch currently visible with a processing status. The batch is actively being ingested with some datasets completing successfully while others are still in progress.
 
 ### example_017 / TEMPLATE_FIRST / 0.8038
 
@@ -5513,46 +5343,6 @@ Gold API:
 Generated answer: Details for the tag named 'Uncategorized' require live API evidence, including the tag ID, name, category, and Adobe organization. Live API verification was not executed because Adobe credentials are unavailable.
 
 Gold answer: Based on the evidence, the Uncategorized category contains at least the tags "AI-Generated" and "cool." However, the API response is incomplete—the category metadata indicates there are 5 tags total, but only 2 are shown in the truncated evidence.
-
-### example_031 / TEMPLATE_FIRST / 0.8038
-
-Query: Which files are available for download in batch 69de8a0e0cc6102b5d11f01e?
-
-Failure category: `ANSWER_TOO_GENERIC`
-
-Recommended fix: Add a query-family answer template that names concrete SQL/API evidence.
-
-Generated SQL:
-```sql
-
-```
-
-Gold SQL:
-```sql
-
-```
-
-Generated API:
-```json
-[
-  {
-    "method": "GET",
-    "path": "/data/foundation/export/batches/69de8a0e0cc6102b5d11f01e/files",
-    "params": {}
-  }
-]
-```
-
-Gold API:
-```json
-[
-  "GET /data/foundation/export/batches/69de8a0e0cc6102b5d11f01e/files"
-]
-```
-
-Generated answer: Batch details and files require live API evidence. Live API verification was not executed because Adobe credentials are unavailable.
-
-Gold answer: There is one file available for download in batch 69de8a0e0cc6102b5d11f01e (ID: 69de8a0e0cc6102b5d11f01e-DE1), but it is marked as invalid.
 
 ### example_003 / SQL_FIRST_API_VERIFY / 0.8046
 
@@ -5730,6 +5520,48 @@ Generated answer: Based on the evidence provided, 2 datasets have been ingested 
 
 Gold answer: Based on the evidence provided, **2 datasets** have been ingested using the same schema in the prod sandbox. These datasets both use the "Journey Inbound External Segment Profile Schema."
 
+### example_016 / SQL_FIRST_API_VERIFY / 0.8070
+
+Query: List all tags in this sandbox.
+
+Failure category: `ANSWER_TOO_GENERIC`
+
+Recommended fix: Add a query-family answer template that names concrete SQL/API evidence.
+
+Generated SQL:
+```sql
+
+```
+
+Gold SQL:
+```sql
+
+```
+
+Generated API:
+```json
+[
+  {
+    "method": "GET",
+    "path": "/unifiedtags/tags",
+    "params": {
+      "limit": "25"
+    }
+  }
+]
+```
+
+Gold API:
+```json
+[
+  "GET /unifiedtags/tags?limit=25"
+]
+```
+
+Generated answer: The requested tag list requires live API evidence. Live API verification was not executed because Adobe credentials are unavailable.
+
+Gold answer: Based on the API response, the sandbox contains at least two tags: "AI-Generated" and "cool". The response appears to be truncated, so there may be additional tags not shown in the evidence.
+
 ### example_018 / SQL_FIRST_API_VERIFY / 0.8073
 
 Query: Show me the details of the tag named 'cool'.
@@ -5874,6 +5706,90 @@ Generated answer: Based on the evidence provided, 2 datasets have been ingested 
 
 Gold answer: Based on the evidence provided, **2 datasets** have been ingested using the same schema in the prod sandbox. These datasets both use the "Journey Inbound External Segment Profile Schema."
 
+### example_016 / DETERMINISTIC_ROUTER_SELECTED_METADATA / 0.8076
+
+Query: List all tags in this sandbox.
+
+Failure category: `ANSWER_TOO_GENERIC`
+
+Recommended fix: Add a query-family answer template that names concrete SQL/API evidence.
+
+Generated SQL:
+```sql
+
+```
+
+Gold SQL:
+```sql
+
+```
+
+Generated API:
+```json
+[
+  {
+    "method": "GET",
+    "path": "/unifiedtags/tags",
+    "params": {
+      "limit": "25"
+    }
+  }
+]
+```
+
+Gold API:
+```json
+[
+  "GET /unifiedtags/tags?limit=25"
+]
+```
+
+Generated answer: The requested tag list requires live API evidence. Live API verification was not executed because Adobe credentials are unavailable.
+
+Gold answer: Based on the API response, the sandbox contains at least two tags: "AI-Generated" and "cool". The response appears to be truncated, so there may be additional tags not shown in the evidence.
+
+### example_016 / TEMPLATE_FIRST / 0.8076
+
+Query: List all tags in this sandbox.
+
+Failure category: `ANSWER_TOO_GENERIC`
+
+Recommended fix: Add a query-family answer template that names concrete SQL/API evidence.
+
+Generated SQL:
+```sql
+
+```
+
+Gold SQL:
+```sql
+
+```
+
+Generated API:
+```json
+[
+  {
+    "method": "GET",
+    "path": "/unifiedtags/tags",
+    "params": {
+      "limit": "25"
+    }
+  }
+]
+```
+
+Gold API:
+```json
+[
+  "GET /unifiedtags/tags?limit=25"
+]
+```
+
+Generated answer: The requested tag list requires live API evidence. Live API verification was not executed because Adobe credentials are unavailable.
+
+Gold answer: Based on the API response, the sandbox contains at least two tags: "AI-Generated" and "cool". The response appears to be truncated, so there may be additional tags not shown in the evidence.
+
 ### example_018 / DETERMINISTIC_ROUTER_SELECTED_METADATA / 0.8078
 
 Query: Show me the details of the tag named 'cool'.
@@ -5914,6 +5830,48 @@ Generated answer: Details for the tag named 'cool' require live API evidence, in
 
 Gold answer: I notice a discrepancy: the question asks for a tag named 'cool', but the API response shows details for a tag named 'sublist' (ID: 51175a7f-aa60-4533-bef1-717b3cef7818). The tag 'sublist' belongs to the Uncategorized category in the Adobe organization 87891E4066602D250A495F91@AdobeOrg. If you intended to look up a different tag named 'cool', that information isn't in the evidence provided.
 
+### example_015 / SQL_FIRST_API_VERIFY / 0.8078
+
+Query: How many tags exist in this sandbox?
+
+Failure category: `ANSWER_TOO_GENERIC`
+
+Recommended fix: Add a query-family answer template that names concrete SQL/API evidence.
+
+Generated SQL:
+```sql
+
+```
+
+Gold SQL:
+```sql
+
+```
+
+Generated API:
+```json
+[
+  {
+    "method": "GET",
+    "path": "/unifiedtags/tags",
+    "params": {
+      "limit": "20"
+    }
+  }
+]
+```
+
+Gold API:
+```json
+[
+  "GET /unifiedtags/tags?limit=20"
+]
+```
+
+Generated answer: The tag count cannot be determined from the available evidence. Live API verification was not executed because Adobe credentials are unavailable.
+
+Gold answer: Based on the evidence shown, there are at least 2 tags visible in the API response: "AI-Generated" and "cool." However, the response appears to be truncated, so the complete tag count from the sandbox cannot be determined from this partial data.
+
 ### example_018 / TEMPLATE_FIRST / 0.8079
 
 Query: Show me the details of the tag named 'cool'.
@@ -5953,6 +5911,48 @@ Gold API:
 Generated answer: Details for the tag named 'cool' require live API evidence, including the tag ID, name, category, and Adobe organization. Live API verification was not executed because Adobe credentials are unavailable.
 
 Gold answer: I notice a discrepancy: the question asks for a tag named 'cool', but the API response shows details for a tag named 'sublist' (ID: 51175a7f-aa60-4533-bef1-717b3cef7818). The tag 'sublist' belongs to the Uncategorized category in the Adobe organization 87891E4066602D250A495F91@AdobeOrg. If you intended to look up a different tag named 'cool', that information isn't in the evidence provided.
+
+### example_015 / DETERMINISTIC_ROUTER_SELECTED_METADATA / 0.8083
+
+Query: How many tags exist in this sandbox?
+
+Failure category: `ANSWER_TOO_GENERIC`
+
+Recommended fix: Add a query-family answer template that names concrete SQL/API evidence.
+
+Generated SQL:
+```sql
+
+```
+
+Gold SQL:
+```sql
+
+```
+
+Generated API:
+```json
+[
+  {
+    "method": "GET",
+    "path": "/unifiedtags/tags",
+    "params": {
+      "limit": "20"
+    }
+  }
+]
+```
+
+Gold API:
+```json
+[
+  "GET /unifiedtags/tags?limit=20"
+]
+```
+
+Generated answer: The tag count cannot be determined from the available evidence. Live API verification was not executed because Adobe credentials are unavailable.
+
+Gold answer: Based on the evidence shown, there are at least 2 tags visible in the API response: "AI-Generated" and "cool." However, the response appears to be truncated, so the complete tag count from the sandbox cannot be determined from this partial data.
 
 ### example_027 / SQL_FIRST_API_VERIFY / 0.8088
 
@@ -6038,48 +6038,6 @@ Generated answer: Segment evaluation job IDs, statuses, sandbox, and segment cou
 
 Gold answer: Based on the API response provided, there are no segment jobs with status 'QUEUED'. The single job returned has a status of 'SUCCEEDED'.
 
-### example_023 / SQL_FIRST_API_VERIFY / 0.8096
-
-Query: List all segment definitions.
-
-Failure category: `ANSWER_TOO_GENERIC`
-
-Recommended fix: Add a query-family answer template that names concrete SQL/API evidence.
-
-Generated SQL:
-```sql
-
-```
-
-Gold SQL:
-```sql
-
-```
-
-Generated API:
-```json
-[
-  {
-    "method": "GET",
-    "path": "/data/core/ups/segment/definitions",
-    "params": {
-      "limit": "10"
-    }
-  }
-]
-```
-
-Gold API:
-```json
-[
-  "GET /data/core/ups/segment/definitions?limit=10"
-]
-```
-
-Generated answer: Segment definition details require live Adobe API evidence with definition names, IDs, and counts. Live API verification was not executed because Adobe credentials are unavailable.
-
-Gold answer: There are 13 segment definitions total across 2 pages. The visible segment from the first page is "Person: Birthday Today 001," which targets all profiles whose birthday falls on a specific month/day. The response was paginated with 10 results per page, so additional segment definitions exist on the second page.
-
 ### example_034 / SQL_FIRST_API_VERIFY / 0.8100
 
 Query: Show ingestion record counts and batch success counts for the last 90 days.
@@ -6135,90 +6093,6 @@ Gold API:
 Generated answer: Values for timeseries.ingestion.dataset.recordsuccess.count and timeseries.ingestion.dataset.batchsuccess.count for the requested time window require live API evidence. Live API verification was not executed because Adobe credentials are unavailable.
 
 Gold answer: Based on the available data for the last 90 days, ingestion record success counts are minimal, with zero successful records recorded for most dates in March 2026. Only March 31st shows activity with 2,701 successfully ingested records. No batch success count data is included in the metrics response provided.
-
-### example_023 / DETERMINISTIC_ROUTER_SELECTED_METADATA / 0.8101
-
-Query: List all segment definitions.
-
-Failure category: `ANSWER_TOO_GENERIC`
-
-Recommended fix: Add a query-family answer template that names concrete SQL/API evidence.
-
-Generated SQL:
-```sql
-
-```
-
-Gold SQL:
-```sql
-
-```
-
-Generated API:
-```json
-[
-  {
-    "method": "GET",
-    "path": "/data/core/ups/segment/definitions",
-    "params": {
-      "limit": "10"
-    }
-  }
-]
-```
-
-Gold API:
-```json
-[
-  "GET /data/core/ups/segment/definitions?limit=10"
-]
-```
-
-Generated answer: Segment definition details require live Adobe API evidence with definition names, IDs, and counts. Live API verification was not executed because Adobe credentials are unavailable.
-
-Gold answer: There are 13 segment definitions total across 2 pages. The visible segment from the first page is "Person: Birthday Today 001," which targets all profiles whose birthday falls on a specific month/day. The response was paginated with 10 results per page, so additional segment definitions exist on the second page.
-
-### example_023 / TEMPLATE_FIRST / 0.8102
-
-Query: List all segment definitions.
-
-Failure category: `ANSWER_TOO_GENERIC`
-
-Recommended fix: Add a query-family answer template that names concrete SQL/API evidence.
-
-Generated SQL:
-```sql
-
-```
-
-Gold SQL:
-```sql
-
-```
-
-Generated API:
-```json
-[
-  {
-    "method": "GET",
-    "path": "/data/core/ups/segment/definitions",
-    "params": {
-      "limit": "10"
-    }
-  }
-]
-```
-
-Gold API:
-```json
-[
-  "GET /data/core/ups/segment/definitions?limit=10"
-]
-```
-
-Generated answer: Segment definition details require live Adobe API evidence with definition names, IDs, and counts. Live API verification was not executed because Adobe credentials are unavailable.
-
-Gold answer: There are 13 segment definitions total across 2 pages. The visible segment from the first page is "Person: Birthday Today 001," which targets all profiles whose birthday falls on a specific month/day. The response was paginated with 10 results per page, so additional segment definitions exist on the second page.
 
 ### example_034 / DETERMINISTIC_ROUTER_SELECTED_METADATA / 0.8105
 
@@ -6276,6 +6150,90 @@ Generated answer: Values for timeseries.ingestion.dataset.recordsuccess.count an
 
 Gold answer: Based on the available data for the last 90 days, ingestion record success counts are minimal, with zero successful records recorded for most dates in March 2026. Only March 31st shows activity with 2,701 successfully ingested records. No batch success count data is included in the metrics response provided.
 
+### example_026 / SQL_FIRST_API_VERIFY / 0.8110
+
+Query: How many segment jobs are currently processing?
+
+Failure category: `ANSWER_TOO_GENERIC`
+
+Recommended fix: Add a query-family answer template that names concrete SQL/API evidence.
+
+Generated SQL:
+```sql
+
+```
+
+Gold SQL:
+```sql
+
+```
+
+Generated API:
+```json
+[
+  {
+    "method": "GET",
+    "path": "/data/core/ups/segment/jobs",
+    "params": {
+      "limit": "20"
+    }
+  }
+]
+```
+
+Gold API:
+```json
+[
+  "GET /data/core/ups/segment/jobs?limit=20"
+]
+```
+
+Generated answer: The segment evaluation job count requires live Adobe API evidence. Live API verification was not executed because Adobe credentials are unavailable.
+
+Gold answer: Based on the API response, **zero segment jobs are currently processing**. The only visible job in the response has a status of "SUCCEEDED," indicating it has already completed.
+
+### example_026 / DETERMINISTIC_ROUTER_SELECTED_METADATA / 0.8115
+
+Query: How many segment jobs are currently processing?
+
+Failure category: `ANSWER_TOO_GENERIC`
+
+Recommended fix: Add a query-family answer template that names concrete SQL/API evidence.
+
+Generated SQL:
+```sql
+
+```
+
+Gold SQL:
+```sql
+
+```
+
+Generated API:
+```json
+[
+  {
+    "method": "GET",
+    "path": "/data/core/ups/segment/jobs",
+    "params": {
+      "limit": "20"
+    }
+  }
+]
+```
+
+Gold API:
+```json
+[
+  "GET /data/core/ups/segment/jobs?limit=20"
+]
+```
+
+Generated answer: The segment evaluation job count requires live Adobe API evidence. Live API verification was not executed because Adobe credentials are unavailable.
+
+Gold answer: Based on the API response, **zero segment jobs are currently processing**. The only visible job in the response has a status of "SUCCEEDED," indicating it has already completed.
+
 ### example_021 / SQL_FIRST_API_VERIFY / 0.8137
 
 Query: Show the default merge policy for schema class '_xdm.context.profile'.
@@ -6318,9 +6276,9 @@ Generated answer: The default merge policy requires live Adobe API evidence. Liv
 
 Gold answer: The default merge policy for the schema class '_xdm.context.profile' is called **Default Timebased**. It uses timestamp-ordered attribute merging, where conflicting attributes are resolved by selecting the most recent value, and relies on the Personalized Data Graph for identity resolution.
 
-### example_026 / SQL_FIRST_API_VERIFY / 0.8144
+### example_023 / SQL_FIRST_API_VERIFY / 0.8144
 
-Query: How many segment jobs are currently processing?
+Query: List all segment definitions.
 
 Failure category: `ANSWER_TOO_GENERIC`
 
@@ -6341,9 +6299,9 @@ Generated API:
 [
   {
     "method": "GET",
-    "path": "/data/core/ups/segment/jobs",
+    "path": "/data/core/ups/segment/definitions",
     "params": {
-      "limit": "20"
+      "limit": "10"
     }
   }
 ]
@@ -6352,13 +6310,13 @@ Generated API:
 Gold API:
 ```json
 [
-  "GET /data/core/ups/segment/jobs?limit=20"
+  "GET /data/core/ups/segment/definitions?limit=10"
 ]
 ```
 
-Generated answer: Segment evaluation job IDs, statuses, sandbox, and segment counts require live Adobe API evidence. Live API verification was not executed because Adobe credentials are unavailable.
+Generated answer: The requested segment definition list requires live Adobe API evidence with definition names, IDs, and pagination counts. Live API verification was not executed because Adobe credentials are unavailable.
 
-Gold answer: Based on the API response, **zero segment jobs are currently processing**. The only visible job in the response has a status of "SUCCEEDED," indicating it has already completed.
+Gold answer: There are 13 segment definitions total across 2 pages. The visible segment from the first page is "Person: Birthday Today 001," which targets all profiles whose birthday falls on a specific month/day. The response was paginated with 10 results per page, so additional segment definitions exist on the second page.
 
 ### example_022 / SQL_FIRST_API_VERIFY / 0.8145
 
@@ -6402,6 +6360,48 @@ Generated answer: Segment definition details require live Adobe API evidence wit
 
 Gold answer: Based on the API response, there are **13 segment definitions** in the external-benchmarking sandbox, as indicated by the `totalCount` field in the pagination metadata.
 
+### example_023 / DETERMINISTIC_ROUTER_SELECTED_METADATA / 0.8149
+
+Query: List all segment definitions.
+
+Failure category: `ANSWER_TOO_GENERIC`
+
+Recommended fix: Add a query-family answer template that names concrete SQL/API evidence.
+
+Generated SQL:
+```sql
+
+```
+
+Gold SQL:
+```sql
+
+```
+
+Generated API:
+```json
+[
+  {
+    "method": "GET",
+    "path": "/data/core/ups/segment/definitions",
+    "params": {
+      "limit": "10"
+    }
+  }
+]
+```
+
+Gold API:
+```json
+[
+  "GET /data/core/ups/segment/definitions?limit=10"
+]
+```
+
+Generated answer: The requested segment definition list requires live Adobe API evidence with definition names, IDs, and pagination counts. Live API verification was not executed because Adobe credentials are unavailable.
+
+Gold answer: There are 13 segment definitions total across 2 pages. The visible segment from the first page is "Person: Birthday Today 001," which targets all profiles whose birthday falls on a specific month/day. The response was paginated with 10 results per page, so additional segment definitions exist on the second page.
+
 ### example_022 / DETERMINISTIC_ROUTER_SELECTED_METADATA / 0.8150
 
 Query: How many segment definitions exist in this sandbox?
@@ -6444,9 +6444,9 @@ Generated answer: Segment definition details require live Adobe API evidence wit
 
 Gold answer: Based on the API response, there are **13 segment definitions** in the external-benchmarking sandbox, as indicated by the `totalCount` field in the pagination metadata.
 
-### example_026 / DETERMINISTIC_ROUTER_SELECTED_METADATA / 0.8150
+### example_023 / TEMPLATE_FIRST / 0.8150
 
-Query: How many segment jobs are currently processing?
+Query: List all segment definitions.
 
 Failure category: `ANSWER_TOO_GENERIC`
 
@@ -6467,9 +6467,9 @@ Generated API:
 [
   {
     "method": "GET",
-    "path": "/data/core/ups/segment/jobs",
+    "path": "/data/core/ups/segment/definitions",
     "params": {
-      "limit": "20"
+      "limit": "10"
     }
   }
 ]
@@ -6478,13 +6478,13 @@ Generated API:
 Gold API:
 ```json
 [
-  "GET /data/core/ups/segment/jobs?limit=20"
+  "GET /data/core/ups/segment/definitions?limit=10"
 ]
 ```
 
-Generated answer: Segment evaluation job IDs, statuses, sandbox, and segment counts require live Adobe API evidence. Live API verification was not executed because Adobe credentials are unavailable.
+Generated answer: The requested segment definition list requires live Adobe API evidence with definition names, IDs, and pagination counts. Live API verification was not executed because Adobe credentials are unavailable.
 
-Gold answer: Based on the API response, **zero segment jobs are currently processing**. The only visible job in the response has a status of "SUCCEEDED," indicating it has already completed.
+Gold answer: There are 13 segment definitions total across 2 pages. The visible segment from the first page is "Person: Birthday Today 001," which targets all profiles whose birthday falls on a specific month/day. The response was paginated with 10 results per page, so additional segment definitions exist on the second page.
 
 ### example_009 / SQL_FIRST_API_VERIFY / 0.8182
 
@@ -7235,7 +7235,7 @@ Generated answer: Based on the evidence provided, there are no failed dataflow r
 
 Gold answer: Based on the evidence provided, there are **no failed dataflow runs** to report. The SQL query returned zero rows, indicating no failed runs are recorded in the database. The API response shows available flows but doesn't contain run status information.
 
-### example_005 / SQL_FIRST_API_VERIFY / 0.8603
+### example_005 / SQL_FIRST_API_VERIFY / 0.8631
 
 Query: Export a list of all destinations in the b2b-prod sandbox, sorted by most recently modified, including all columns associated with each destination, and include the 'modified' column for validation.
 
@@ -7287,11 +7287,11 @@ Gold API:
 ]
 ```
 
-Generated answer: Based on the evidence provided, 1 destination(s) were found. The most recent is "Activate segments to S3 Feed" (amazon-s3 target) with a modification timestamp of 2026-04-14 16:15:03.000 UTC. Live API evidence is needed to validate the requested sandbox. Live API verification was not executed because Adobe credentials are unavailable.
+Generated answer: Based on the evidence provided, 1 destination was found. The most recent is "Activate segments to S3 Feed" (amazon-s3 target) with a modification timestamp of 2026-04-14 16:15:03.000 UTC. Live API evidence is needed to validate the requested sandbox. Live API verification was not executed because Adobe credentials are unavailable.
 
 Gold answer: Based on the evidence provided, only one destination was found: "Activate segments to S3 Feed" (amazon-s3 target) with a modification timestamp of 2026-04-14 at 16:15:03 UTC. However, this result is from the "external-benchmarking" sandbox rather than the "b2b-prod" sandbox you requested, and the API response is incomplete, so the full export cannot be validated from the evidence shown.
 
-### example_005 / DETERMINISTIC_ROUTER_SELECTED_METADATA / 0.8609
+### example_005 / DETERMINISTIC_ROUTER_SELECTED_METADATA / 0.8637
 
 Query: Export a list of all destinations in the b2b-prod sandbox, sorted by most recently modified, including all columns associated with each destination, and include the 'modified' column for validation.
 
@@ -7343,11 +7343,11 @@ Gold API:
 ]
 ```
 
-Generated answer: Based on the evidence provided, 1 destination(s) were found. The most recent is "Activate segments to S3 Feed" (amazon-s3 target) with a modification timestamp of 2026-04-14 16:15:03.000 UTC. Live API evidence is needed to validate the requested sandbox. Live API verification was not executed because Adobe credentials are unavailable.
+Generated answer: Based on the evidence provided, 1 destination was found. The most recent is "Activate segments to S3 Feed" (amazon-s3 target) with a modification timestamp of 2026-04-14 16:15:03.000 UTC. Live API evidence is needed to validate the requested sandbox. Live API verification was not executed because Adobe credentials are unavailable.
 
 Gold answer: Based on the evidence provided, only one destination was found: "Activate segments to S3 Feed" (amazon-s3 target) with a modification timestamp of 2026-04-14 at 16:15:03 UTC. However, this result is from the "external-benchmarking" sandbox rather than the "b2b-prod" sandbox you requested, and the API response is incomplete, so the full export cannot be validated from the evidence shown.
 
-### example_005 / TEMPLATE_FIRST / 0.8610
+### example_005 / TEMPLATE_FIRST / 0.8638
 
 Query: Export a list of all destinations in the b2b-prod sandbox, sorted by most recently modified, including all columns associated with each destination, and include the 'modified' column for validation.
 
@@ -7399,7 +7399,7 @@ Gold API:
 ]
 ```
 
-Generated answer: Based on the evidence provided, 1 destination(s) were found. The most recent is "Activate segments to S3 Feed" (amazon-s3 target) with a modification timestamp of 2026-04-14 16:15:03.000 UTC. Live API evidence is needed to validate the requested sandbox. Live API verification was not executed because Adobe credentials are unavailable.
+Generated answer: Based on the evidence provided, 1 destination was found. The most recent is "Activate segments to S3 Feed" (amazon-s3 target) with a modification timestamp of 2026-04-14 16:15:03.000 UTC. Live API evidence is needed to validate the requested sandbox. Live API verification was not executed because Adobe credentials are unavailable.
 
 Gold answer: Based on the evidence provided, only one destination was found: "Activate segments to S3 Feed" (amazon-s3 target) with a modification timestamp of 2026-04-14 at 16:15:03 UTC. However, this result is from the "external-benchmarking" sandbox rather than the "b2b-prod" sandbox you requested, and the API response is incomplete, so the full export cannot be validated from the evidence shown.
 

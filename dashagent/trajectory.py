@@ -170,6 +170,7 @@ class TrajectoryLogger:
     def finish(self, final_answer: str) -> dict[str, Any]:
         self.final_answer = final_answer
         runtime = time.perf_counter() - self.start_time
+        token_steps = [step for step in self.steps if step.get("kind") != "answer_diagnostics"]
         payload = {
             "query_id": self.query_id,
             "original_query": self.original_query,
@@ -182,7 +183,7 @@ class TrajectoryLogger:
             "tool_call_count": sum(1 for step in self.steps if step["kind"] in {"sql_call", "api_call"}),
             "sql_call_count": sum(1 for step in self.steps if step["kind"] == "sql_call"),
             "api_call_count": sum(1 for step in self.steps if step["kind"] == "api_call"),
-            "estimated_tokens": estimate_tokens({"query": self.original_query, "steps": self.steps, "answer": final_answer}),
+            "estimated_tokens": estimate_tokens({"query": self.original_query, "steps": token_steps, "answer": final_answer}),
             "timings": self.timings,
             "preprocessing_time": self.timings.get("preprocessing_time", 0.0),
             "planning_time": self.timings.get("planning_time", 0.0),
