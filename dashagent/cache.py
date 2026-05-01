@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import copy
 from pathlib import Path
 from typing import Any
 
@@ -12,6 +13,9 @@ from .schema_index import JoinHint, SchemaIndex
 
 
 CACHE_MANIFEST = "cache_manifest.json"
+_QUERY_ANALYSIS_L1: dict[str, Any] = {}
+_SQL_RESULT_L1: dict[str, dict[str, Any]] = {}
+_API_RESPONSE_L1: dict[str, dict[str, Any]] = {}
 
 
 def current_fingerprint(config: Config | None = None) -> dict[str, Any]:
@@ -137,3 +141,57 @@ def load_schema_index_from_cache(config: Config | None = None) -> SchemaIndex | 
     ]
     bridge_tables = schema_payload.get("bridge_tables", [])
     return SchemaIndex(tables=tables, join_hints=join_hints, bridge_tables=bridge_tables)
+
+
+def query_analysis_cache_key(query: str, strategy: str, config: Config | None = None, fingerprint: dict[str, Any] | None = None) -> str:
+    cfg = config or DEFAULT_CONFIG
+    return json.dumps(
+        {
+            "query": query,
+            "strategy": strategy,
+            "fingerprint": fingerprint or current_fingerprint(cfg),
+        },
+        sort_keys=True,
+        default=str,
+    )
+
+
+def get_query_analysis_cache(key: str) -> Any | None:
+    return _QUERY_ANALYSIS_L1.get(key)
+
+
+def set_query_analysis_cache(key: str, value: Any) -> None:
+    _QUERY_ANALYSIS_L1[key] = value
+
+
+def sql_result_cache_key(sql: str, config: Config | None = None, fingerprint: dict[str, Any] | None = None) -> str:
+    cfg = config or DEFAULT_CONFIG
+    return json.dumps({"sql": sql, "fingerprint": fingerprint or current_fingerprint(cfg)}, sort_keys=True, default=str)
+
+
+def get_sql_result_cache(key: str) -> dict[str, Any] | None:
+    value = _SQL_RESULT_L1.get(key)
+    return copy.deepcopy(value) if value is not None else None
+
+
+def set_sql_result_cache(key: str, value: dict[str, Any]) -> None:
+    _SQL_RESULT_L1[key] = copy.deepcopy(value)
+
+
+def api_response_cache_key(method: str, url: str, params: dict[str, Any] | None = None) -> str:
+    return json.dumps({"method": method.upper(), "url": url, "params": params or {}}, sort_keys=True, default=str)
+
+
+def get_api_response_cache(key: str) -> dict[str, Any] | None:
+    value = _API_RESPONSE_L1.get(key)
+    return copy.deepcopy(value) if value is not None else None
+
+
+def set_api_response_cache(key: str, value: dict[str, Any]) -> None:
+    _API_RESPONSE_L1[key] = copy.deepcopy(value)
+
+
+def clear_l1_caches() -> None:
+    _QUERY_ANALYSIS_L1.clear()
+    _SQL_RESULT_L1.clear()
+    _API_RESPONSE_L1.clear()

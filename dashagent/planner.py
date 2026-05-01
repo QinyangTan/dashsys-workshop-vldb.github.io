@@ -5,11 +5,12 @@ from dataclasses import asdict, dataclass, field
 from typing import Any
 
 from .api_templates import find_api_templates
-from .call_budget import apply_tool_budget
 from .db import quote_ident
 from .evidence_policy import API_SKIP, decide_api_need
 from .endpoint_catalog import Endpoint
 from .fast_paths import find_fast_path
+from .plan_optimizer import optimize_plan_steps
+from .query_analysis import QueryAnalysis
 from .router import RoutingDecision
 from .schema_index import SchemaIndex
 from .sql_templates import SQLTemplate, find_sql_template
@@ -51,13 +52,17 @@ class Plan:
     strategy: str
     rationale: str
     steps: list[PlanStep]
+    optimizer_actions: list[str] = field(default_factory=list)
 
     def to_dict(self) -> dict[str, Any]:
-        return {
+        payload = {
             "strategy": self.strategy,
             "rationale": self.rationale,
             "steps": [step.to_dict() for step in self.steps],
         }
+        if self.optimizer_actions:
+            payload["optimizer_actions"] = self.optimizer_actions
+        return payload
 
 
 class StrategyPlanner:
@@ -70,6 +75,7 @@ class StrategyPlanner:
         routing: RoutingDecision,
         metadata: dict[str, Any],
         strategy: str,
+        analysis: QueryAnalysis | None = None,
     ) -> Plan:
         if strategy not in STRATEGIES:
             raise ValueError(f"Unknown strategy {strategy}. Expected one of {STRATEGIES}.")
@@ -80,8 +86,8 @@ class StrategyPlanner:
         if strategy == "DETERMINISTIC_ROUTER_SELECTED_METADATA":
             return self._deterministic_selected(query, routing, metadata, strategy)
         if strategy == "SQL_FIRST_API_VERIFY":
-            return self._sql_first_api_verify(query, routing, metadata, strategy)
-        return self._template_first(query, routing, metadata, strategy)
+            return self._sql_first_api_verify(query, routing, metadata, strategy, analysis)
+        return self._template_first(query, routing, metadata, strategy, analysis)
 
     def _sql_only(
         self,
@@ -161,10 +167,11 @@ class StrategyPlanner:
         routing: RoutingDecision,
         metadata: dict[str, Any],
         strategy: str,
+        analysis: QueryAnalysis | None = None,
     ) -> Plan:
         steps: list[PlanStep] = []
-        fast_path = find_fast_path(query, self.schema_index)
-        sql_template = fast_path.sql_template if fast_path else find_sql_template(query, self.schema_index)
+        fast_path = analysis.fast_path if analysis else find_fast_path(query, self.schema_index)
+        sql_template = analysis.sql_template if analysis else (fast_path.sql_template if fast_path else find_sql_template(query, self.schema_index))
         sql = self._build_sql(query, routing, metadata, sql_template=sql_template) if routing.route_type != "API_ONLY" else None
         if sql:
             steps.append(
@@ -176,8 +183,8 @@ class StrategyPlanner:
                     family=sql_template.family if sql_template else None,
                 )
             )
-        api_templates = fast_path.api_templates if fast_path else find_api_templates(query)
-        api_decision = decide_api_need(query, routing, sql_template, api_templates, strategy)
+        api_templates = analysis.api_templates if analysis else (fast_path.api_templates if fast_path else find_api_templates(query))
+        api_decision = analysis.api_need_decision if analysis else decide_api_need(query, routing, sql_template, api_templates, strategy)
         if api_decision.mode != API_SKIP:
             steps.extend(
                 self._api_steps(
@@ -188,12 +195,13 @@ class StrategyPlanner:
                     allowed_families=api_decision.allowed_api_families,
                 )
             )
-        steps, warnings = apply_tool_budget(
+        optimized = optimize_plan_steps(
             steps,
             strategy=strategy,
             route_type=routing.route_type,
-            max_api_calls=api_decision.max_api_calls,
+            api_decision=api_decision,
         )
+        steps = optimized.steps
         rationale = (
             strategy,
             f"SQL-first evidence policy: {api_decision.mode}. {api_decision.reason}",
@@ -201,9 +209,9 @@ class StrategyPlanner:
         )
         if fast_path:
             rationale = (rationale[0], rationale[1] + f" Fast path: {fast_path.family}.", rationale[2])
-        if warnings:
-            rationale = (rationale[0], rationale[1] + " " + " ".join(warnings), rationale[2])
-        return Plan(*rationale)
+        if optimized.actions:
+            rationale = (rationale[0], rationale[1] + " Optimized plan.", rationale[2])
+        return Plan(*rationale, optimizer_actions=optimized.actions)
 
     def _template_first(
         self,
@@ -211,28 +219,31 @@ class StrategyPlanner:
         routing: RoutingDecision,
         metadata: dict[str, Any],
         strategy: str,
+        analysis: QueryAnalysis | None = None,
     ) -> Plan:
         template_sql = self._known_pattern_sql(query, metadata)
         if template_sql:
+            sql_template = analysis.sql_template if analysis else find_sql_template(query, self.schema_index)
             steps = [
                 PlanStep(
                     action="sql",
                     purpose="Known reusable query pattern.",
                     sql=template_sql,
                     allow_full_result=asks_all_rows(query),
-                    family=find_sql_template(query, self.schema_index).family if find_sql_template(query, self.schema_index) else None,
+                    family=sql_template.family if sql_template else None,
                 )
             ]
-            api_templates = find_api_templates(query)
-            api_decision = decide_api_need(query, routing, find_sql_template(query, self.schema_index), api_templates, strategy)
+            api_templates = analysis.api_templates if analysis else find_api_templates(query)
+            api_decision = analysis.api_need_decision if analysis else decide_api_need(query, routing, sql_template, api_templates, strategy)
             if api_decision.mode != API_SKIP:
                 steps.extend(self._api_steps(query, routing, metadata, templates=api_templates, allowed_families=api_decision.allowed_api_families))
-            steps, warnings = apply_tool_budget(steps, strategy=strategy, route_type=routing.route_type, max_api_calls=api_decision.max_api_calls)
+            optimized = optimize_plan_steps(steps, strategy=strategy, route_type=routing.route_type, api_decision=api_decision)
+            steps = optimized.steps
             rationale = "Template matched a reusable public-example-style pattern."
-            if warnings:
-                rationale += " " + " ".join(warnings)
-            return Plan(strategy, rationale, steps)
-        fallback = self._sql_first_api_verify(query, routing, metadata, "SQL_FIRST_API_VERIFY")
+            if optimized.actions:
+                rationale += " Optimized plan."
+            return Plan(strategy, rationale, steps, optimized.actions)
+        fallback = self._sql_first_api_verify(query, routing, metadata, "SQL_FIRST_API_VERIFY", analysis)
         return Plan(strategy, "No template matched; fell back to SQL-first API-verify plan.", fallback.steps)
 
     def _build_sql(

@@ -8,12 +8,27 @@ from typing import Any
 
 from .answer_synthesizer import synthesize_answer
 from .api_client import AdobeAPIClient
-from .cache import load_schema_index_from_cache, write_cache_manifest
+from .cache import (
+    api_response_cache_key,
+    current_fingerprint,
+    get_api_response_cache,
+    get_query_analysis_cache,
+    get_sql_result_cache,
+    load_schema_index_from_cache,
+    query_analysis_cache_key,
+    set_api_response_cache,
+    set_query_analysis_cache,
+    set_sql_result_cache,
+    sql_result_cache_key,
+    write_cache_manifest,
+)
 from .config import Config, DEFAULT_CONFIG
 from .db import DuckDBDatabase
 from .endpoint_catalog import EndpointCatalog
+from .evidence_bus import EvidenceBus
 from .metadata_selector import MetadataSelector
 from .planner import STRATEGIES, StrategyPlanner
+from .query_analysis import analyze_query
 from .router import QueryRouter
 from .schema_index import SchemaIndex
 from .trajectory import TrajectoryLogger, estimate_tokens
@@ -50,6 +65,7 @@ class AgentExecutor:
             self.endpoint_catalog,
             allow_unknown=self.config.allow_unknown_api_endpoints,
         )
+        self.cache_fingerprint = current_fingerprint(self.config)
 
     def run(
         self,
@@ -67,6 +83,11 @@ class AgentExecutor:
 
         preprocessing_start = time.perf_counter()
         routing = self.router.route(query)
+        analysis_key = query_analysis_cache_key(query, strategy, self.config, self.cache_fingerprint)
+        analysis = get_query_analysis_cache(analysis_key)
+        if analysis is None:
+            analysis = analyze_query(query, routing, self.schema_index, strategy=strategy, config=self.config)
+            set_query_analysis_cache(analysis_key, analysis)
         broad = strategy == "LLM_FREE_AGENT_BASELINE"
         metadata = self.metadata_selector.select(
             query,
@@ -74,6 +95,7 @@ class AgentExecutor:
             strategy=strategy,
             query_id=qid,
             broad_context=broad,
+            analysis=analysis,
         )
         self.metadata_selector.save(metadata, out_dir)
 
@@ -82,7 +104,7 @@ class AgentExecutor:
         preprocessing_time = time.perf_counter() - preprocessing_start
 
         planning_start = time.perf_counter()
-        plan = self.planner.create_plan(query, routing, metadata, strategy)
+        plan = self.planner.create_plan(query, routing, metadata, strategy, analysis=analysis)
         planning_time = time.perf_counter() - planning_start
         trajectory = TrajectoryLogger(
             query_id=qid,
@@ -106,6 +128,7 @@ class AgentExecutor:
         trajectory.add_step("plan", plan.to_dict())
 
         tool_results: list[dict[str, Any]] = []
+        evidence_bus = EvidenceBus()
         execution_start = time.perf_counter()
         for step in plan.steps:
             if step.action == "sql" and step.sql:
@@ -119,19 +142,33 @@ class AgentExecutor:
                             step.sql = repaired_sql
                             validation = ValidationResult(True, warnings=["SQL repaired once."], repaired=True)
                 if validation.ok:
-                    result = self.db.execute_sql(step.sql, allow_full_result=step.allow_full_result)
+                    cache_key = sql_result_cache_key(step.sql, self.config, self.cache_fingerprint)
+                    result = get_sql_result_cache(cache_key)
+                    if result is None:
+                        result = self.db.execute_sql(step.sql, allow_full_result=step.allow_full_result)
+                        set_sql_result_cache(cache_key, result)
                 else:
                     result = {"ok": False, "rows": [], "row_count": 0, "error": "; ".join(validation.errors)}
                 trajectory.add_sql_call(step.sql, validation, result)
                 tool_results.append({"type": "sql", "step": step.to_dict(), "validation": validation.to_dict(), "payload": result})
+                evidence_bus.observe_sql(step, result)
             elif step.action == "api" and step.method and step.url:
+                forwarding_actions = evidence_bus.forward_to_step(step)
+                if forwarding_actions:
+                    trajectory.add_step("optimizer", {"actions": forwarding_actions})
                 validation = self.api_validator.validate(step.method, step.url, step.params, step.headers)
                 if validation.ok:
-                    result = self.api_client.call_api(step.method, step.url, step.params, step.headers)
+                    api_cache_key = api_response_cache_key(step.method, step.url, step.params)
+                    result = get_api_response_cache(api_cache_key) if self.api_client.dry_run else None
+                    if result is None:
+                        result = self.api_client.call_api(step.method, step.url, step.params, step.headers)
+                        if result.get("dry_run"):
+                            set_api_response_cache(api_cache_key, result)
                 else:
                     result = {"ok": False, "dry_run": False, "error": "; ".join(validation.errors)}
                 trajectory.add_api_call(step.method, step.url, step.params, step.headers, validation, result)
                 tool_results.append({"type": "api", "step": step.to_dict(), "validation": validation.to_dict(), "payload": result})
+                evidence_bus.observe_api(step, result)
         trajectory.set_timing("execution_time", time.perf_counter() - execution_start)
 
         answer_start = time.perf_counter()

@@ -6,8 +6,10 @@ from pathlib import Path
 from typing import Any
 
 from .config import Config, DEFAULT_CONFIG
+from .context_cards import context_card_for
 from .endpoint_catalog import EndpointCatalog
 from .api_templates import find_api_templates
+from .query_analysis import QueryAnalysis
 from .router import RoutingDecision
 from .schema_index import SchemaIndex, normalize_name
 from .sql_templates import find_sql_template
@@ -27,13 +29,17 @@ class MetadataSelector:
         strategy: str,
         query_id: str,
         broad_context: bool = False,
+        analysis: QueryAnalysis | None = None,
     ) -> dict[str, Any]:
         selected_tables = routing.candidate_tables
         if broad_context:
             selected_tables = list(self.schema_index.tables)[:30]
-        sql_template = None if broad_context else find_sql_template(query, self.schema_index)
+        sql_template = None if broad_context else (analysis.sql_template if analysis else find_sql_template(query, self.schema_index))
+        context_card = None if broad_context else context_card_for(analysis.lookup_path if analysis else None)
         if sql_template is not None:
             selected_tables = [table for table in sql_template.required_tables if table in self.schema_index.tables]
+        elif context_card:
+            selected_tables = [table for table in context_card.get("tables", []) if table in self.schema_index.tables] or selected_tables
         selected_columns = {
             table: self._columns_for_strategy(table, broad_context, sql_template.required_columns.get(table) if sql_template else None)
             for table in selected_tables
@@ -43,16 +49,18 @@ class MetadataSelector:
         if broad_context:
             selected_apis = self.endpoint_catalog.as_list()
         elif self.config.compact_metadata:
-            api_templates = find_api_templates(query, self.config)
+            api_templates = analysis.api_templates if analysis else find_api_templates(query, self.config)
             matched = []
             seen = set()
             for template in api_templates:
                 endpoint = self.endpoint_catalog.match(template.method, template.path)
                 if endpoint and endpoint.id not in seen:
                     seen.add(endpoint.id)
-                    matched.append(endpoint.to_dict())
+                    matched.append(compact_endpoint(endpoint.to_dict()))
             if matched:
                 selected_apis = matched
+            else:
+                selected_apis = [compact_endpoint(api) for api in selected_apis]
 
         metadata = {
             "query_id": query_id,
@@ -65,19 +73,11 @@ class MetadataSelector:
             "selected_join_hints": self.schema_index.selected_join_hints(selected_tables)[: (30 if broad_context else self.config.max_join_hints)],
             "selected_apis": selected_apis,
             "known_example_patterns": self._load_relevant_gold_patterns(query, selected_apis, broad_context=broad_context),
-            "constraints": [
-                "Use only known table names and columns.",
-                "Use only endpoint catalog entries unless fallback mode is explicitly enabled.",
-                "Validate SQL and API calls before execution.",
-                "Prefer fewer tool calls when evidence is sufficient.",
-            ],
-            "answer_policy": [
-                "Answer from tool evidence only.",
-                "Say not found when evidence is empty.",
-                "Explicitly mention SQL/API disagreement when both are used.",
-                "Do not invent IDs, counts, timestamps, states, or names.",
-            ],
+            "constraints": self._constraints(broad_context),
+            "answer_policy": self._answer_policy(broad_context),
         }
+        if context_card:
+            metadata["context_card"] = context_card
         return metadata
 
     def _columns_for_strategy(self, table: str, broad_context: bool, required_columns: list[str] | None = None) -> list[str]:
@@ -124,8 +124,36 @@ class MetadataSelector:
                 relevant.append(pattern)
         return relevant[: (5 if broad_context else self.config.max_gold_patterns)]
 
+    def _constraints(self, broad_context: bool) -> list[str]:
+        if broad_context:
+            return [
+                "Use only known table names and columns.",
+                "Use only endpoint catalog entries unless fallback mode is explicitly enabled.",
+                "Validate SQL and API calls before execution.",
+                "Prefer fewer tool calls when evidence is sufficient.",
+            ]
+        return ["Use validated SQL/API only.", "Prefer fewer tool calls when evidence is sufficient."]
+
+    def _answer_policy(self, broad_context: bool) -> list[str]:
+        if broad_context:
+            return [
+                "Answer from tool evidence only.",
+                "Say not found when evidence is empty.",
+                "Explicitly mention SQL/API disagreement when both are used.",
+                "Do not invent IDs, counts, timestamps, states, or names.",
+            ]
+        return ["Answer from evidence only.", "Say not found/dry-run when evidence is empty."]
+
     def save(self, metadata: dict[str, Any], output_dir: Path) -> Path:
         output_dir.mkdir(parents=True, exist_ok=True)
         path = output_dir / "metadata.json"
         path.write_text(json.dumps(metadata, indent=2, sort_keys=True, default=str), encoding="utf-8")
         return path
+
+
+def compact_endpoint(endpoint: dict[str, Any]) -> dict[str, Any]:
+    return {
+        key: endpoint[key]
+        for key in ["id", "method", "path"]
+        if key in endpoint
+    }
