@@ -39,7 +39,7 @@
     "answer_score": 0.5319,
     "api_score": 0.776,
     "failure_category": "SQL_COLUMN_MISMATCH",
-    "final_score": 0.3597,
+    "final_score": 0.3596,
     "generated_answer": "Based on the evidence provided, 1 datasets have been ingested using the same schema. Live API verification was not executed because Adobe credentials are unavailable.",
     "generated_api": [
       {
@@ -96,7 +96,7 @@
     "answer_score": 0.3463,
     "api_score": 1.0,
     "failure_category": "SQL_COLUMN_MISMATCH",
-    "final_score": 0.3712,
+    "final_score": 0.3711,
     "generated_answer": "No destinations were found in the database. Live API verification was not executed because Adobe credentials are unavailable.",
     "generated_api": [
       {
@@ -191,7 +191,7 @@
     "answer_score": 0.678,
     "api_score": 0.748,
     "failure_category": "SQL_COLUMN_MISMATCH",
-    "final_score": 0.3961,
+    "final_score": 0.396,
     "generated_answer": "Based on the evidence provided, 37 datasets have been ingested using the same schema. Live API verification was not executed because Adobe credentials are unavailable.",
     "generated_api": [
       {
@@ -248,7 +248,7 @@
     "answer_score": 0.4606,
     "api_score": 1.0,
     "failure_category": "SQL_JOIN_MISMATCH",
-    "final_score": 0.4056,
+    "final_score": 0.4055,
     "generated_answer": "Based on the evidence provided, no datasets use the schema 'weRetail: Customer Actions'. The SQL query returned zero results, and live API verification was not executed because Adobe credentials are unavailable.",
     "generated_api": [
       {
@@ -368,7 +368,7 @@
     "answer_score": 0.6654,
     "api_score": 1.0,
     "failure_category": "SQL_COLUMN_MISMATCH",
-    "final_score": 0.4663,
+    "final_score": 0.4662,
     "generated_answer": "Based on the available evidence, there are 2 journeys found in the database: Birthday Message and Gold Tier Welcome Email. Live API verification was not executed because Adobe credentials are unavailable.",
     "generated_api": [
       {
@@ -414,7 +414,7 @@
     "answer_score": 0.3408,
     "api_score": 0.0,
     "failure_category": "API_CALL_COUNT_MISMATCH",
-    "final_score": 0.483,
+    "final_score": 0.4829,
     "generated_answer": "Batch details require live API evidence. API evidence was not requested.",
     "generated_api": [],
     "generated_sql": "SELECT \"SEGMENTID\", \"CAMPAIGNID\", \"LABELSSEGMENT\", \"LABELSCAMPAIGN\" FROM \"br_campaign_segment\" LIMIT 50",
@@ -509,7 +509,7 @@
     "answer_score": 0.375,
     "api_score": 0.0,
     "failure_category": "API_CALL_COUNT_MISMATCH",
-    "final_score": 0.4933,
+    "final_score": 0.4932,
     "generated_answer": "The requested tag list requires live API evidence. API evidence was not requested.",
     "generated_api": [],
     "generated_sql": "SELECT \"SEGMENTID\", \"CAMPAIGNID\", \"LABELSSEGMENT\", \"LABELSCAMPAIGN\" FROM \"br_campaign_segment\"",
@@ -585,7 +585,7 @@
     "answer_score": 0.3919,
     "api_score": 0.0,
     "failure_category": "API_CALL_COUNT_MISMATCH",
-    "final_score": 0.5018,
+    "final_score": 0.5017,
     "generated_answer": "The merge policy count cannot be determined from the available evidence. API evidence was not requested.",
     "generated_api": [],
     "generated_sql": "SELECT COUNT(*) AS count FROM \"br_campaign_segment\"",
@@ -623,7 +623,7 @@
     "answer_score": 0.4163,
     "api_score": 0.0,
     "failure_category": "API_CALL_COUNT_MISMATCH",
-    "final_score": 0.5042,
+    "final_score": 0.5041,
     "generated_answer": "The requested segment definition list requires live Adobe API evidence with definition names, IDs, and pagination counts. API evidence was not requested.",
     "generated_api": [],
     "generated_sql": "SELECT \"SEGMENTID\", \"UPDATEDTIME\", \"ISACCOUNTSEGMENT\", \"NAME\", \"EVALUATIONCOMPLETEDTIME\", \"LABELSSEGMENT\", \"LIFECYCLESTATUS\", \"CREATEDTIME\" FROM \"dim_segment\"",
@@ -642,7 +642,7 @@
     "answer_score": 0.4163,
     "api_score": 0.0,
     "failure_category": "API_CALL_COUNT_MISMATCH",
-    "final_score": 0.5051,
+    "final_score": 0.505,
     "generated_answer": "Based on the SQL evidence, 1 audience(s) match: Gender: Male (ID f6b93428-c021-4058-a1a2-77c277aab564) mapped to amazon-s3. API evidence was not requested.",
     "generated_api": [],
     "generated_sql": "SELECT DISTINCT A.\"SEGMENTID\" AS segment_id, A.\"NAME\" AS segment_name, D.\"TARGETID\" AS target_id, D.\"NAME\" AS target_name FROM \"dim_segment\" AS A JOIN \"hkg_br_segment_target\" AS AD ON A.\"SEGMENTID\" = AD.\"SEGMENTID\" JOIN \"dim_target\" AS D ON AD.\"TARGETID\" = D.\"TARGETID\" WHERE D.\"CREATEDTIME\" >= DATEADD(MONTH, -3, CURRENT_DATE) LIMIT 3",
@@ -726,7 +726,7 @@
     "answer_score": 0.4283,
     "api_score": 0.0,
     "failure_category": "API_CALL_COUNT_MISMATCH",
-    "final_score": 0.5124,
+    "final_score": 0.5123,
     "generated_answer": "Values for timeseries.ingestion.dataset.recordsuccess.count and timeseries.ingestion.dataset.batchsuccess.count for the requested time window require live API evidence. API evidence was not requested.",
     "generated_api": [],
     "generated_sql": "SELECT COUNT(*) AS count FROM \"br_campaign_segment\"",
@@ -745,7 +745,7 @@
     "answer_score": 0.4549,
     "api_score": 0.0,
     "failure_category": "API_CALL_COUNT_MISMATCH",
-    "final_score": 0.5157,
+    "final_score": 0.5156,
     "generated_answer": "Based on the evidence provided, matching datasets are: hkg_adls_segment_profile_history, hkg_adls_profile_count_history, Profile-Snapshot-Export-486e2a5e-dc46-4ab6-ad5f-9cdd16db869d, Profile Export For Destination - Merge Policy - 22a941a9-e598-45f8-846b-c9a8889f5035, BR_Segment_Destination, DIM_Destination, BR_Namespace_Destination, Segmentdefinition-Snapshot-Export-3405afd1-7c78-4aff-84e6-d2136ffcea93, weRetail: CRM, and weRetail: Customer Actions. API evidence was not requested.",
     "generated_api": [],
     "generated_sql": "SELECT DISTINCT D.\"COLLECTIONID\" AS collection_id, D.\"NAME\" AS collection_name, D.\"UPDATEDTIME\" AS updated_time FROM \"dim_collection\" AS D WHERE D.\"UPDATEDTIME\" >= DATEADD(DAY, -90, CURRENT_DATE) ORDER BY D.\"UPDATEDTIME\" DESC LIMIT 50",
@@ -783,7 +783,7 @@
     "answer_score": 0.445,
     "api_score": 0.0,
     "failure_category": "API_CALL_COUNT_MISMATCH",
-    "final_score": 0.516,
+    "final_score": 0.5159,
     "generated_answer": "Details for the tag named 'Uncategorized' require live API evidence, including the tag ID, name, category, and Adobe organization. API evidence was not requested.",
     "generated_api": [],
     "generated_sql": "SELECT \"SEGMENTID\", \"CAMPAIGNID\", \"LABELSSEGMENT\", \"LABELSCAMPAIGN\" FROM \"br_campaign_segment\" WHERE LOWER(CAST(\"LABELSSEGMENT\" AS VARCHAR)) LIKE LOWER('%Uncategorized%') LIMIT 50",
@@ -803,7 +803,7 @@
     "answer_score": 0.4497,
     "api_score": 0.0,
     "failure_category": "API_CALL_COUNT_MISMATCH",
-    "final_score": 0.5178,
+    "final_score": 0.5177,
     "generated_answer": "Segment definition details require live Adobe API evidence with definition names, IDs, and counts. API evidence was not requested.",
     "generated_api": [],
     "generated_sql": "SELECT COUNT(*) AS count FROM \"dim_segment\"",
@@ -879,7 +879,7 @@
     "answer_score": 0.6245,
     "api_score": 0.0,
     "failure_category": "API_CALL_COUNT_MISMATCH",
-    "final_score": 0.5276,
+    "final_score": 0.5275,
     "generated_answer": "Based on the evidence provided, there is no data available to answer this question. The SQL query returned zero rows, and API evidence was not requested.",
     "generated_api": [],
     "generated_sql": "SELECT A.\"SEGMENTID\" AS segment_id, A.\"NAME\" AS segment_name, A.\"TOTALMEMBERS\" AS total_profiles, A.\"CREATEDTIME\" AS created_time, A.\"UPDATEDTIME\" AS updated_time FROM \"dim_segment\" AS A JOIN \"hkg_br_segment_target\" AS AD ON A.\"SEGMENTID\" = AD.\"SEGMENTID\" JOIN \"dim_target\" AS D ON AD.\"TARGETID\" = D.\"TARGETID\" WHERE D.\"DATAFLOWNAME\" = 'SMS Opt-In' OR D.\"NAME\" = 'SMS Opt-In' ORDER BY A.\"NAME\"",
@@ -919,7 +919,7 @@
     "answer_score": 0.6419,
     "api_score": 0.0,
     "failure_category": "API_CALL_COUNT_MISMATCH",
-    "final_score": 0.5354,
+    "final_score": 0.5353,
     "generated_answer": "Based on the available evidence, there are 2 journeys found in the database: Birthday Message and Gold Tier Welcome Email. API evidence was not requested.",
     "generated_api": [],
     "generated_sql": "SELECT CAMPAIGN.\"NAME\" AS CAMPAIGNNAME, CAMPAIGN.\"CAMPAIGNID\" AS CAMPAIGNID FROM \"dim_campaign\" AS CAMPAIGN",
@@ -957,7 +957,7 @@
     "answer_score": 0.9694,
     "api_score": 1.0,
     "failure_category": "SQL_COLUMN_MISMATCH",
-    "final_score": 0.5588,
+    "final_score": 0.5587,
     "generated_answer": "Based on the SQL query result, there are 13 XDM Experience Event schemas enabled for profile in your environment.",
     "generated_api": [
       {
@@ -985,7 +985,7 @@
     "answer_score": 0.7283,
     "api_score": 0.0,
     "failure_category": "API_CALL_COUNT_MISMATCH",
-    "final_score": 0.5612,
+    "final_score": 0.5611,
     "generated_answer": "Based on the evidence provided, no entities were created by download. The SQL query returned zero rows, and API evidence was not requested.",
     "generated_api": [],
     "generated_sql": "SELECT DISTINCT C.\"COLLECTIONID\" AS collection_id, C.\"NAME\" AS collection_name, C.\"CREATEDTIME\" AS created_time FROM \"dim_collection\" AS C WHERE C.\"CREATEDBY\" ILIKE '%download%'",
@@ -1140,7 +1140,7 @@
     "answer_score": 0.4408,
     "api_score": 0.72,
     "failure_category": "API_CALL_COUNT_MISMATCH",
-    "final_score": 0.7015,
+    "final_score": 0.7014,
     "generated_answer": "The default merge policy requires live Adobe API evidence. Live API verification was not executed because Adobe credentials are unavailable.",
     "generated_api": [
       {
@@ -1281,7 +1281,7 @@
     "answer_score": 0.3725,
     "api_score": 1.0,
     "failure_category": "ANSWER_TOO_GENERIC",
-    "final_score": 0.7812,
+    "final_score": 0.7811,
     "generated_answer": "The batch count requires live API evidence. Live API verification was not executed because Adobe credentials are unavailable.",
     "generated_api": [
       {
@@ -1337,7 +1337,7 @@
     "answer_score": 0.3912,
     "api_score": 1.0,
     "failure_category": "ANSWER_TOO_GENERIC",
-    "final_score": 0.782,
+    "final_score": 0.7819,
     "generated_answer": "Segment evaluation job IDs, statuses, sandbox, and segment counts require live Adobe API evidence. Live API verification was not executed because Adobe credentials are unavailable.",
     "generated_api": [
       {
@@ -1391,7 +1391,7 @@
     "answer_score": 0.5141,
     "api_score": 1.0,
     "failure_category": "DRY_RUN_ONLY",
-    "final_score": 0.783,
+    "final_score": 0.7829,
     "generated_answer": "You have 74 schemas. Live API verification was not executed because Adobe credentials are unavailable.",
     "generated_api": [
       {
@@ -1742,7 +1742,7 @@
     "answer_score": 0.5468,
     "api_score": 1.0,
     "failure_category": "DRY_RUN_ONLY",
-    "final_score": 0.7917,
+    "final_score": 0.7916,
     "generated_answer": "There are 2 inactive campaigns: Birthday Message (last updated 2026-03-31) and Gold Tier Welcome Email (last updated 2026-03-31). Live API verification was not executed because Adobe credentials are unavailable.",
     "generated_api": [
       {
@@ -1796,7 +1796,7 @@
     "answer_score": 0.4195,
     "api_score": 1.0,
     "failure_category": "ANSWER_TOO_GENERIC",
-    "final_score": 0.7938,
+    "final_score": 0.7937,
     "generated_answer": "Details for the tag named 'cool' require live API evidence, including the tag ID, name, category, and Adobe organization. Live API verification was not executed because Adobe credentials are unavailable.",
     "generated_api": [
       {
@@ -1850,7 +1850,7 @@
     "answer_score": 0.3725,
     "api_score": 1.0,
     "failure_category": "ANSWER_TOO_GENERIC",
-    "final_score": 0.7946,
+    "final_score": 0.7945,
     "generated_answer": "The batch count requires live API evidence. Live API verification was not executed because Adobe credentials are unavailable.",
     "generated_api": [
       {
@@ -1989,7 +1989,7 @@
     "answer_score": 0.4241,
     "api_score": 1.0,
     "failure_category": "ANSWER_TOO_GENERIC",
-    "final_score": 0.7953,
+    "final_score": 0.7952,
     "generated_answer": "Segment evaluation job IDs, statuses, sandbox, and segment counts require live Adobe API evidence. Live API verification was not executed because Adobe credentials are unavailable.",
     "generated_api": [
       {
@@ -2072,7 +2072,7 @@
     "answer_score": 0.3823,
     "api_score": 1.0,
     "failure_category": "ANSWER_TOO_GENERIC",
-    "final_score": 0.7964,
+    "final_score": 0.7963,
     "generated_answer": "Batch details require live API evidence. Live API verification was not executed because Adobe credentials are unavailable.",
     "generated_api": [
       {
@@ -2126,7 +2126,7 @@
     "answer_score": 0.3823,
     "api_score": 1.0,
     "failure_category": "ANSWER_TOO_GENERIC",
-    "final_score": 0.7969,
+    "final_score": 0.7968,
     "generated_answer": "Batch details require live API evidence. Live API verification was not executed because Adobe credentials are unavailable.",
     "generated_api": [
       {
@@ -2217,7 +2217,7 @@
     "answer_score": 0.4329,
     "api_score": 1.0,
     "failure_category": "ANSWER_TOO_GENERIC",
-    "final_score": 0.7971,
+    "final_score": 0.797,
     "generated_answer": "Values for timeseries.ingestion.dataset.recordsuccess.count and timeseries.ingestion.dataset.batchsuccess.count for the requested time window require live API evidence. Live API verification was not executed because Adobe credentials are unavailable.",
     "generated_api": [
       {
@@ -2357,7 +2357,7 @@
     "answer_score": 0.4308,
     "api_score": 1.0,
     "failure_category": "ANSWER_TOO_GENERIC",
-    "final_score": 0.7979,
+    "final_score": 0.7978,
     "generated_answer": "The segment evaluation job count requires live Adobe API evidence. Live API verification was not executed because Adobe credentials are unavailable.",
     "generated_api": [
       {
@@ -2462,6 +2462,33 @@
     "strategy": "DETERMINISTIC_ROUTER_SELECTED_METADATA"
   },
   {
+    "answer_score": 0.4408,
+    "api_score": 1.0,
+    "failure_category": "ANSWER_TOO_GENERIC",
+    "final_score": 0.7997,
+    "generated_answer": "The default merge policy requires live Adobe API evidence. Live API verification was not executed because Adobe credentials are unavailable.",
+    "generated_api": [
+      {
+        "method": "GET",
+        "params": {
+          "limit": "5"
+        },
+        "path": "/data/core/ups/config/mergePolicies"
+      }
+    ],
+    "generated_sql": "SELECT DISTINCT C.\"COLLECTIONID\" AS collection_id, C.\"NAME\" AS collection_name FROM \"hkg_br_blueprint_collection\" AS BC JOIN \"dim_collection\" AS C ON BC.\"COLLECTIONID\" = C.\"COLLECTIONID\" JOIN \"dim_blueprint\" AS B ON BC.\"BLUEPRINTID\" = B.\"BLUEPRINTID\" WHERE B.\"NAME\" = '_xdm.context.profile' LIMIT 50",
+    "gold_answer": "The default merge policy for the schema class '_xdm.context.profile' is called **Default Timebased**. It uses timestamp-ordered attribute merging, where conflicting attributes are resolved by selecting the most recent value, and relies on the Personalized Data Graph for identity resolution.",
+    "gold_api": [
+      "GET /data/core/ups/config/mergePolicies?limit=5"
+    ],
+    "gold_sql": "",
+    "query": "Show the default merge policy for schema class '_xdm.context.profile'.",
+    "query_id": "example_021",
+    "recommended_fix": "Add a query-family answer template that names concrete SQL/API evidence.",
+    "sql_score": 1.0,
+    "strategy": "TEMPLATE_FIRST"
+  },
+  {
     "answer_score": 0.3912,
     "api_score": 1.0,
     "failure_category": "ANSWER_TOO_GENERIC",
@@ -2489,37 +2516,10 @@
     "strategy": "TEMPLATE_FIRST"
   },
   {
-    "answer_score": 0.4408,
-    "api_score": 1.0,
-    "failure_category": "ANSWER_TOO_GENERIC",
-    "final_score": 0.7998,
-    "generated_answer": "The default merge policy requires live Adobe API evidence. Live API verification was not executed because Adobe credentials are unavailable.",
-    "generated_api": [
-      {
-        "method": "GET",
-        "params": {
-          "limit": "5"
-        },
-        "path": "/data/core/ups/config/mergePolicies"
-      }
-    ],
-    "generated_sql": "SELECT DISTINCT C.\"COLLECTIONID\" AS collection_id, C.\"NAME\" AS collection_name FROM \"hkg_br_blueprint_collection\" AS BC JOIN \"dim_collection\" AS C ON BC.\"COLLECTIONID\" = C.\"COLLECTIONID\" JOIN \"dim_blueprint\" AS B ON BC.\"BLUEPRINTID\" = B.\"BLUEPRINTID\" WHERE B.\"NAME\" = '_xdm.context.profile' LIMIT 50",
-    "gold_answer": "The default merge policy for the schema class '_xdm.context.profile' is called **Default Timebased**. It uses timestamp-ordered attribute merging, where conflicting attributes are resolved by selecting the most recent value, and relies on the Personalized Data Graph for identity resolution.",
-    "gold_api": [
-      "GET /data/core/ups/config/mergePolicies?limit=5"
-    ],
-    "gold_sql": "",
-    "query": "Show the default merge policy for schema class '_xdm.context.profile'.",
-    "query_id": "example_021",
-    "recommended_fix": "Add a query-family answer template that names concrete SQL/API evidence.",
-    "sql_score": 1.0,
-    "strategy": "TEMPLATE_FIRST"
-  },
-  {
     "answer_score": 0.3929,
     "api_score": 1.0,
     "failure_category": "ANSWER_TOO_GENERIC",
-    "final_score": 0.8009,
+    "final_score": 0.8008,
     "generated_answer": "The merge policy count cannot be determined from the available evidence. Live API verification was not executed because Adobe credentials are unavailable.",
     "generated_api": [
       {
@@ -2782,6 +2782,34 @@
     "strategy": "DETERMINISTIC_ROUTER_SELECTED_METADATA"
   },
   {
+    "answer_score": 0.405,
+    "api_score": 1.0,
+    "failure_category": "ANSWER_TOO_GENERIC",
+    "final_score": 0.803,
+    "generated_answer": "The most recently updated segment definitions require live Adobe API evidence with names, IDs, and update times. Live API verification was not executed because Adobe credentials are unavailable.",
+    "generated_api": [
+      {
+        "method": "GET",
+        "params": {
+          "limit": "3",
+          "orderBy": "updateTime:desc"
+        },
+        "path": "/data/core/ups/segment/definitions"
+      }
+    ],
+    "generated_sql": null,
+    "gold_answer": "Based on the API response sorted by creation time in descending order, the most recently created segment definition is **\"Person: Birthday Today 001\"** (ID: 2fdfefe1-04d0-46ce-9fbd-7611e311dd26) in the external-benchmarking sandbox. The response shows 13 total segment definitions across 5 pages, with this one appearing first in the descending creation time sort.",
+    "gold_api": [
+      "GET /data/core/ups/segment/definitions?limit=3&orderBy=updateTime:desc"
+    ],
+    "gold_sql": "",
+    "query": "Which segment definitions were updated most recently?",
+    "query_id": "example_024",
+    "recommended_fix": "Add a query-family answer template that names concrete SQL/API evidence.",
+    "sql_score": 1.0,
+    "strategy": "SQL_FIRST_API_VERIFY"
+  },
+  {
     "answer_score": 0.4037,
     "api_score": 1.0,
     "failure_category": "ANSWER_TOO_GENERIC",
@@ -2810,38 +2838,10 @@
     "strategy": "SQL_FIRST_API_VERIFY"
   },
   {
-    "answer_score": 0.405,
-    "api_score": 1.0,
-    "failure_category": "ANSWER_TOO_GENERIC",
-    "final_score": 0.8031,
-    "generated_answer": "The most recently updated segment definitions require live Adobe API evidence with names, IDs, and update times. Live API verification was not executed because Adobe credentials are unavailable.",
-    "generated_api": [
-      {
-        "method": "GET",
-        "params": {
-          "limit": "3",
-          "orderBy": "updateTime:desc"
-        },
-        "path": "/data/core/ups/segment/definitions"
-      }
-    ],
-    "generated_sql": null,
-    "gold_answer": "Based on the API response sorted by creation time in descending order, the most recently created segment definition is **\"Person: Birthday Today 001\"** (ID: 2fdfefe1-04d0-46ce-9fbd-7611e311dd26) in the external-benchmarking sandbox. The response shows 13 total segment definitions across 5 pages, with this one appearing first in the descending creation time sort.",
-    "gold_api": [
-      "GET /data/core/ups/segment/definitions?limit=3&orderBy=updateTime:desc"
-    ],
-    "gold_sql": "",
-    "query": "Which segment definitions were updated most recently?",
-    "query_id": "example_024",
-    "recommended_fix": "Add a query-family answer template that names concrete SQL/API evidence.",
-    "sql_score": 1.0,
-    "strategy": "SQL_FIRST_API_VERIFY"
-  },
-  {
     "answer_score": 0.4574,
     "api_score": 1.0,
     "failure_category": "ANSWER_WRONG_FACT",
-    "final_score": 0.8031,
+    "final_score": 0.803,
     "generated_answer": "Based on the SQL evidence, 1 audience(s) match: Gender: Male (ID f6b93428-c021-4058-a1a2-77c277aab564) mapped to amazon-s3. Live API verification was not executed because Adobe credentials are unavailable.",
     "generated_api": [
       {
@@ -3291,7 +3291,7 @@
     "answer_score": 0.7234,
     "api_score": 0.748,
     "failure_category": "API_CALL_COUNT_MISMATCH",
-    "final_score": 0.8075,
+    "final_score": 0.8074,
     "generated_answer": "Based on the evidence provided, 2 datasets have been ingested using the same schema. These datasets use \"Journey Inbound External Segment Profile Schema\". Live API verification was not executed because Adobe credentials are unavailable.",
     "generated_api": [
       {
@@ -3320,7 +3320,7 @@
     "answer_score": 0.4161,
     "api_score": 1.0,
     "failure_category": "ANSWER_TOO_GENERIC",
-    "final_score": 0.8076,
+    "final_score": 0.8075,
     "generated_answer": "The requested tag list requires live API evidence. Live API verification was not executed because Adobe credentials are unavailable.",
     "generated_api": [
       {
@@ -3614,7 +3614,7 @@
     "answer_score": 0.4308,
     "api_score": 1.0,
     "failure_category": "ANSWER_TOO_GENERIC",
-    "final_score": 0.811,
+    "final_score": 0.8109,
     "generated_answer": "The segment evaluation job count requires live Adobe API evidence. Live API verification was not executed because Adobe credentials are unavailable.",
     "generated_api": [
       {
@@ -3641,7 +3641,7 @@
     "answer_score": 0.4308,
     "api_score": 1.0,
     "failure_category": "ANSWER_TOO_GENERIC",
-    "final_score": 0.8115,
+    "final_score": 0.8114,
     "generated_answer": "The segment evaluation job count requires live Adobe API evidence. Live API verification was not executed because Adobe credentials are unavailable.",
     "generated_api": [
       {
@@ -3695,7 +3695,7 @@
     "answer_score": 0.4419,
     "api_score": 1.0,
     "failure_category": "ANSWER_TOO_GENERIC",
-    "final_score": 0.8144,
+    "final_score": 0.8143,
     "generated_answer": "The requested segment definition list requires live Adobe API evidence with definition names, IDs, and pagination counts. Live API verification was not executed because Adobe credentials are unavailable.",
     "generated_api": [
       {
@@ -3722,7 +3722,7 @@
     "answer_score": 0.4425,
     "api_score": 1.0,
     "failure_category": "ANSWER_TOO_GENERIC",
-    "final_score": 0.8145,
+    "final_score": 0.8144,
     "generated_answer": "Segment definition details require live Adobe API evidence with definition names, IDs, and counts. Live API verification was not executed because Adobe credentials are unavailable.",
     "generated_api": [
       {
@@ -3744,6 +3744,33 @@
     "recommended_fix": "Add a query-family answer template that names concrete SQL/API evidence.",
     "sql_score": 1.0,
     "strategy": "SQL_FIRST_API_VERIFY"
+  },
+  {
+    "answer_score": 0.4425,
+    "api_score": 1.0,
+    "failure_category": "ANSWER_TOO_GENERIC",
+    "final_score": 0.8149,
+    "generated_answer": "Segment definition details require live Adobe API evidence with definition names, IDs, and counts. Live API verification was not executed because Adobe credentials are unavailable.",
+    "generated_api": [
+      {
+        "method": "GET",
+        "params": {
+          "limit": "100"
+        },
+        "path": "/data/core/ups/segment/definitions"
+      }
+    ],
+    "generated_sql": null,
+    "gold_answer": "Based on the API response, there are **13 segment definitions** in the external-benchmarking sandbox, as indicated by the `totalCount` field in the pagination metadata.",
+    "gold_api": [
+      "GET /data/core/ups/segment/definitions?limit=100"
+    ],
+    "gold_sql": "",
+    "query": "How many segment definitions exist in this sandbox?",
+    "query_id": "example_022",
+    "recommended_fix": "Add a query-family answer template that names concrete SQL/API evidence.",
+    "sql_score": 1.0,
+    "strategy": "DETERMINISTIC_ROUTER_SELECTED_METADATA"
   },
   {
     "answer_score": 0.4419,
@@ -3773,37 +3800,10 @@
     "strategy": "DETERMINISTIC_ROUTER_SELECTED_METADATA"
   },
   {
-    "answer_score": 0.4425,
-    "api_score": 1.0,
-    "failure_category": "ANSWER_TOO_GENERIC",
-    "final_score": 0.815,
-    "generated_answer": "Segment definition details require live Adobe API evidence with definition names, IDs, and counts. Live API verification was not executed because Adobe credentials are unavailable.",
-    "generated_api": [
-      {
-        "method": "GET",
-        "params": {
-          "limit": "100"
-        },
-        "path": "/data/core/ups/segment/definitions"
-      }
-    ],
-    "generated_sql": null,
-    "gold_answer": "Based on the API response, there are **13 segment definitions** in the external-benchmarking sandbox, as indicated by the `totalCount` field in the pagination metadata.",
-    "gold_api": [
-      "GET /data/core/ups/segment/definitions?limit=100"
-    ],
-    "gold_sql": "",
-    "query": "How many segment definitions exist in this sandbox?",
-    "query_id": "example_022",
-    "recommended_fix": "Add a query-family answer template that names concrete SQL/API evidence.",
-    "sql_score": 1.0,
-    "strategy": "DETERMINISTIC_ROUTER_SELECTED_METADATA"
-  },
-  {
     "answer_score": 0.4419,
     "api_score": 1.0,
     "failure_category": "ANSWER_TOO_GENERIC",
-    "final_score": 0.815,
+    "final_score": 0.8149,
     "generated_answer": "The requested segment definition list requires live Adobe API evidence with definition names, IDs, and pagination counts. Live API verification was not executed because Adobe credentials are unavailable.",
     "generated_api": [
       {
@@ -3858,7 +3858,7 @@
     "answer_score": 0.5144,
     "api_score": 1.0,
     "failure_category": "DRY_RUN_ONLY",
-    "final_score": 0.8189,
+    "final_score": 0.8188,
     "generated_answer": "The 'weRetail: Customer Actions' schema has class https://ns.adobe.com/xdm/context/experienceevent, has 6 properties, across 1 collection(s), and was last updated on 2026-03-29. Live API verification was not executed because Adobe credentials are unavailable.",
     "generated_api": [
       {
@@ -4043,7 +4043,7 @@
     "answer_score": 0.6904,
     "api_score": 1.0,
     "failure_category": "DRY_RUN_ONLY",
-    "final_score": 0.8356,
+    "final_score": 0.8355,
     "generated_answer": "Based on the evidence provided, there are no failed dataflow runs to report. The SQL query returned zero rows, and live API verification was not executed because Adobe credentials are unavailable.",
     "generated_api": [
       {
@@ -4071,7 +4071,7 @@
     "answer_score": 0.6904,
     "api_score": 1.0,
     "failure_category": "DRY_RUN_ONLY",
-    "final_score": 0.8356,
+    "final_score": 0.8355,
     "generated_answer": "Based on the evidence provided, there are no failed dataflow runs to report. The SQL query returned zero rows, and live API verification was not executed because Adobe credentials are unavailable.",
     "generated_api": [
       {
@@ -4099,7 +4099,7 @@
     "answer_score": 0.6904,
     "api_score": 1.0,
     "failure_category": "DRY_RUN_ONLY",
-    "final_score": 0.8357,
+    "final_score": 0.8356,
     "generated_answer": "Based on the evidence provided, there are no failed dataflow runs to report. The SQL query returned zero rows, and live API verification was not executed because Adobe credentials are unavailable.",
     "generated_api": [
       {
@@ -4146,7 +4146,7 @@
     "answer_score": 0.5296,
     "api_score": 1.0,
     "failure_category": "UNKNOWN",
-    "final_score": 0.8377,
+    "final_score": 0.8376,
     "generated_answer": "The 'weRetail: Customer Actions' schema has class https://ns.adobe.com/xdm/context/experienceevent, has 6 properties, across 1 collection(s), and was last updated on 2026-03-29. API evidence was not requested.",
     "generated_api": [],
     "generated_sql": "SELECT S.\"BLUEPRINTID\" AS blueprint_id, S.\"NAME\", S.\"CLASS\", S.\"ISPROFILEENABLED\", S.\"UPDATEDTIME\" AS updated_time, S.\"REQUIREDFIELDS\" AS required_fields, COUNT(DISTINCT SD.\"COLLECTIONID\") AS collection_count, COUNT(DISTINCT SA.\"PROPERTY\") AS property_count FROM \"dim_blueprint\" AS S LEFT JOIN \"hkg_br_blueprint_collection\" AS SD ON S.\"BLUEPRINTID\" = SD.\"BLUEPRINTID\" LEFT JOIN \"hkg_br_blueprint_property\" AS SA ON S.\"BLUEPRINTID\" = SA.\"BLUEPRINTID\" WHERE LOWER(S.\"NAME\") = LOWER('weRetail: Customer Actions') GROUP BY S.\"BLUEPRINTID\", S.\"NAME\", S.\"CLASS\", S.\"ISPROFILEENABLED\", S.\"UPDATEDTIME\", S.\"REQUIREDFIELDS\" LIMIT 3",
@@ -4193,7 +4193,7 @@
     "answer_score": 0.7172,
     "api_score": 1.0,
     "failure_category": "DRY_RUN_ONLY",
-    "final_score": 0.8436,
+    "final_score": 0.8435,
     "generated_answer": "Based on the evidence provided, no entities were created by download. The SQL query returned zero rows, and live API verification was not executed because Adobe credentials are unavailable.",
     "generated_api": [
       {
@@ -4240,7 +4240,7 @@
     "answer_score": 0.663,
     "api_score": 1.0,
     "failure_category": "DRY_RUN_ONLY",
-    "final_score": 0.8631,
+    "final_score": 0.863,
     "generated_answer": "Based on the evidence provided, 1 destination was found. The most recent is \"Activate segments to S3 Feed\" (amazon-s3 target) with a modification timestamp of 2026-04-14 16:15:03.000 UTC. Live API evidence is needed to validate the requested sandbox. Live API verification was not executed because Adobe credentials are unavailable.",
     "generated_api": [
       {
@@ -4298,7 +4298,7 @@
     "answer_score": 0.663,
     "api_score": 1.0,
     "failure_category": "DRY_RUN_ONLY",
-    "final_score": 0.8638,
+    "final_score": 0.8637,
     "generated_answer": "Based on the evidence provided, 1 destination was found. The most recent is \"Activate segments to S3 Feed\" (amazon-s3 target) with a modification timestamp of 2026-04-14 16:15:03.000 UTC. Live API evidence is needed to validate the requested sandbox. Live API verification was not executed because Adobe credentials are unavailable.",
     "generated_api": [
       {
@@ -4427,7 +4427,7 @@
     "answer_score": 0.7598,
     "api_score": 1.0,
     "failure_category": "UNKNOWN",
-    "final_score": 0.8705,
+    "final_score": 0.8704,
     "generated_answer": "The field for \"Person: Birthday Today 001\" is person.birthDate. This is the birth date property from the SQL evidence. This field captures when a person was born and is used to identify birthday-related audiences.",
     "generated_api": [],
     "generated_sql": "SELECT DISTINCT SP.\"PROPERTY\" AS property_name, S.\"NAME\" AS segment_name FROM \"hkg_br_segment_property\" AS SP JOIN \"dim_segment\" AS S ON SP.\"SEGMENTID\" = S.\"SEGMENTID\" WHERE S.\"NAME\" = 'Person: Birthday Today 001' LIMIT 20",
@@ -4484,7 +4484,7 @@
     "answer_score": 0.8682,
     "api_score": 1.0,
     "failure_category": "UNKNOWN",
-    "final_score": 0.9036,
+    "final_score": 0.9039,
     "generated_answer": "The journey \"Birthday Message\" has not been published. The database shows a null published_time for this journey, and API evidence was not requested.",
     "generated_api": [],
     "generated_sql": "SELECT \"NAME\" AS campaign_name, \"LASTDEPLOYEDTIME\" AS published_time FROM \"dim_campaign\" LIMIT 50",
@@ -4503,7 +4503,7 @@
     "answer_score": 0.9825,
     "api_score": 1.0,
     "failure_category": "DRY_RUN_ONLY",
-    "final_score": 0.9212,
+    "final_score": 0.9211,
     "generated_answer": "Based on the SQL query result, there are 0 XDM Experience Event schemas enabled for profile in your environment.",
     "generated_api": [
       {

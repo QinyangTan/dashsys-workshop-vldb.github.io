@@ -4,9 +4,9 @@
       "avg_answer_score": 0.5873,
       "avg_api_score": 1.0,
       "avg_correctness": 0.8562,
-      "avg_estimated_tokens": 1019.0,
+      "avg_estimated_tokens": 1019.5,
       "avg_final_score": 0.8226,
-      "avg_runtime": 0.002,
+      "avg_runtime": 0.0106,
       "avg_sql_score": 0.95,
       "avg_tool_calls": 2.0,
       "example_count": 2,
@@ -45,19 +45,19 @@
       "recommended_next_fix": "Add a concise evidence-grounded answer template."
     },
     "batch": {
-      "avg_answer_score": 0.3881,
+      "avg_answer_score": 0.3892,
       "avg_api_score": 1.0,
-      "avg_correctness": 0.8165,
-      "avg_estimated_tokens": 665.0,
-      "avg_final_score": 0.7984,
-      "avg_runtime": 0.0016,
+      "avg_correctness": 0.8168,
+      "avg_estimated_tokens": 663.5,
+      "avg_final_score": 0.7987,
+      "avg_runtime": 0.0095,
       "avg_sql_score": 1.0,
       "avg_tool_calls": 1.0,
       "example_count": 4,
       "lowest_example_ids": [
         "example_029",
         "example_030",
-        "example_028"
+        "example_031"
       ],
       "nlp_diagnostics": [
         {
@@ -86,11 +86,10 @@
           "tokens": {}
         },
         {
-          "query_id": "example_028",
+          "query_id": "example_031",
           "relevance": {
             "lookup_paths": [
-              "batch",
-              "journey_campaign"
+              "batch"
             ]
           },
           "rewrites": [
@@ -103,12 +102,12 @@
       "recommended_next_fix": "Add a concise evidence-grounded answer template."
     },
     "destination_dataflow": {
-      "avg_answer_score": 0.6043,
+      "avg_answer_score": 0.6073,
       "avg_api_score": 1.0,
-      "avg_correctness": 0.8679,
-      "avg_estimated_tokens": 967.0,
-      "avg_final_score": 0.839,
-      "avg_runtime": 0.0015,
+      "avg_correctness": 0.8689,
+      "avg_estimated_tokens": 967.3333,
+      "avg_final_score": 0.8399,
+      "avg_runtime": 0.0101,
       "avg_sql_score": 0.9667,
       "avg_tool_calls": 1.6667,
       "example_count": 3,
@@ -166,7 +165,7 @@
       "avg_correctness": 0.8604,
       "avg_estimated_tokens": 844.6667,
       "avg_final_score": 0.8284,
-      "avg_runtime": 0.0013,
+      "avg_runtime": 0.01,
       "avg_sql_score": 0.9,
       "avg_tool_calls": 2.0,
       "example_count": 3,
@@ -218,12 +217,12 @@
       "recommended_next_fix": "Add a concise evidence-grounded answer template."
     },
     "merge_policy": {
-      "avg_answer_score": 0.4065,
+      "avg_answer_score": 0.4122,
       "avg_api_score": 1.0,
-      "avg_correctness": 0.822,
-      "avg_estimated_tokens": 639.6667,
-      "avg_final_score": 0.8041,
-      "avg_runtime": 0.0016,
+      "avg_correctness": 0.8237,
+      "avg_estimated_tokens": 641.0,
+      "avg_final_score": 0.8058,
+      "avg_runtime": 0.0094,
       "avg_sql_score": 1.0,
       "avg_tool_calls": 1.0,
       "example_count": 3,
@@ -281,7 +280,7 @@
       "avg_correctness": 0.8242,
       "avg_estimated_tokens": 966.0,
       "avg_final_score": 0.8036,
-      "avg_runtime": 0.0018,
+      "avg_runtime": 0.0108,
       "avg_sql_score": 1.0,
       "avg_tool_calls": 1.0,
       "example_count": 2,
@@ -325,7 +324,7 @@
       "avg_correctness": 0.8879,
       "avg_estimated_tokens": 671.0,
       "avg_final_score": 0.8698,
-      "avg_runtime": 0.0014,
+      "avg_runtime": 0.0092,
       "avg_sql_score": 0.9,
       "avg_tool_calls": 1.0,
       "example_count": 1,
@@ -351,9 +350,9 @@
       "avg_answer_score": 0.6595,
       "avg_api_score": 0.9207,
       "avg_correctness": 0.854,
-      "avg_estimated_tokens": 1121.6667,
+      "avg_estimated_tokens": 1122.1667,
       "avg_final_score": 0.8197,
-      "avg_runtime": 0.0021,
+      "avg_runtime": 0.0113,
       "avg_sql_score": 0.95,
       "avg_tool_calls": 2.0,
       "example_count": 6,
@@ -408,12 +407,12 @@
       "recommended_next_fix": "Add a concise evidence-grounded answer template."
     },
     "segment_audience": {
-      "avg_answer_score": 0.4541,
+      "avg_answer_score": 0.4547,
       "avg_api_score": 1.0,
-      "avg_correctness": 0.8305,
-      "avg_estimated_tokens": 804.0,
-      "avg_final_score": 0.8077,
-      "avg_runtime": 0.0018,
+      "avg_correctness": 0.8307,
+      "avg_estimated_tokens": 803.4286,
+      "avg_final_score": 0.8079,
+      "avg_runtime": 0.01,
       "avg_sql_score": 0.9857,
       "avg_tool_calls": 1.2857,
       "example_count": 7,
@@ -470,21 +469,34 @@
       "recommended_next_fix": "Add a concise evidence-grounded answer template."
     },
     "tags": {
-      "avg_answer_score": 0.4122,
+      "avg_answer_score": 0.426,
       "avg_api_score": 1.0,
-      "avg_correctness": 0.8236,
-      "avg_estimated_tokens": 698.5,
-      "avg_final_score": 0.8022,
-      "avg_runtime": 0.0016,
+      "avg_correctness": 0.8278,
+      "avg_estimated_tokens": 700.0,
+      "avg_final_score": 0.8063,
+      "avg_runtime": 0.0098,
       "avg_sql_score": 1.0,
       "avg_tool_calls": 1.25,
       "example_count": 4,
       "lowest_example_ids": [
+        "example_017",
         "example_016",
-        "example_015",
-        "example_017"
+        "example_018"
       ],
       "nlp_diagnostics": [
+        {
+          "query_id": "example_017",
+          "relevance": {
+            "lookup_paths": [
+              "tags"
+            ]
+          },
+          "rewrites": [
+            "important_plurals->singular"
+          ],
+          "selected_candidate": "generic_sql_first",
+          "tokens": {}
+        },
         {
           "query_id": "example_016",
           "relevance": {
@@ -500,28 +512,14 @@
           "tokens": {}
         },
         {
-          "query_id": "example_015",
+          "query_id": "example_018",
           "relevance": {
             "lookup_paths": [
-              "tags"
+              "tags",
+              "batch"
             ]
           },
-          "rewrites": [
-            "important_plurals->singular"
-          ],
-          "selected_candidate": "generic_sql_first",
-          "tokens": {}
-        },
-        {
-          "query_id": "example_017",
-          "relevance": {
-            "lookup_paths": [
-              "tags"
-            ]
-          },
-          "rewrites": [
-            "important_plurals->singular"
-          ],
+          "rewrites": [],
           "selected_candidate": "generic_sql_first",
           "tokens": {}
         }

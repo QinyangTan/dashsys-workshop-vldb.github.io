@@ -1,0 +1,202 @@
+{
+  "coverage": {
+    "checkpoint_01_raw_query": {
+      "avg_duration_ms": 0.0,
+      "correctness_role": "preserves the original query",
+      "efficiency_role": "starts a reproducible trace",
+      "present_in": 178,
+      "technique": "raw user query capture"
+    },
+    "checkpoint_02_query_normalization": {
+      "avg_duration_ms": 0.0,
+      "correctness_role": "improves matching robustness",
+      "efficiency_role": "reduces reparsing",
+      "present_in": 178,
+      "technique": "data cleaning / query normalization"
+    },
+    "checkpoint_03_query_tokens": {
+      "avg_duration_ms": 0.0,
+      "correctness_role": "extracts names/IDs/dates/metrics",
+      "efficiency_role": "shares token structure",
+      "present_in": 178,
+      "technique": "domain-aware tokenization/entity extraction"
+    },
+    "checkpoint_04_relevance_scoring": {
+      "avg_duration_ms": 0.0,
+      "correctness_role": "keeps useful schema/API context",
+      "efficiency_role": "reduces metadata tokens",
+      "present_in": 178,
+      "technique": "attention-style relevance scoring"
+    },
+    "checkpoint_05_query_analysis": {
+      "avg_duration_ms": 0.0,
+      "correctness_role": "aligns route/domain/family/template decisions",
+      "efficiency_role": "avoids repeated analysis",
+      "present_in": 178,
+      "technique": "branch prediction / QueryAnalysis"
+    },
+    "checkpoint_06_lookup_path": {
+      "avg_duration_ms": 0.0,
+      "correctness_role": "guides joins and API families",
+      "efficiency_role": "filters irrelevant paths",
+      "present_in": 178,
+      "technique": "TLB-style lookup path prediction"
+    },
+    "checkpoint_07_context_card": {
+      "avg_duration_ms": 0.0,
+      "correctness_role": "packs required context",
+      "efficiency_role": "reduces prompt size",
+      "present_in": 178,
+      "technique": "huge-page-style compact context card"
+    },
+    "checkpoint_08_candidate_plans": {
+      "avg_duration_ms": 0.0,
+      "correctness_role": "chooses validated plan before execution",
+      "efficiency_role": "executes only one candidate",
+      "present_in": 178,
+      "technique": "pre-execution plan ensemble"
+    },
+    "checkpoint_09_plan_optimization": {
+      "avg_duration_ms": 0.0,
+      "correctness_role": "drops duplicates/placeholders",
+      "efficiency_role": "enforces compact plan",
+      "present_in": 178,
+      "technique": "compiler-style plan optimization"
+    },
+    "checkpoint_10_evidence_policy": {
+      "avg_duration_ms": 0.0,
+      "correctness_role": "keeps required API evidence",
+      "efficiency_role": "skips unnecessary API calls",
+      "present_in": 178,
+      "technique": "API_REQUIRED/API_OPTIONAL/API_SKIP policy"
+    },
+    "checkpoint_11_call_budget": {
+      "avg_duration_ms": 0.0,
+      "correctness_role": "bounds SQL/API plan",
+      "efficiency_role": "controls calls/tokens/runtime",
+      "present_in": 178,
+      "technique": "tool-call budgeting"
+    },
+    "checkpoint_12_validation": {
+      "avg_duration_ms": 0.0,
+      "correctness_role": "blocks unsafe calls",
+      "efficiency_role": "avoids wasted invalid execution",
+      "present_in": 178,
+      "technique": "SQL/API safety validation"
+    },
+    "checkpoint_13_tool_execution": {
+      "avg_duration_ms": 0.0,
+      "correctness_role": "records SQL/API evidence",
+      "efficiency_role": "makes tool cost explicit",
+      "present_in": 178,
+      "technique": "SQL/API tool execution"
+    },
+    "checkpoint_14_evidence_bus": {
+      "avg_duration_ms": 0.0,
+      "correctness_role": "forwards exact evidence",
+      "efficiency_role": "avoids repeated lookup",
+      "present_in": 178,
+      "technique": "operand forwarding / EvidenceBus"
+    },
+    "checkpoint_15_answer_slots": {
+      "avg_duration_ms": 0.0,
+      "correctness_role": "builds factual answer fields",
+      "efficiency_role": "keeps evidence compact",
+      "present_in": 178,
+      "technique": "structured answer slot extraction"
+    },
+    "checkpoint_16_answer_verification": {
+      "avg_duration_ms": 0.0,
+      "correctness_role": "blocks unsupported claims",
+      "efficiency_role": "rewrites without extra calls",
+      "present_in": 178,
+      "technique": "claim verification / groundedness checking"
+    },
+    "checkpoint_17_answer_reranking": {
+      "avg_duration_ms": 0.0,
+      "correctness_role": "selects safest candidate",
+      "efficiency_role": "uses same evidence only",
+      "present_in": 178,
+      "technique": "deterministic answer reranking"
+    },
+    "checkpoint_18_final_answer": {
+      "avg_duration_ms": 0.0,
+      "correctness_role": "returns evidence-grounded answer",
+      "efficiency_role": "keeps final response short",
+      "present_in": 178,
+      "technique": "concise grounded final response"
+    }
+  },
+  "missing_by_query": [],
+  "representative_queries": [
+    {
+      "checkpoint_ids": [
+        "checkpoint_01_raw_query",
+        "checkpoint_simple_prompt_gate",
+        "checkpoint_02_query_normalization",
+        "checkpoint_03_query_tokens",
+        "checkpoint_04_relevance_scoring",
+        "checkpoint_05_query_analysis"
+      ],
+      "final_answer_preview": "The journey \"Birthday Message\" has not been published. The database shows a null published_time for this journey, and API evidence was not requested.",
+      "kind": "simple_local_sql_query",
+      "query": "When was the journey 'Birthday Message' published?",
+      "query_id": "example_000",
+      "strategy": "SQL_ONLY_BASELINE",
+      "tool_call_count": 1
+    },
+    {
+      "checkpoint_ids": [
+        "checkpoint_01_raw_query",
+        "checkpoint_simple_prompt_gate",
+        "checkpoint_02_query_normalization",
+        "checkpoint_03_query_tokens",
+        "checkpoint_04_relevance_scoring",
+        "checkpoint_05_query_analysis"
+      ],
+      "final_answer_preview": "Based on the evidence provided, 1 destination was found. The most recent is \"Activate segments to S3 Feed\" (amazon-s3 target) with a modification timestamp of 2026-04-14 16:15:03.000 UTC. Live API evidence is needed to validate the requeste",
+      "kind": "sql_plus_api_verification_query",
+      "query": "Export a list of all destinations in the b2b-prod sandbox, sorted by most recently modified, including all columns associated with each destination, and include the 'modified' column for validation.",
+      "query_id": "debug_example_005",
+      "strategy": "SQL_FIRST_API_VERIFY",
+      "tool_call_count": 2
+    },
+    {
+      "checkpoint_ids": [
+        "checkpoint_01_raw_query",
+        "checkpoint_simple_prompt_gate",
+        "checkpoint_02_query_normalization",
+        "checkpoint_03_query_tokens",
+        "checkpoint_04_relevance_scoring",
+        "checkpoint_05_query_analysis"
+      ],
+      "final_answer_preview": "The tag count cannot be determined from the available evidence. Live API verification was not executed because Adobe credentials are unavailable.",
+      "kind": "api_only_or_dry_run_query",
+      "query": "How many tags exist in this sandbox?",
+      "query_id": "example_015",
+      "strategy": "DETERMINISTIC_ROUTER_SELECTED_METADATA",
+      "tool_call_count": 1
+    }
+  ],
+  "required_checkpoints": [
+    "checkpoint_01_raw_query",
+    "checkpoint_02_query_normalization",
+    "checkpoint_03_query_tokens",
+    "checkpoint_04_relevance_scoring",
+    "checkpoint_05_query_analysis",
+    "checkpoint_06_lookup_path",
+    "checkpoint_07_context_card",
+    "checkpoint_08_candidate_plans",
+    "checkpoint_09_plan_optimization",
+    "checkpoint_10_evidence_policy",
+    "checkpoint_11_call_budget",
+    "checkpoint_12_validation",
+    "checkpoint_13_tool_execution",
+    "checkpoint_14_evidence_bus",
+    "checkpoint_15_answer_slots",
+    "checkpoint_16_answer_verification",
+    "checkpoint_17_answer_reranking",
+    "checkpoint_18_final_answer"
+  ],
+  "trajectory_count": 178
+}

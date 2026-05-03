@@ -6,7 +6,11 @@ import time
 from pathlib import Path
 from typing import Any
 
+from .answer_claims import extract_claims
+from .answer_intent import classify_answer_intent
+from .answer_slots import extract_answer_slots
 from .answer_synthesizer import synthesize_answer_with_diagnostics
+from .answer_verifier import verify_answer
 from .api_client import AdobeAPIClient
 from .cache import (
     api_response_cache_key,
@@ -22,6 +26,8 @@ from .cache import (
     sql_result_cache_key,
     write_cache_manifest,
 )
+from .call_budget import budget_for_strategy
+from .checkpoints import CheckpointLogger
 from .config import Config, DEFAULT_CONFIG
 from .db import DuckDBDatabase
 from .endpoint_catalog import EndpointCatalog
@@ -34,6 +40,7 @@ from .query_tokens import extract_query_tokens
 from .query_analysis import analyze_query
 from .router import QueryRouter
 from .schema_index import SchemaIndex
+from .simple_prompt_gate import decide_simple_prompt
 from .trajectory import TrajectoryLogger, estimate_tokens
 from .validators import APIValidator, SQLValidator, ValidationResult
 
@@ -83,10 +90,55 @@ class AgentExecutor:
         qid = query_id or slugify(query)
         out_dir = output_dir or (self.config.outputs_dir / qid / strategy.lower())
         out_dir.mkdir(parents=True, exist_ok=True)
+        checkpoint_logger = CheckpointLogger(max_preview_chars=self.config.max_preview_chars)
+        checkpoint_logger.add_checkpoint(
+            "checkpoint_01_raw_query",
+            stage="input",
+            technique="raw user query capture",
+            output={"query_id": qid, "query": query, "strategy": strategy},
+            effect="preserves the original query for reproducibility",
+            correctness_role="keeps later normalization from changing the user-facing question",
+            efficiency_role="starts one trace without extra tool calls",
+        )
+        simple_decision = decide_simple_prompt(query)
+        checkpoint_logger.add_checkpoint(
+            "checkpoint_simple_prompt_gate",
+            stage="input routing",
+            technique="simple prompt gate",
+            input_summary={"query": query},
+            output=simple_decision.to_dict(),
+            effect="lets an LLM wrapper answer conceptual questions directly while sending evidence questions to the backend",
+            correctness_role="prevents direct answers for data questions that need SQL/API evidence",
+            efficiency_role="can skip the data pipeline only for safe conceptual prompts",
+        )
 
         preprocessing_start = time.perf_counter()
         normalization = normalize_query(query)
+        checkpoint_logger.add_checkpoint(
+            "checkpoint_02_query_normalization",
+            stage="normalization",
+            technique="data cleaning / query normalization",
+            input_summary={"query": query},
+            output={
+                "normalized_query": normalization.get("normalized"),
+                "matching_text": normalization.get("matching_text"),
+                "rewrites": normalization.get("rewrites", []),
+            },
+            effect="creates matching-friendly text while preserving the original query",
+            correctness_role="improves template and route matching across wording variants",
+            efficiency_role="reduces repeated fuzzy matching work downstream",
+        )
         tokens = extract_query_tokens(query, normalization)
+        checkpoint_logger.add_checkpoint(
+            "checkpoint_03_query_tokens",
+            stage="tokenization",
+            technique="domain-aware tokenization/entity extraction",
+            input_summary={"normalized_query": normalization.get("normalized")},
+            output=tokens.compact(),
+            effect="extracts reusable query fields for routing, planning, and answers",
+            correctness_role="grounds names, IDs, dates, metrics, and statuses before planning",
+            efficiency_role="avoids reparsing the query in later modules",
+        )
         routing = self.router.route(normalization["matching_text"])
         analysis_key = query_analysis_cache_key(query, strategy, self.config, self.cache_fingerprint)
         analysis = get_query_analysis_cache(analysis_key)
@@ -102,6 +154,51 @@ class AgentExecutor:
                 tokens=tokens,
             )
             set_query_analysis_cache(analysis_key, analysis)
+        relevance_compact = analysis.relevance.compact(table_k=3, api_k=3)
+        checkpoint_logger.add_checkpoint(
+            "checkpoint_04_relevance_scoring",
+            stage="context selection",
+            technique="attention-style relevance scoring",
+            input_summary={"tokens": tokens.compact()},
+            output={
+                "top_tables": relevance_compact.get("tables", []),
+                "top_apis": relevance_compact.get("apis", []),
+                "top_join_hints": [item.name for item in analysis.relevance.join_hints[:3]],
+                "top_answer_families": relevance_compact.get("answer_families", [analysis.answer_family]),
+            },
+            effect="selects a smaller, more relevant schema/API context",
+            correctness_role="keeps high-signal tables and endpoints near the planner",
+            efficiency_role="reduces metadata and prompt tokens when compact metadata is enabled",
+        )
+        checkpoint_logger.add_checkpoint(
+            "checkpoint_05_query_analysis",
+            stage="routing",
+            technique="branch prediction / QueryAnalysis",
+            input_summary={"route_type": routing.route_type, "domain_type": routing.domain_type},
+            output={
+                "route_type": analysis.route_type,
+                "domain_type": analysis.domain_type,
+                "answer_family": analysis.answer_family,
+                "strategy": strategy,
+                "confidence": round(float(analysis.confidence), 4),
+                "fast_path": analysis.fast_path.family if analysis.fast_path else None,
+                "sql_template": analysis.sql_template.family if analysis.sql_template else None,
+                "api_templates": [template.family for template in analysis.api_templates],
+            },
+            effect="computes shared query understanding once",
+            correctness_role="aligns routing, metadata, planning, and reporting decisions",
+            efficiency_role="avoids repeated template and routing analysis",
+        )
+        checkpoint_logger.add_checkpoint(
+            "checkpoint_06_lookup_path",
+            stage="path prediction",
+            technique="TLB-style lookup path prediction",
+            input_summary={"answer_family": analysis.answer_family, "domain_type": analysis.domain_type},
+            output=analysis.lookup_path.to_dict(),
+            effect="predicts the relevant table/join/API path",
+            correctness_role="guides relationship-heavy SQL/API selection",
+            efficiency_role="filters unrelated schema and endpoint candidates",
+        )
         broad = strategy == "LLM_FREE_AGENT_BASELINE"
         metadata = self.metadata_selector.select(
             query,
@@ -115,10 +212,32 @@ class AgentExecutor:
 
         filled_prompt = render_system_prompt(self.config, metadata)
         (out_dir / "filled_system_prompt.txt").write_text(filled_prompt, encoding="utf-8")
+        context_card = metadata.get("context_card") if isinstance(metadata.get("context_card"), dict) else {}
+        checkpoint_logger.add_checkpoint(
+            "checkpoint_07_context_card",
+            stage="metadata packing",
+            technique="huge-page-style compact context card",
+            input_summary={"lookup_path": analysis.lookup_path.family, "broad_context": broad},
+            output={
+                "selected_card_name": context_card.get("family") or context_card.get("name"),
+                "selected_tables": metadata.get("selected_tables", []),
+                "selected_columns": {
+                    table: columns[:8] if isinstance(columns, list) else columns
+                    for table, columns in metadata.get("selected_columns", {}).items()
+                },
+                "selected_apis": [api.get("id") or api.get("path") for api in metadata.get("selected_apis", [])],
+                "estimated_metadata_tokens": estimate_tokens(metadata),
+                "prompt_tokens": estimate_tokens(filled_prompt),
+            },
+            effect="packs family-relevant context into metadata.json and the filled prompt",
+            correctness_role="keeps required tables, columns, joins, and API candidates visible",
+            efficiency_role="limits context size for non-baseline strategies",
+        )
         preprocessing_time = time.perf_counter() - preprocessing_start
 
         planning_start = time.perf_counter()
         plan = self.planner.create_plan(query, routing, metadata, strategy, analysis=analysis)
+        original_planned_step_count = len(plan.steps)
         ensemble_metadata = None
         if strategy == "SQL_FIRST_API_VERIFY":
             selection = select_plan_candidate(
@@ -132,6 +251,76 @@ class AgentExecutor:
             )
             plan = selection.plan
             ensemble_metadata = selection.compact()
+        candidate_output = ensemble_metadata or {
+            "selected": "strategy_plan",
+            "candidate_scores": {"strategy_plan": 1.0},
+            "candidate_tool_calls": {"strategy_plan": len(plan.steps)},
+        }
+        checkpoint_logger.add_checkpoint(
+            "checkpoint_08_candidate_plans",
+            stage="planning",
+            technique="pre-execution plan ensemble",
+            input_summary={"strategy": strategy, "base_step_count": original_planned_step_count},
+            output={
+                "candidate_plan_names": list(candidate_output.get("candidate_scores", {}).keys()),
+                "scores": candidate_output.get("candidate_scores", {}),
+                "selected_plan": candidate_output.get("selected"),
+                "reason_selected": "highest pre-execution validation/relevance/cost score"
+                if ensemble_metadata
+                else "strategy does not use ensemble selection",
+            },
+            effect="selects one plan before execution",
+            correctness_role="prefers validated, family-matched plans",
+            efficiency_role="does not execute losing candidate plans",
+        )
+        optimizer_actions = list(plan.optimizer_actions)
+        checkpoint_logger.add_checkpoint(
+            "checkpoint_09_plan_optimization",
+            stage="optimization",
+            technique="compiler-style plan optimization",
+            input_summary={"original_step_count": original_planned_step_count},
+            output={
+                "original_step_count": original_planned_step_count,
+                "optimized_step_count": len(plan.steps),
+                "removed_duplicate_calls": count_actions(optimizer_actions, ["duplicate", "dedup"]),
+                "removed_api_skip_calls": count_actions(optimizer_actions, ["api_skip", "skip"]),
+                "unresolved_placeholders_removed": count_actions(optimizer_actions, ["placeholder", "unresolved"]),
+                "call_budget_applied": any("budget" in action.lower() for action in optimizer_actions),
+                "optimizer_actions": optimizer_actions[:8],
+            },
+            effect="removes duplicate, skippable, or unsafe calls before validation",
+            correctness_role="drops unresolved placeholder calls unless explicitly warned",
+            efficiency_role="enforces a bounded plan before execution",
+        )
+        checkpoint_logger.add_checkpoint(
+            "checkpoint_10_evidence_policy",
+            stage="evidence policy",
+            technique="API_REQUIRED/API_OPTIONAL/API_SKIP policy",
+            input_summary={"answer_family": analysis.answer_family, "route_type": routing.route_type},
+            output=analysis.api_need_decision.to_dict(),
+            effect="decides when API evidence is required, optional, or unnecessary",
+            correctness_role="keeps API calls for API-only/live families",
+            efficiency_role="skips or caps API calls when SQL evidence is enough",
+        )
+        api_families = [step.family for step in plan.steps if step.action == "api" and step.family]
+        budget = budget_for_strategy(strategy, api_families, analysis.api_need_decision.max_api_calls)
+        checkpoint_logger.add_checkpoint(
+            "checkpoint_11_call_budget",
+            stage="efficiency control",
+            technique="tool-call budgeting",
+            input_summary={"planned_steps": [step.to_dict() for step in plan.steps]},
+            output={
+                "max_sql_calls": budget.max_sql_calls,
+                "max_api_calls": budget.max_api_calls,
+                "max_total_tool_calls": budget.max_total_tool_calls,
+                "final_planned_calls": count_tool_plan_steps(plan.steps),
+                "planned_sql_calls": sum(1 for step in plan.steps if step.action == "sql"),
+                "planned_api_calls": sum(1 for step in plan.steps if step.action == "api"),
+            },
+            effect="keeps tool calls within per-family limits",
+            correctness_role="preserves required grounding steps",
+            efficiency_role="prevents accidental extra SQL/API calls",
+        )
         planning_time = time.perf_counter() - planning_start
         trajectory = TrajectoryLogger(
             query_id=qid,
@@ -168,6 +357,9 @@ class AgentExecutor:
 
         tool_results: list[dict[str, Any]] = []
         evidence_bus = EvidenceBus()
+        validation_summaries: list[dict[str, Any]] = []
+        blocked_calls: list[dict[str, Any]] = []
+        forwarding_actions_all: list[str] = []
         execution_start = time.perf_counter()
         for step in plan.steps:
             if step.action == "sql" and step.sql:
@@ -188,12 +380,15 @@ class AgentExecutor:
                         set_sql_result_cache(cache_key, result)
                 else:
                     result = {"ok": False, "rows": [], "row_count": 0, "error": "; ".join(validation.errors)}
+                    blocked_calls.append({"type": "sql", "errors": validation.errors, "step": step.to_dict()})
+                validation_summaries.append({"type": "sql", "ok": validation.ok, "warnings": validation.warnings, "errors": validation.errors})
                 trajectory.add_sql_call(step.sql, validation, result)
                 tool_results.append({"type": "sql", "step": step.to_dict(), "validation": validation.to_dict(), "payload": result})
                 evidence_bus.observe_sql(step, result)
             elif step.action == "api" and step.method and step.url:
                 forwarding_actions = evidence_bus.forward_to_step(step)
                 if forwarding_actions:
+                    forwarding_actions_all.extend(forwarding_actions)
                     trajectory.add_step("optimizer", {"actions": forwarding_actions})
                 validation = self.api_validator.validate(step.method, step.url, step.params, step.headers)
                 if validation.ok:
@@ -205,16 +400,130 @@ class AgentExecutor:
                             set_api_response_cache(api_cache_key, result)
                 else:
                     result = {"ok": False, "dry_run": False, "error": "; ".join(validation.errors)}
+                    blocked_calls.append({"type": "api", "errors": validation.errors, "step": step.to_dict()})
+                validation_summaries.append({"type": "api", "ok": validation.ok, "warnings": validation.warnings, "errors": validation.errors})
                 trajectory.add_api_call(step.method, step.url, step.params, step.headers, validation, result)
                 tool_results.append({"type": "api", "step": step.to_dict(), "validation": validation.to_dict(), "payload": result})
                 evidence_bus.observe_api(step, result)
         trajectory.set_timing("execution_time", time.perf_counter() - execution_start)
+        checkpoint_logger.add_checkpoint(
+            "checkpoint_12_validation",
+            stage="validation",
+            technique="SQL/API safety validation",
+            input_summary={"optimized_steps": [step.to_dict() for step in plan.steps]},
+            output={
+                "sql_validation_status": [
+                    {"ok": item["ok"], "warnings": item["warnings"], "errors": item["errors"]}
+                    for item in validation_summaries
+                    if item["type"] == "sql"
+                ],
+                "api_validation_status": [
+                    {"ok": item["ok"], "warnings": item["warnings"], "errors": item["errors"]}
+                    for item in validation_summaries
+                    if item["type"] == "api"
+                ],
+                "blocked_calls": blocked_calls,
+                "warnings": [warning for item in validation_summaries for warning in item.get("warnings", [])],
+            },
+            effect="records whether planned SQL/API calls were safe to execute",
+            correctness_role="blocks unsafe SQL and unknown/unresolved API calls",
+            efficiency_role="prevents wasted execution on invalid calls",
+        )
+        checkpoint_logger.add_checkpoint(
+            "checkpoint_13_tool_execution",
+            stage="execution",
+            technique="SQL/API tool execution",
+            input_summary={"validated_step_count": len(plan.steps)},
+            output=tool_results_execution_summary(tool_results),
+            effect="captures the actual SQL/API evidence gathered by the backend",
+            correctness_role="records row counts, dry-run state, and API status for final answer grounding",
+            efficiency_role="makes tool-call count and result previews explicit",
+        )
+        checkpoint_logger.add_checkpoint(
+            "checkpoint_14_evidence_bus",
+            stage="evidence forwarding",
+            technique="operand forwarding / EvidenceBus",
+            input_summary={"tool_result_count": len(tool_results)},
+            output={
+                "evidence": evidence_bus.compact(),
+                "forwarding_actions": forwarding_actions_all,
+            },
+            effect="forwards structured facts to API params and answer slots",
+            correctness_role="passes exact IDs, names, counts, timestamps, and statuses without text guessing",
+            efficiency_role="avoids repeated lookup or reparsing work",
+        )
 
         answer_start = time.perf_counter()
         answer_result = synthesize_answer_with_diagnostics(query, tool_results)
         final_answer = answer_result.answer
+        slots = extract_answer_slots(query, tool_results)
+        intent = classify_answer_intent(query, slots)
+        claims = extract_claims(final_answer)
+        verification = verify_answer(final_answer, slots)
+        checkpoint_logger.add_checkpoint(
+            "checkpoint_15_answer_slots",
+            stage="answer synthesis",
+            technique="structured answer slot extraction",
+            input_summary={"tool_result_count": len(tool_results)},
+            output={
+                "answer_intent": str(intent),
+                "slots": slots.compact(),
+                "missing_slots": answer_result.diagnostics.get("completeness_missing_fields", []),
+                "discrepancy_flags": {"sql_api_discrepancy": slots.discrepancy},
+                "dry_run_flags": {"dry_run": slots.dry_run},
+            },
+            effect="turns raw tool results into typed evidence fields",
+            correctness_role="makes final response generation evidence-grounded",
+            efficiency_role="keeps answer context compact",
+        )
+        checkpoint_logger.add_checkpoint(
+            "checkpoint_16_answer_verification",
+            stage="answer verification",
+            technique="claim verification / groundedness checking",
+            input_summary={"claim_count": len(claims), "slots_present": slots.slots_present()},
+            output={
+                "supported_claims_count": max(0, len(claims) - verification.unsupported_count),
+                "unsupported_claims_count": verification.unsupported_count,
+                "rewrite_applied": answer_result.diagnostics.get("rewrite_applied", False),
+                "verifier_passed": verification.ok,
+                "errors": verification.errors[:5],
+                "warnings": verification.warnings[:5],
+            },
+            effect="checks final-answer claims against SQL/API evidence",
+            correctness_role="blocks unsupported numbers, entities, timestamps, statuses, and dry-run API confirmation",
+            efficiency_role="rewrites safely without extra tool calls",
+        )
+        checkpoint_logger.add_checkpoint(
+            "checkpoint_17_answer_reranking",
+            stage="answer selection",
+            technique="deterministic answer reranking",
+            input_summary={"answer_family": answer_result.diagnostics.get("answer_family")},
+            output={
+                "candidate_count": answer_result.diagnostics.get("candidate_count", 0),
+                "selected_candidate_type": answer_result.diagnostics.get("selected_candidate_type"),
+                "selection_reason": answer_result.diagnostics.get("selection_reason", "best verifier-passing answer"),
+            },
+            effect="selects the safest answer from same-evidence candidates",
+            correctness_role="prefers verifier-passing and intent-matched answers",
+            efficiency_role="uses no additional SQL/API/LLM calls",
+        )
+        checkpoint_logger.add_checkpoint(
+            "checkpoint_18_final_answer",
+            stage="final response",
+            technique="concise grounded final response",
+            input_summary={"verifier_passed": verification.ok},
+            output={
+                "final_answer": final_answer,
+                "answer_length": len(final_answer),
+                "final_token_estimate": estimate_tokens(final_answer),
+            },
+            effect="returns the final concise answer to the agent harness",
+            correctness_role="final answer remains tied to evidence and caveats",
+            efficiency_role="keeps response concise",
+        )
         trajectory.add_step("answer_diagnostics", answer_result.diagnostics)
         trajectory.set_timing("answer_time", time.perf_counter() - answer_start)
+        trajectory.set_checkpoints(checkpoint_logger.to_list())
         trajectory_payload = trajectory.save(out_dir / "trajectory.json", final_answer)
         return {
             "query_id": qid,
@@ -225,6 +534,7 @@ class AgentExecutor:
             "plan": plan.to_dict(),
             "tool_results": tool_results,
             "final_answer": final_answer,
+            "checkpoints": checkpoint_logger.to_list(),
             "trajectory": trajectory_payload,
         }
 
@@ -273,3 +583,48 @@ def compact_routing_decision(decision: dict[str, Any]) -> dict[str, Any]:
         for api in decision.get("candidate_apis", [])
     ]
     return compact
+
+
+def count_actions(actions: list[str], needles: list[str]) -> int:
+    lowered = [" ".join(action.lower().split()) for action in actions]
+    return sum(1 for action in lowered if any(needle in action for needle in needles))
+
+
+def count_tool_plan_steps(steps: list[Any]) -> int:
+    return sum(1 for step in steps if getattr(step, "action", None) in {"sql", "api"})
+
+
+def tool_results_execution_summary(tool_results: list[dict[str, Any]]) -> dict[str, Any]:
+    sql_summaries = []
+    api_summaries = []
+    for result in tool_results:
+        payload = result.get("payload", {})
+        if result.get("type") == "sql":
+            sql_summaries.append(
+                {
+                    "ok": bool(payload.get("ok")),
+                    "row_count": payload.get("row_count", 0),
+                    "result_preview": payload.get("rows", [])[:3] if isinstance(payload.get("rows"), list) else payload,
+                }
+            )
+        elif result.get("type") == "api":
+            step = result.get("step", {})
+            api_summaries.append(
+                {
+                    "ok": bool(payload.get("ok")),
+                    "dry_run": bool(payload.get("dry_run")),
+                    "method": step.get("method"),
+                    "url": step.get("url"),
+                    "status_code": payload.get("status_code") or payload.get("status"),
+                    "result_preview": payload.get("result_preview") or payload.get("body") or payload,
+                }
+            )
+    return {
+        "sql_calls_executed": len(sql_summaries),
+        "api_calls_executed": len(api_summaries),
+        "dry_run_status": any(item.get("dry_run") for item in api_summaries),
+        "row_counts": [item.get("row_count", 0) for item in sql_summaries],
+        "api_status_codes": [item.get("status_code") for item in api_summaries if item.get("status_code") is not None],
+        "sql_results": sql_summaries,
+        "api_results": api_summaries,
+    }

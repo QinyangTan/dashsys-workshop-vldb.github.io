@@ -121,6 +121,7 @@ class TrajectoryLogger:
     errors: list[str] = field(default_factory=list)
     final_answer: str | None = None
     timings: dict[str, float] = field(default_factory=dict)
+    checkpoints: list[dict[str, Any]] = field(default_factory=list)
 
     def add_step(self, kind: str, payload: dict[str, Any]) -> None:
         self.steps.append({"kind": kind, **redact_secrets(payload)})
@@ -167,6 +168,9 @@ class TrajectoryLogger:
     def set_timing(self, name: str, seconds: float) -> None:
         self.timings[name] = seconds
 
+    def set_checkpoints(self, checkpoints: list[dict[str, Any]]) -> None:
+        self.checkpoints = redact_secrets(checkpoints)
+
     def finish(self, final_answer: str) -> dict[str, Any]:
         self.final_answer = final_answer
         runtime = time.perf_counter() - self.start_time
@@ -177,6 +181,7 @@ class TrajectoryLogger:
             "strategy": self.strategy,
             "route_type": self.route_type,
             "domain_type": self.domain_type,
+            "checkpoints": self.checkpoints,
             "steps": self.steps,
             "final_answer": final_answer,
             "runtime": runtime,
