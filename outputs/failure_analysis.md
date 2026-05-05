@@ -7,7 +7,7 @@ Rows are sorted from lowest final score to highest.
 | 1 | example_008 | LLM_FREE_AGENT_BASELINE | 0.3261 | 0.0000 | 1.0000 | 0.2545 | SQL_COLUMN_MISMATCH | Align the selected projection/aliases with the requested fields and known gold-style columns. |
 | 2 | example_007 | LLM_FREE_AGENT_BASELINE | 0.3596 | 0.0000 | 0.7760 | 0.5319 | SQL_COLUMN_MISMATCH | Align the selected projection/aliases with the requested fields and known gold-style columns. |
 | 3 | example_014 | LLM_FREE_AGENT_BASELINE | 0.3709 | 0.0000 | 1.0000 | 0.3545 | SQL_COLUMN_MISMATCH | Align the selected projection/aliases with the requested fields and known gold-style columns. |
-| 4 | example_005 | LLM_FREE_AGENT_BASELINE | 0.3711 | 0.0000 | 1.0000 | 0.3463 | SQL_COLUMN_MISMATCH | Align the selected projection/aliases with the requested fields and known gold-style columns. |
+| 4 | example_005 | LLM_FREE_AGENT_BASELINE | 0.3712 | 0.0000 | 1.0000 | 0.3463 | SQL_COLUMN_MISMATCH | Align the selected projection/aliases with the requested fields and known gold-style columns. |
 | 5 | example_003 | LLM_FREE_AGENT_BASELINE | 0.3782 | 0.0000 | 1.0000 | 0.4187 | SQL_COLUMN_MISMATCH | Align the selected projection/aliases with the requested fields and known gold-style columns. |
 | 6 | example_013 | LLM_FREE_AGENT_BASELINE | 0.3911 | 0.0000 | 1.0000 | 0.4237 | SQL_COLUMN_MISMATCH | Align the selected projection/aliases with the requested fields and known gold-style columns. |
 | 7 | example_006 | LLM_FREE_AGENT_BASELINE | 0.3960 | 0.0000 | 0.7480 | 0.6780 | SQL_COLUMN_MISMATCH | Align the selected projection/aliases with the requested fields and known gold-style columns. |
@@ -333,7 +333,7 @@ Generated answer: Based on the evidence provided, entities created by download a
 
 Gold answer: Based on the evidence provided, no entities were created by download. The SQL query returned zero results, and the audit log shows only a Segment entity that was created by a user, not by a download process.
 
-### example_005 / LLM_FREE_AGENT_BASELINE / 0.3711
+### example_005 / LLM_FREE_AGENT_BASELINE / 0.3712
 
 Query: Export a list of all destinations in the b2b-prod sandbox, sorted by most recently modified, including all columns associated with each destination, and include the 'modified' column for validation.
 

@@ -1,5 +1,5 @@
 {
-  "answer_time": 0.0005083750002086163,
+  "answer_time": 0.0004933330928906798,
   "api_call_count": 0,
   "checkpoints": [
     {
@@ -15,7 +15,7 @@
       },
       "stage": "input",
       "technique": "raw user query capture",
-      "timestamp": "2026-05-05T20:58:05.730080+00:00"
+      "timestamp": "2026-05-05T21:28:08.389937+00:00"
     },
     {
       "checkpoint_id": "checkpoint_00_prompt_router",
@@ -46,7 +46,7 @@
       },
       "stage": "prompt routing",
       "technique": "LLM_DIRECT / LOCAL_DB_ONLY / SQL_PLUS_API / API_ONLY routing policy",
-      "timestamp": "2026-05-05T20:58:05.730103+00:00"
+      "timestamp": "2026-05-05T21:28:08.389962+00:00"
     },
     {
       "checkpoint_id": "checkpoint_simple_prompt_gate",
@@ -65,7 +65,7 @@
       },
       "stage": "input routing",
       "technique": "simple prompt gate",
-      "timestamp": "2026-05-05T20:58:05.730117+00:00"
+      "timestamp": "2026-05-05T21:28:08.389976+00:00"
     },
     {
       "checkpoint_id": "checkpoint_02_query_normalization",
@@ -82,7 +82,7 @@
       },
       "stage": "normalization",
       "technique": "data cleaning / query normalization",
-      "timestamp": "2026-05-05T20:58:05.730148+00:00"
+      "timestamp": "2026-05-05T21:28:08.390007+00:00"
     },
     {
       "checkpoint_id": "checkpoint_03_query_tokens",
@@ -104,7 +104,7 @@
       },
       "stage": "tokenization",
       "technique": "domain-aware tokenization/entity extraction",
-      "timestamp": "2026-05-05T20:58:05.730179+00:00"
+      "timestamp": "2026-05-05T21:28:08.390039+00:00"
     },
     {
       "checkpoint_id": "checkpoint_04_relevance_scoring",
@@ -161,7 +161,7 @@
       },
       "stage": "context selection",
       "technique": "attention-style relevance scoring",
-      "timestamp": "2026-05-05T20:58:05.730923+00:00"
+      "timestamp": "2026-05-05T21:28:08.390859+00:00"
     },
     {
       "checkpoint_id": "checkpoint_05_query_analysis",
@@ -183,7 +183,7 @@
       },
       "stage": "routing",
       "technique": "branch prediction / QueryAnalysis",
-      "timestamp": "2026-05-05T20:58:05.730926+00:00"
+      "timestamp": "2026-05-05T21:28:08.390863+00:00"
     },
     {
       "checkpoint_id": "checkpoint_06_lookup_path",
@@ -227,7 +227,7 @@
       },
       "stage": "path prediction",
       "technique": "TLB-style lookup path prediction",
-      "timestamp": "2026-05-05T20:58:05.730929+00:00"
+      "timestamp": "2026-05-05T21:28:08.390865+00:00"
     },
     {
       "checkpoint_id": "checkpoint_07_context_card",
@@ -281,7 +281,7 @@
       },
       "stage": "metadata packing",
       "technique": "huge-page-style compact context card",
-      "timestamp": "2026-05-05T20:58:05.732394+00:00"
+      "timestamp": "2026-05-05T21:28:08.392392+00:00"
     },
     {
       "checkpoint_id": "checkpoint_08_candidate_plans",
@@ -309,7 +309,7 @@
       },
       "stage": "planning",
       "technique": "pre-execution plan ensemble",
-      "timestamp": "2026-05-05T20:58:05.732431+00:00"
+      "timestamp": "2026-05-05T21:28:08.392430+00:00"
     },
     {
       "checkpoint_id": "checkpoint_09_plan_optimization",
@@ -330,7 +330,7 @@
       },
       "stage": "optimization",
       "technique": "compiler-style plan optimization",
-      "timestamp": "2026-05-05T20:58:05.732436+00:00"
+      "timestamp": "2026-05-05T21:28:08.392435+00:00"
     },
     {
       "checkpoint_id": "checkpoint_10_evidence_policy",
@@ -349,7 +349,7 @@
       },
       "stage": "evidence policy",
       "technique": "API_REQUIRED/API_OPTIONAL/API_SKIP policy",
-      "timestamp": "2026-05-05T20:58:05.732438+00:00"
+      "timestamp": "2026-05-05T21:28:08.392437+00:00"
     },
     {
       "checkpoint_id": "checkpoint_11_call_budget",
@@ -381,7 +381,7 @@
       },
       "stage": "efficiency control",
       "technique": "tool-call budgeting",
-      "timestamp": "2026-05-05T20:58:05.732451+00:00"
+      "timestamp": "2026-05-05T21:28:08.392448+00:00"
     },
     {
       "checkpoint_id": "checkpoint_12_validation",
@@ -421,7 +421,7 @@
       },
       "stage": "validation",
       "technique": "SQL/API safety validation",
-      "timestamp": "2026-05-05T20:58:05.733805+00:00"
+      "timestamp": "2026-05-05T21:28:08.393811+00:00"
     },
     {
       "checkpoint_id": "checkpoint_13_tool_execution",
@@ -466,7 +466,7 @@
       },
       "stage": "execution",
       "technique": "SQL/API tool execution",
-      "timestamp": "2026-05-05T20:58:05.733809+00:00"
+      "timestamp": "2026-05-05T21:28:08.393815+00:00"
     },
     {
       "checkpoint_id": "checkpoint_14_evidence_bus",
@@ -490,7 +490,7 @@
       },
       "stage": "evidence forwarding",
       "technique": "operand forwarding / EvidenceBus",
-      "timestamp": "2026-05-05T20:58:05.733811+00:00"
+      "timestamp": "2026-05-05T21:28:08.393818+00:00"
     },
     {
       "checkpoint_id": "checkpoint_15_answer_slots",
@@ -543,7 +543,7 @@
       },
       "stage": "answer synthesis",
       "technique": "structured answer slot extraction",
-      "timestamp": "2026-05-05T20:58:05.734217+00:00"
+      "timestamp": "2026-05-05T21:28:08.394209+00:00"
     },
     {
       "checkpoint_id": "checkpoint_16_answer_verification",
@@ -576,7 +576,7 @@
       },
       "stage": "answer verification",
       "technique": "claim verification / groundedness checking",
-      "timestamp": "2026-05-05T20:58:05.734221+00:00"
+      "timestamp": "2026-05-05T21:28:08.394213+00:00"
     },
     {
       "checkpoint_id": "checkpoint_17_answer_reranking",
@@ -594,7 +594,7 @@
       },
       "stage": "answer selection",
       "technique": "deterministic answer reranking",
-      "timestamp": "2026-05-05T20:58:05.734224+00:00"
+      "timestamp": "2026-05-05T21:28:08.394216+00:00"
     },
     {
       "checkpoint_id": "checkpoint_18_final_answer",
@@ -612,20 +612,20 @@
       },
       "stage": "final response",
       "technique": "concise grounded final response",
-      "timestamp": "2026-05-05T20:58:05.734245+00:00"
+      "timestamp": "2026-05-05T21:28:08.394237+00:00"
     }
   ],
   "domain_type": "PROPERTY_FIELD",
   "errors": [],
   "estimated_tokens": 591,
-  "execution_time": 0.00023204204626381397,
+  "execution_time": 0.0002346669789403677,
   "final_answer": "The field for \"Person: Birthday Today 001\" is person.birthDate. This is the birth date property from the SQL evidence. This field captures when a person was born and is used to identify birthday-related audiences.",
   "original_query": "show me the field for Person: Birthday Today 001",
-  "planning_time": 5.5958982557058334e-05,
-  "preprocessing_time": 0.002277916995808482,
+  "planning_time": 5.512498319149017e-05,
+  "preprocessing_time": 0.002416459028609097,
   "query_id": "example_008",
   "route_type": "SQL_ONLY",
-  "runtime": 0.007940915995277464,
+  "runtime": 0.008009416051208973,
   "sql_call_count": 1,
   "steps": [
     {
@@ -735,10 +735,10 @@
   ],
   "strategy": "TEMPLATE_FIRST",
   "timings": {
-    "answer_time": 0.0005083750002086163,
-    "execution_time": 0.00023204204626381397,
-    "planning_time": 5.5958982557058334e-05,
-    "preprocessing_time": 0.002277916995808482
+    "answer_time": 0.0004933330928906798,
+    "execution_time": 0.0002346669789403677,
+    "planning_time": 5.512498319149017e-05,
+    "preprocessing_time": 0.002416459028609097
   },
   "tool_call_count": 1
 }

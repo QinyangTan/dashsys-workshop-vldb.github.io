@@ -9,8 +9,8 @@ Candidate context is schema/API retrieval only. It does not use public gold patt
 | avg_candidate_context_tokens | 888.5714 |
 | avg_full_schema_context_tokens | 4682 |
 | compression_ratio | 0.1898 |
-| table_recall_at_3 | 0.4333 |
-| table_recall_at_5 | 0.5111 |
+| table_recall_at_3 | 0.7444 |
+| table_recall_at_5 | 0.8222 |
 | api_recall_at_3 | 0.4677 |
 | api_recall_at_5 | 0.5484 |
 

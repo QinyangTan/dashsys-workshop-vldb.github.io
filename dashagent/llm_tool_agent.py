@@ -44,17 +44,19 @@ def run_real_llm_two_tools_baseline(
     api_client = AdobeAPIClient(cfg)
     full_context = build_full_schema_context(schema_index, endpoint_catalog)
 
-    system_prompt = (
-        "You are a naive DASHSys LLM agent. You may use exactly two tools: execute_sql and call_api. "
-        "Return strict JSON each turn with tool_calls and final_answer. Validate evidence through tools; do not invent facts. "
-        "Schema/API context is broad and unoptimized."
-    )
+    system_prompt = _baseline_system_prompt(strict=False)
+    tool_schemas = _baseline_tool_schemas()
     transcript: list[dict[str, Any]] = []
+    llm_turns: list[dict[str, Any]] = []
     tool_calls: list[dict[str, Any]] = []
     final_answer = ""
+    failure_reason = ""
+    invalid_format_retries = 0
+    real_llm_called = False
     start = time.perf_counter()
 
     for turn in range(max_turns):
+        strict_retry = invalid_format_retries > 0
         user_payload = {
             "query": query,
             "schema_context": compact_preview(full_context, 9000),
@@ -67,15 +69,60 @@ def run_real_llm_two_tools_baseline(
                 ],
                 "final_answer": None,
             },
+            "instruction": (
+                "Return at least one tool call before any final answer. "
+                "After tool results are available, return final_answer grounded only in those results."
+            ),
         }
-        response = client.generate(system_prompt, json.dumps(user_payload, indent=2, default=str))
+        response = client.generate(
+            _baseline_system_prompt(strict=strict_retry),
+            json.dumps(user_payload, indent=2, default=str),
+            tools=tool_schemas,
+        )
+        real_llm_called = True
         parsed = _parse_json(response.get("content", ""))
-        requested = parsed.get("tool_calls") if isinstance(parsed.get("tool_calls"), list) else []
+        requested = _extract_requested_tool_calls(response, parsed)
+        llm_turns.append(
+            {
+                "turn": turn + 1,
+                "strict_retry": strict_retry,
+                "response_ok": response.get("ok"),
+                "native_tool_call_count": len(response.get("tool_calls") or []),
+                "json_tool_call_count": len(parsed.get("tool_calls") or []) if isinstance(parsed.get("tool_calls"), list) else 0,
+                "final_answer_present": bool(parsed.get("final_answer")),
+                "content_preview": compact_preview(response.get("content", ""), 700),
+            }
+        )
         if parsed.get("final_answer") and not requested:
-            final_answer = str(parsed["final_answer"])
+            if tool_calls:
+                final_answer = str(parsed["final_answer"]).strip()
+                break
+            if invalid_format_retries < 1:
+                invalid_format_retries += 1
+                transcript.append(
+                    {
+                        "turn": turn + 1,
+                        "llm_response": compact_preview(parsed, 1000),
+                        "tool_results": [],
+                        "retry_reason": "final answer was returned before any tool call",
+                    }
+                )
+                continue
+            failure_reason = "final_answer_before_tool_results"
             break
         if not requested:
-            final_answer = "The real LLM did not return a valid tool call or final answer."
+            if invalid_format_retries < 1:
+                invalid_format_retries += 1
+                transcript.append(
+                    {
+                        "turn": turn + 1,
+                        "llm_response": compact_preview(parsed or response.get("content", ""), 1000),
+                        "tool_results": [],
+                        "retry_reason": "invalid tool-call JSON/native format",
+                    }
+                )
+                continue
+            failure_reason = "invalid_tool_call_format_after_retry"
             break
         turn_results = []
         for raw_call in requested:
@@ -85,27 +132,61 @@ def run_real_llm_two_tools_baseline(
             tool_calls.append(executed)
             turn_results.append(executed)
         transcript.append({"turn": turn + 1, "llm_response": compact_preview(parsed, 1000), "tool_results": turn_results})
+        if len(tool_calls) >= max_tool_calls and not final_answer:
+            break
     if not final_answer:
-        final_prompt = {
-            "query": query,
-            "tool_results": compact_preview(tool_calls, 6000),
-            "instruction": "Return a concise final answer grounded only in these tool results.",
-        }
-        response = client.generate(system_prompt, json.dumps(final_prompt, indent=2, default=str))
-        parsed = _parse_json(response.get("content", ""))
-        final_answer = str(parsed.get("final_answer") or response.get("content") or "").strip()
+        if tool_calls:
+            final_prompt = {
+                "query": query,
+                "tool_results": compact_preview(tool_calls, 6000),
+                "instruction": "Return strict JSON only: {\"tool_calls\": [], \"final_answer\": \"...\"}. Ground the answer only in these tool results.",
+            }
+            response = client.generate(_baseline_system_prompt(strict=True), json.dumps(final_prompt, indent=2, default=str))
+            real_llm_called = True
+            parsed = _parse_json(response.get("content", ""))
+            final_answer = str(parsed.get("final_answer") or response.get("content") or "").strip()
+            llm_turns.append(
+                {
+                    "turn": len(llm_turns) + 1,
+                    "strict_retry": True,
+                    "response_ok": response.get("ok"),
+                    "native_tool_call_count": len(response.get("tool_calls") or []),
+                    "json_tool_call_count": len(parsed.get("tool_calls") or []) if isinstance(parsed.get("tool_calls"), list) else 0,
+                    "final_answer_present": bool(final_answer),
+                    "content_preview": compact_preview(response.get("content", ""), 700),
+                }
+            )
+        elif not failure_reason:
+            failure_reason = "no_tool_calls_executed"
+    validation_results = [call.get("validation", {}) for call in tool_calls]
+    execution_previews = [call.get("result", {}) for call in tool_calls]
+    tool_calls_executed = any(call.get("executed") for call in tool_calls)
+    if final_answer and tool_calls and not tool_calls_executed and not failure_reason:
+        failure_reason = "no_valid_tool_calls_executed"
+    if not final_answer and not failure_reason:
+        failure_reason = "no_final_answer_after_tool_results"
+    valid_agent_run = bool(real_llm_called and tool_calls_executed and final_answer and not failure_reason)
+    skipped_or_failed = not valid_agent_run
     trajectory = {
         "query_id": "real_llm_two_tools",
         "original_query": query,
         "strategy": REAL_LLM_TWO_TOOLS_BASELINE,
-        "llm_turns": len(transcript),
+        "llm_turns": llm_turns,
+        "llm_turn_count": len(llm_turns),
         "llm_tool_calls": tool_calls,
+        "validation_results": validation_results,
+        "execution_previews": execution_previews,
         "steps": [
             {"kind": "llm_turn", **item}
             for item in transcript
         ],
         "final_answer": final_answer,
         "real_llm_used": True,
+        "real_llm_called": real_llm_called,
+        "tool_calls_executed": tool_calls_executed,
+        "valid_agent_run": valid_agent_run,
+        "skipped_or_failed": skipped_or_failed,
+        "failure_reason": failure_reason,
         "runtime": time.perf_counter() - start,
         "tool_call_count": len(tool_calls),
         "estimated_tokens": estimate_tokens({"query": query, "turns": transcript, "answer": final_answer}),
@@ -118,7 +199,16 @@ def run_real_llm_two_tools_baseline(
             "llm_model": client.model_name(),
             "backend_used": False,
             "real_llm_used": True,
+            "real_llm_called": real_llm_called,
             "skipped": False,
+            "tool_calls_executed": tool_calls_executed,
+            "valid_agent_run": valid_agent_run,
+            "skipped_or_failed": skipped_or_failed,
+            "failure_reason": failure_reason,
+            "llm_turns": llm_turns,
+            "llm_tool_calls": tool_calls,
+            "validation_results": validation_results,
+            "execution_previews": execution_previews,
             "final_answer": final_answer,
             "trajectory": trajectory,
             "tool_call_count": len(tool_calls),
@@ -277,20 +367,93 @@ def _skipped_result(query: str, mode: str, client: LLMClient, reason: str) -> di
         "llm_model": client.model_name(),
         "backend_used": False,
         "real_llm_used": False,
+        "real_llm_called": False,
         "skipped": True,
+        "tool_calls_executed": False,
+        "valid_agent_run": False,
+        "skipped_or_failed": True,
+        "failure_reason": reason,
+        "llm_turns": [],
+        "llm_tool_calls": [],
+        "validation_results": [],
+        "execution_previews": [],
         "skipped_reason": reason,
         "final_answer": "",
         "trajectory": {
             "original_query": query,
             "strategy": mode,
             "real_llm_used": False,
+            "real_llm_called": False,
+            "llm_turns": [],
+            "llm_turn_count": 0,
+            "llm_tool_calls": [],
+            "validation_results": [],
+            "execution_previews": [],
             "skipped_reason": reason,
             "steps": [],
             "final_answer": "",
             "tool_call_count": 0,
+            "tool_calls_executed": False,
+            "valid_agent_run": False,
+            "skipped_or_failed": True,
+            "failure_reason": reason,
         },
         "tool_call_count": 0,
     }
+
+
+def _baseline_system_prompt(*, strict: bool) -> str:
+    base = (
+        "You are a naive DASHSys LLM agent. You may use exactly two tools: execute_sql and call_api. "
+        "You do not have DASHSys optimized templates, EvidenceBus, verifier, routing, or plan optimizer. "
+        "Use tools to gather evidence before answering. Do not invent IDs, counts, statuses, or timestamps."
+    )
+    if not strict:
+        return base + " Prefer native tool calls when available; otherwise return strict JSON with tool_calls and final_answer."
+    return (
+        base
+        + " STRICT FORMAT: return either native tool calls, or JSON only with exactly "
+        + '{"tool_calls":[{"tool":"execute_sql","arguments":{"sql":"SELECT ..."}}],"final_answer":null} '
+        + 'or {"tool_calls":[],"final_answer":"..."} after tool results. No markdown or prose outside JSON.'
+    )
+
+
+def _baseline_tool_schemas() -> list[dict[str, Any]]:
+    return [
+        {
+            "type": "function",
+            "function": {
+                "name": "execute_sql",
+                "description": "Execute one read-only DuckDB SQL query over the local snapshot.",
+                "parameters": {
+                    "type": "object",
+                    "properties": {
+                        "sql": {"type": "string", "description": "Read-only SELECT SQL using provided tables and columns."}
+                    },
+                    "required": ["sql"],
+                    "additionalProperties": False,
+                },
+            },
+        },
+        {
+            "type": "function",
+            "function": {
+                "name": "call_api",
+                "description": "Call one allowed Adobe API endpoint, or dry-run when credentials are unavailable.",
+                "parameters": {
+                    "type": "object",
+                    "properties": {
+                        "method": {"type": "string", "enum": ["GET", "POST"]},
+                        "url": {"type": "string"},
+                        "params": {"type": "object"},
+                        "headers": {"type": "object"},
+                    },
+                    "required": ["method", "url"],
+                    "additionalProperties": False,
+                },
+            },
+        },
+    ]
 
 
 def _execute_llm_tool_call(
@@ -306,7 +469,7 @@ def _execute_llm_tool_call(
         sql = str(args.get("sql", ""))
         validation = sql_validator.validate(sql)
         result = db.execute_sql(sql) if validation.ok else {"ok": False, "rows": [], "row_count": 0, "error": "; ".join(validation.errors)}
-        return {"tool": tool, "arguments": {"sql": sql}, "validation": validation.to_dict(), "result": compact_preview(result, 1000)}
+        return {"tool": tool, "arguments": {"sql": sql}, "validation": validation.to_dict(), "executed": validation.ok, "result": compact_preview(result, 1000)}
     if tool == "call_api":
         method = str(args.get("method", "GET")).upper()
         url = str(args.get("url", ""))
@@ -314,8 +477,34 @@ def _execute_llm_tool_call(
         headers = args.get("headers") if isinstance(args.get("headers"), dict) else {}
         validation = api_validator.validate(method, url, params, headers)
         result = api_client.call_api(method, url, params, headers) if validation.ok else {"ok": False, "error": "; ".join(validation.errors)}
-        return {"tool": tool, "arguments": {"method": method, "url": url, "params": params}, "validation": validation.to_dict(), "result": compact_preview(result, 1000)}
-    return {"tool": tool or "unknown", "validation": {"ok": False, "errors": ["Unknown tool."]}, "result": {"ok": False}}
+        return {"tool": tool, "arguments": {"method": method, "url": url, "params": params}, "validation": validation.to_dict(), "executed": validation.ok, "result": compact_preview(result, 1000)}
+    return {"tool": tool or "unknown", "validation": {"ok": False, "errors": ["Unknown tool."]}, "executed": False, "result": {"ok": False}}
+
+
+def _extract_requested_tool_calls(response: dict[str, Any], parsed: dict[str, Any]) -> list[dict[str, Any]]:
+    native_calls = response.get("tool_calls")
+    if isinstance(native_calls, list) and native_calls:
+        return [_normalize_tool_call(call) for call in native_calls]
+    json_calls = parsed.get("tool_calls")
+    if isinstance(json_calls, list):
+        return [_normalize_tool_call(call) for call in json_calls]
+    json_call = parsed.get("tool_call")
+    if isinstance(json_call, dict):
+        return [_normalize_tool_call(json_call)]
+    return []
+
+
+def _normalize_tool_call(raw_call: dict[str, Any]) -> dict[str, Any]:
+    tool = raw_call.get("tool") or raw_call.get("name")
+    args = raw_call.get("arguments") if isinstance(raw_call.get("arguments"), dict) else {}
+    if isinstance(raw_call.get("arguments"), str):
+        try:
+            parsed_args = json.loads(raw_call["arguments"])
+            if isinstance(parsed_args, dict):
+                args = parsed_args
+        except Exception:
+            args = {"_raw": raw_call["arguments"]}
+    return {"tool": tool, "name": tool, "arguments": args, "id": raw_call.get("id")}
 
 
 def _parse_json(text: str) -> dict[str, Any]:

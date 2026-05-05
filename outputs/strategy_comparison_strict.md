@@ -3,10 +3,10 @@
 | Strategy | Correctness | Final score | Tool calls | Runtime (s) | Tokens |
 |---|---:|---:|---:|---:|---:|
 | SQL_ONLY_BASELINE | 0.2983 | 0.2799 | 1.00 | 0.0096 | 708 |
-| LLM_FREE_AGENT_BASELINE | 0.4879 | 0.4533 | 2.11 | 0.0156 | 976 |
-| DETERMINISTIC_ROUTER_SELECTED_METADATA | 0.6074 | 0.5868 | 1.17 | 0.0086 | 719 |
+| LLM_FREE_AGENT_BASELINE | 0.4879 | 0.4533 | 2.11 | 0.0157 | 976 |
+| DETERMINISTIC_ROUTER_SELECTED_METADATA | 0.6074 | 0.5868 | 1.17 | 0.0087 | 719 |
 | SQL_FIRST_API_VERIFY | 0.6743 | 0.6490 | 1.46 | 0.0089 | 852 |
-| TEMPLATE_FIRST | 0.6743 | 0.6461 | 1.71 | 0.0089 | 818 |
+| TEMPLATE_FIRST | 0.6743 | 0.6461 | 1.71 | 0.0090 | 818 |
 
 - Best correctness: `SQL_FIRST_API_VERIFY`
 - Best efficiency: `SQL_ONLY_BASELINE`
@@ -16,10 +16,10 @@
 
 | Strategy | Metadata tokens | Prompt tokens | Preprocess (s) | Planning (s) | Execution (s) | Answer (s) |
 |---|---:|---:|---:|---:|---:|---:|
-| SQL_ONLY_BASELINE | 819 | 1463 | 0.00450 | 0.00010 | 0.00120 | 0.00090 |
-| LLM_FREE_AGENT_BASELINE | 5782 | 7759 | 0.00710 | 0.00010 | 0.00110 | 0.00120 |
+| SQL_ONLY_BASELINE | 819 | 1463 | 0.00450 | 0.00010 | 0.00110 | 0.00090 |
+| LLM_FREE_AGENT_BASELINE | 5782 | 7759 | 0.00720 | 0.00010 | 0.00110 | 0.00120 |
 | DETERMINISTIC_ROUTER_SELECTED_METADATA | 823 | 1467 | 0.00220 | 0.00010 | 0.00030 | 0.00050 |
-| SQL_FIRST_API_VERIFY | 819 | 1463 | 0.00210 | 0.00030 | 0.00040 | 0.00050 |
+| SQL_FIRST_API_VERIFY | 819 | 1463 | 0.00220 | 0.00030 | 0.00040 | 0.00050 |
 | TEMPLATE_FIRST | 817 | 1461 | 0.00210 | 0.00010 | 0.00040 | 0.00050 |
 
 ## Recommended Next Focus

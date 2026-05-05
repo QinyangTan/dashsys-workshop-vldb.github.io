@@ -91,6 +91,7 @@ def generate_report(config: Config) -> dict[str, Any]:
         ],
         "mermaid": comparison_mermaid(),
         "failure_comparison": failure_comparison(normal),
+        "failed_real_llm_tool_loops": failed_real_llm_rows(llm),
     }
 
 
@@ -113,9 +114,41 @@ def llm_status(system: str, payload: dict[str, Any]) -> dict[str, Any]:
     if not payload:
         return {"applicable": True, "status": "not_run"}
     if payload.get("skipped"):
-        return {"applicable": True, "status": "skipped", "reason": payload.get("reason")}
+        return {"applicable": True, "status": "skipped_no_key", "reason": payload.get("reason")}
     rows = [row for row in payload.get("rows", []) if row.get("system") == system]
-    return {"applicable": True, "status": "run", "rows": len(rows)}
+    valid_rows = [row for row in rows if row.get("valid_agent_run")]
+    failed_rows = [row for row in rows if row.get("skipped_or_failed") and not row.get("valid_agent_run")]
+    real_called_failures = [row for row in failed_rows if row.get("real_llm_called")]
+    if system == "REAL_LLM_TWO_TOOLS_BASELINE":
+        if real_called_failures and not valid_rows:
+            status = "real_llm_called_but_tool_loop_failed"
+        elif valid_rows and not failed_rows:
+            status = "valid_tool_agent_run"
+        elif valid_rows and failed_rows:
+            status = "mixed_valid_and_failed_tool_agent_runs"
+        else:
+            status = "not_run"
+    else:
+        status = "valid_tool_agent_run" if valid_rows else ("real_llm_called_but_tool_loop_failed" if real_called_failures else "not_run")
+    return {
+        "applicable": True,
+        "status": status,
+        "rows": len(rows),
+        "valid_rows": len(valid_rows),
+        "failed_rows": len(failed_rows),
+        "real_llm_called_failures": len(real_called_failures),
+    }
+
+
+def failed_real_llm_rows(payload: dict[str, Any]) -> list[dict[str, Any]]:
+    if not payload or payload.get("skipped"):
+        return []
+    return [
+        row for row in payload.get("rows", [])
+        if row.get("system") == "REAL_LLM_TWO_TOOLS_BASELINE"
+        and row.get("real_llm_called")
+        and not row.get("valid_agent_run")
+    ]
 
 
 def improvement_rows(naive: dict[str, Any], optimized: dict[str, Any]) -> list[dict[str, Any]]:
@@ -212,6 +245,23 @@ def render_markdown(report: dict[str, Any]) -> str:
                 status=status.get("status", "n/a"),
             )
         )
+    failed_real = report.get("failed_real_llm_tool_loops", [])
+    if failed_real:
+        lines.extend(
+            [
+                "",
+                "## Failed Real LLM Tool Loops",
+                "",
+                "Real LLM called but tool loop failed. These rows are not treated as successful real tool-using baseline runs.",
+                "",
+                "| Query ID | Tool calls | Tool calls executed? | Failure reason |",
+                "| --- | ---: | --- | --- |",
+            ]
+        )
+        for row in failed_real[:20]:
+            lines.append(
+                f"| `{row.get('query_id')}` | {row.get('tool_call_count')} | {row.get('tool_calls_executed')} | {row.get('failure_reason')} |"
+            )
     lines.extend(["", "## Improvement: Optimized vs Naive", "", "| Metric | Naive | Optimized | Absolute gain | Relative gain |", "| --- | ---: | ---: | ---: | ---: |"])
     for row in report["improvement_vs_naive"]:
         lines.append(f"| {row['metric']} | {row['naive']} | {row['optimized']} | {row['absolute_gain']} | {row['relative_gain']} |")

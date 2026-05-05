@@ -123,8 +123,26 @@ class OpenAILLMClient(LLMClient):
                 "error": str(exc)[:500],
             }
         content = ""
+        tool_calls: list[dict[str, Any]] = []
         try:
-            content = body["choices"][0]["message"].get("content") or ""
+            message = body["choices"][0]["message"]
+            content = message.get("content") or ""
+            for raw_call in message.get("tool_calls") or []:
+                function = raw_call.get("function") or {}
+                arguments = function.get("arguments") or {}
+                if isinstance(arguments, str):
+                    try:
+                        arguments = json.loads(arguments)
+                    except Exception:
+                        arguments = {"_raw": arguments}
+                tool_calls.append(
+                    {
+                        "id": raw_call.get("id"),
+                        "type": raw_call.get("type"),
+                        "tool": function.get("name"),
+                        "arguments": arguments if isinstance(arguments, dict) else {},
+                    }
+                )
         except Exception:
             content = ""
         return redact_secrets(
@@ -134,6 +152,7 @@ class OpenAILLMClient(LLMClient):
                 "provider": self.provider_name(),
                 "model": self.model_name(),
                 "content": content,
+                "tool_calls": tool_calls,
                 "usage": body.get("usage", {}),
                 "raw_preview": compact_preview(body, 1200),
                 "error": None if response.ok else str(body)[:500],

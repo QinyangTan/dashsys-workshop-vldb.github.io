@@ -1,6 +1,29 @@
 from __future__ import annotations
 
+import json
+
 from dashagent.llm_tool_agent import run_real_llm_two_tools_baseline
+
+
+class FakeLLMClient:
+    def __init__(self, responses):
+        self.responses = list(responses)
+        self.calls = []
+
+    def available(self) -> bool:
+        return True
+
+    def provider_name(self) -> str:
+        return "fake"
+
+    def model_name(self) -> str:
+        return "fake-model"
+
+    def generate(self, system_prompt, user_prompt, tools=None):
+        self.calls.append({"system_prompt": system_prompt, "user_prompt": user_prompt, "tools": tools})
+        if self.responses:
+            return self.responses.pop(0)
+        return {"ok": True, "content": '{"tool_calls":[],"final_answer":"Done."}', "tool_calls": []}
 
 
 def test_real_llm_two_tools_baseline_skips_without_key(monkeypatch, tiny_project):
@@ -8,3 +31,110 @@ def test_real_llm_two_tools_baseline_skips_without_key(monkeypatch, tiny_project
     result = run_real_llm_two_tools_baseline("List all journeys", config=tiny_project)
     assert result["skipped"] is True
     assert result["real_llm_used"] is False
+
+
+def test_native_tool_call_executes_sql_and_finishes(tiny_project):
+    client = FakeLLMClient(
+        [
+            {
+                "ok": True,
+                "content": "",
+                "tool_calls": [
+                    {
+                        "id": "call_1",
+                        "tool": "execute_sql",
+                        "arguments": {"sql": "SELECT COUNT(*) AS count FROM dim_campaign"},
+                    }
+                ],
+            },
+            {"ok": True, "content": '{"tool_calls":[],"final_answer":"There are 2 campaigns."}', "tool_calls": []},
+        ]
+    )
+    result = run_real_llm_two_tools_baseline("How many campaigns are there?", config=tiny_project, llm_client=client)
+    assert result["real_llm_called"] is True
+    assert result["tool_calls_executed"] is True
+    assert result["valid_agent_run"] is True
+    assert result["tool_call_count"] == 1
+    assert result["llm_tool_calls"][0]["validation"]["ok"] is True
+
+
+def test_json_tool_call_executes_sql(tiny_project):
+    client = FakeLLMClient(
+        [
+            {
+                "ok": True,
+                "content": '{"tool_calls":[{"tool":"execute_sql","arguments":{"sql":"SELECT name FROM dim_campaign ORDER BY name"}}],"final_answer":null}',
+                "tool_calls": [],
+            },
+            {"ok": True, "content": '{"tool_calls":[],"final_answer":"Birthday Message and Welcome Journey."}', "tool_calls": []},
+        ]
+    )
+    result = run_real_llm_two_tools_baseline("List all journeys", config=tiny_project, llm_client=client)
+    assert result["tool_calls_executed"] is True
+    assert result["valid_agent_run"] is True
+
+
+def test_invalid_first_response_retries_then_succeeds(tiny_project):
+    client = FakeLLMClient(
+        [
+            {"ok": True, "content": "I should query the database.", "tool_calls": []},
+            {
+                "ok": True,
+                "content": '{"tool_calls":[{"tool":"execute_sql","arguments":{"sql":"SELECT COUNT(*) AS count FROM dim_campaign"}}],"final_answer":null}',
+                "tool_calls": [],
+            },
+            {"ok": True, "content": '{"tool_calls":[],"final_answer":"There are 2 campaigns."}', "tool_calls": []},
+        ]
+    )
+    result = run_real_llm_two_tools_baseline("How many campaigns are there?", config=tiny_project, llm_client=client)
+    assert result["valid_agent_run"] is True
+    assert len(client.calls) >= 3
+    assert "STRICT FORMAT" in client.calls[1]["system_prompt"]
+
+
+def test_invalid_after_retry_is_failed_baseline(tiny_project):
+    client = FakeLLMClient(
+        [
+            {"ok": True, "content": "not json", "tool_calls": []},
+            {"ok": True, "content": "still not json", "tool_calls": []},
+        ]
+    )
+    result = run_real_llm_two_tools_baseline("List all journeys", config=tiny_project, llm_client=client)
+    assert result["real_llm_called"] is True
+    assert result["tool_calls_executed"] is False
+    assert result["valid_agent_run"] is False
+    assert result["skipped_or_failed"] is True
+    assert result["failure_reason"] == "invalid_tool_call_format_after_retry"
+
+
+def test_destructive_sql_is_blocked_and_not_successful(tiny_project):
+    client = FakeLLMClient(
+        [
+            {
+                "ok": True,
+                "content": '{"tool_calls":[{"tool":"execute_sql","arguments":{"sql":"DELETE FROM dim_campaign"}}],"final_answer":null}',
+                "tool_calls": [],
+            },
+            {"ok": True, "content": '{"tool_calls":[],"final_answer":"Deleted rows."}', "tool_calls": []},
+        ]
+    )
+    result = run_real_llm_two_tools_baseline("Delete campaigns", config=tiny_project, llm_client=client)
+    assert result["llm_tool_calls"][0]["validation"]["ok"] is False
+    assert result["llm_tool_calls"][0]["executed"] is False
+    assert result["valid_agent_run"] is False
+    assert result["failure_reason"] == "no_valid_tool_calls_executed"
+
+
+def test_max_tool_calls_enforced(tiny_project):
+    calls = [
+        {"tool": "execute_sql", "arguments": {"sql": "SELECT COUNT(*) AS count FROM dim_campaign"}}
+        for _ in range(5)
+    ]
+    client = FakeLLMClient(
+        [
+            {"ok": True, "content": '{"tool_calls":' + json.dumps(calls) + ',"final_answer":null}', "tool_calls": []},
+            {"ok": True, "content": '{"tool_calls":[],"final_answer":"Done."}', "tool_calls": []},
+        ]
+    )
+    result = run_real_llm_two_tools_baseline("How many campaigns are there?", config=tiny_project, llm_client=client, max_tool_calls=2)
+    assert len(result["llm_tool_calls"]) == 2

@@ -72,8 +72,8 @@ def generate_candidate_context_report(config: Config) -> dict[str, Any]:
             row["table_recall_at_3"] = r3
             row["table_recall_at_5"] = r5
         if gold_apis:
-            r3 = recall_at_k(apis, set(gold_apis), 3)
-            r5 = recall_at_k(apis, set(gold_apis), 5)
+            r3 = recall_at_k(apis, set(gold_apis), 3, normalize=False)
+            r5 = recall_at_k(apis, set(gold_apis), 5, normalize=False)
             api_recall3.append(r3)
             api_recall5.append(r5)
             row["api_recall_at_3"] = r3
@@ -99,15 +99,26 @@ def generate_candidate_context_report(config: Config) -> dict[str, Any]:
 def extract_sql_tables(sql: str | None) -> set[str]:
     if not sql:
         return set()
-    matches = re.findall(r"\b(?:FROM|JOIN)\s+(?:\"([^\"]+)\"|([A-Za-z_][\w$]*))", sql, flags=re.IGNORECASE)
-    return {quoted or bare for quoted, bare in matches}
+    identifier = r"(?:\"[^\"]+\"|`[^`]+`|[A-Za-z_][\w$]*)(?:\s*\.\s*(?:\"[^\"]+\"|`[^`]+`|[A-Za-z_][\w$]*))*"
+    matches = re.findall(rf"\b(?:FROM|JOIN)\s+({identifier})", sql, flags=re.IGNORECASE)
+    return {match for match in matches}
 
 
-def recall_at_k(candidates: list[str], gold: set[str], k: int) -> float:
-    if not gold:
+def normalize_table_name(name: str) -> str:
+    value = str(name or "").strip().rstrip(";")
+    parts = [part.strip().strip('"').strip("`").strip("'") for part in re.split(r"\s*\.\s*", value) if part.strip()]
+    return (parts[-1] if parts else value.strip('"').strip("`").strip("'")).lower()
+
+
+def recall_at_k(candidates: list[str], gold: set[str], k: int, *, normalize: bool = True) -> float:
+    normalized_gold = {normalize_table_name(item) for item in gold if normalize_table_name(item)} if normalize else set(gold)
+    if not normalized_gold:
         return 0.0
-    top = set(candidates[:k])
-    return round(len(top & gold) / len(gold), 4)
+    if normalize:
+        top = {normalize_table_name(item) for item in candidates[:k] if normalize_table_name(item)}
+    else:
+        top = set(candidates[:k])
+    return round(len(top & normalized_gold) / len(normalized_gold), 4)
 
 
 def avg(values: list[float | int]) -> float:

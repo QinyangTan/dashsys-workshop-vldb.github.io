@@ -4,14 +4,41 @@
 
 | System | Description | Normal correctness | Strict correctness | Final score | Tool calls | Tokens | LLM status |
 | --- | --- | ---: | ---: | ---: | ---: | ---: | --- |
-| REAL_LLM_TWO_TOOLS_BASELINE | Real naive LLM with execute_sql/call_api only |  |  |  |  |  | run |
+| REAL_LLM_TWO_TOOLS_BASELINE | Real naive LLM with execute_sql/call_api only |  |  |  |  |  | real_llm_called_but_tool_loop_failed |
 | LLM_FREE_AGENT_BASELINE | Deterministic approximation of a broad LLM agent | 0.6707 | 0.4879 | 0.4533 | 2.1143 | 975.9429 | n/a |
 | SQL_ONLY_BASELINE | Local DB only | 0.5763 | 0.2983 | 0.2799 | 1.0 | 708.4571 | n/a |
 | SQL_FIRST_API_VERIFY | Current deterministic optimized backend | 0.8407 | 0.6743 | 0.649 | 1.4571 | 851.7714 | n/a |
 | CANDIDATE_GUIDED_LLM_SQL | Optional candidate-context LLM SQL with fallback |  |  |  |  |  | n/a |
 | FULL_SCHEMA_LLM_SQL | Optional full-schema LLM SQL with fallback |  |  |  |  |  | n/a |
 | LLM_SQL_FIRST_API_VERIFY | Optional LLM SQL plus deterministic API verification |  |  |  |  |  | n/a |
-| LLM_CONTROLLER_OPTIMIZED_AGENT | Optional LLM controller with optimized backend tool |  |  |  |  |  | run |
+| LLM_CONTROLLER_OPTIMIZED_AGENT | Optional LLM controller with optimized backend tool |  |  |  |  |  | valid_tool_agent_run |
+
+## Failed Real LLM Tool Loops
+
+Real LLM called but tool loop failed. These rows are not treated as successful real tool-using baseline runs.
+
+| Query ID | Tool calls | Tool calls executed? | Failure reason |
+| --- | ---: | --- | --- |
+| `example_000` | 0 | False | invalid_tool_call_format_after_retry |
+| `example_001` | 0 | False | invalid_tool_call_format_after_retry |
+| `example_002` | 0 | False | invalid_tool_call_format_after_retry |
+| `example_003` | 0 | False | invalid_tool_call_format_after_retry |
+| `example_004` | 0 | False | invalid_tool_call_format_after_retry |
+| `example_005` | 0 | False | invalid_tool_call_format_after_retry |
+| `example_006` | 0 | False | invalid_tool_call_format_after_retry |
+| `example_007` | 0 | False | invalid_tool_call_format_after_retry |
+| `example_008` | 0 | False | invalid_tool_call_format_after_retry |
+| `example_009` | 0 | False | invalid_tool_call_format_after_retry |
+| `example_010` | 0 | False | invalid_tool_call_format_after_retry |
+| `example_011` | 0 | False | invalid_tool_call_format_after_retry |
+| `example_012` | 0 | False | invalid_tool_call_format_after_retry |
+| `example_013` | 0 | False | invalid_tool_call_format_after_retry |
+| `example_014` | 0 | False | invalid_tool_call_format_after_retry |
+| `example_015` | 0 | False | invalid_tool_call_format_after_retry |
+| `example_016` | 0 | False | invalid_tool_call_format_after_retry |
+| `example_017` | 0 | False | invalid_tool_call_format_after_retry |
+| `example_018` | 0 | False | invalid_tool_call_format_after_retry |
+| `example_019` | 0 | False | invalid_tool_call_format_after_retry |
 
 ## Improvement: Optimized vs Naive
 
@@ -24,7 +51,7 @@
 | final score | 0.4533 | 0.649 | 0.1957 | 0.4317 |
 | tool calls | 2.1143 | 1.4571 | -0.6572 | -0.3108 |
 | tokens | 975.9429 | 851.7714 | -124.1715 | -0.1272 |
-| runtime | 0.0156 | 0.0089 | -0.0067 | -0.4295 |
+| runtime | 0.0157 | 0.0089 | -0.0068 | -0.4331 |
 
 ## Technique Contribution
 

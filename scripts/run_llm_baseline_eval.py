@@ -40,17 +40,30 @@ def main() -> int:
             start = time.perf_counter()
             result = runner(example.query, config=config)
             elapsed = time.perf_counter() - start
-            answer_score, answer_reason = score_answer(result.get("final_answer", ""), example.gold_answer)
+            valid_agent_run = bool(result.get("valid_agent_run", not result.get("skipped", False)))
+            if system == "REAL_LLM_TWO_TOOLS_BASELINE" and not valid_agent_run:
+                answer_score = None
+                answer_reason = "Real LLM was called but the tool loop did not complete a valid agent run."
+            else:
+                answer_score, answer_reason = score_answer(result.get("final_answer", ""), example.gold_answer)
             rows.append(
                 {
                     "query_id": example.query_id,
                     "query": example.query,
                     "system": system,
-                    "answer_score": round(answer_score, 4),
+                    "answer_score": round(answer_score, 4) if isinstance(answer_score, (int, float)) else None,
                     "answer_reason": answer_reason,
-                    "tool_call_count": result.get("trajectory", {}).get("tool_call_count", 0),
+                    "tool_call_count": result.get("tool_call_count", result.get("trajectory", {}).get("tool_call_count", 0)),
                     "runtime": round(elapsed, 4),
                     "skipped": result.get("skipped", False),
+                    "real_llm_called": result.get("real_llm_called", bool(result.get("real_llm_used"))),
+                    "tool_calls_executed": result.get("tool_calls_executed", result.get("tool_call_count", 0) > 0),
+                    "valid_agent_run": valid_agent_run,
+                    "skipped_or_failed": result.get("skipped_or_failed", result.get("skipped", False) or not valid_agent_run),
+                    "failure_reason": result.get("failure_reason", result.get("skipped_reason", "")),
+                    "llm_turn_count": result.get("trajectory", {}).get("llm_turn_count", len(result.get("llm_turns", []))),
+                    "validation_results": result.get("validation_results", result.get("trajectory", {}).get("validation_results", [])),
+                    "execution_previews": result.get("execution_previews", result.get("trajectory", {}).get("execution_previews", [])),
                     "final_answer": result.get("final_answer", ""),
                 }
             )
@@ -68,12 +81,33 @@ def write_outputs(config: Config, payload: dict) -> None:
     if payload.get("skipped"):
         lines.append(f"REAL_LLM_TWO_TOOLS_BASELINE was skipped because {payload.get('reason')}.")
     else:
-        lines.extend(["| System | Rows | Avg answer score | Avg tool calls |", "| --- | ---: | ---: | ---: |"])
+        lines.extend(["| System | Rows | Valid runs | Failed runs | Avg answer score on valid runs | Avg tool calls on valid runs |", "| --- | ---: | ---: | ---: | ---: | ---: |"])
         for system in payload.get("systems", []):
             rows = [row for row in payload.get("rows", []) if row.get("system") == system]
-            avg_answer = sum(row.get("answer_score", 0) for row in rows) / len(rows) if rows else 0
-            avg_tools = sum(row.get("tool_call_count", 0) for row in rows) / len(rows) if rows else 0
-            lines.append(f"| {system} | {len(rows)} | {avg_answer:.4f} | {avg_tools:.2f} |")
+            valid_rows = [row for row in rows if row.get("valid_agent_run")]
+            failed_rows = [row for row in rows if row.get("skipped_or_failed") and not row.get("valid_agent_run")]
+            scored_rows = [row for row in valid_rows if isinstance(row.get("answer_score"), (int, float))]
+            avg_answer = sum(row.get("answer_score", 0) for row in scored_rows) / len(scored_rows) if scored_rows else 0
+            avg_tools = sum(row.get("tool_call_count", 0) for row in valid_rows) / len(valid_rows) if valid_rows else 0
+            lines.append(f"| {system} | {len(rows)} | {len(valid_rows)} | {len(failed_rows)} | {avg_answer:.4f} | {avg_tools:.2f} |")
+        failed_real = [
+            row for row in payload.get("rows", [])
+            if row.get("system") == "REAL_LLM_TWO_TOOLS_BASELINE" and row.get("real_llm_called") and not row.get("valid_agent_run")
+        ]
+        if failed_real:
+            lines.extend(
+                [
+                    "",
+                    "## Failed Real LLM Tool Loops",
+                    "",
+                    "These rows are real LLM calls, but they are not counted as successful real tool-using baseline runs.",
+                    "",
+                    "| Query ID | Tool calls executed? | Failure reason |",
+                    "| --- | --- | --- |",
+                ]
+            )
+            for row in failed_real[:20]:
+                lines.append(f"| `{row.get('query_id')}` | {row.get('tool_calls_executed')} | {row.get('failure_reason')} |")
     md_path.write_text("\n".join(lines) + "\n", encoding="utf-8")
 
 
