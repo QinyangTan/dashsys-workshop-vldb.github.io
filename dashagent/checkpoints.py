@@ -9,6 +9,7 @@ from .trajectory import compact_preview, redact_secrets
 
 
 REQUIRED_CHECKPOINT_IDS = [
+    "checkpoint_00_prompt_router",
     "checkpoint_01_raw_query",
     "checkpoint_02_query_normalization",
     "checkpoint_03_query_tokens",

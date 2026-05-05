@@ -2,26 +2,25 @@
 
 This project builds a DASHSys Systems Track agent for natural-language question answering over a local DuckDB/parquet snapshot and Adobe REST APIs.
 
-The LLM is the high-level controller. The optimized backend provides SQL/API planning, validation, execution, answer verification, and checkpointed trajectory logging. The default final-submission strategy is `SQL_FIRST_API_VERIFY`.
+The default deterministic strategy is `SQL_FIRST_API_VERIFY`. The newer LLM layer is optional: when `OPENAI_API_KEY` is available, a real LLM can help with prompt routing, final response writing, and NL-to-SQL experiments. When no key is available, all LLM modes skip or fall back safely and the deterministic backend still works.
 
 ## 1. What the System Does
 
-The agent answers questions using only the two official tool types:
+The system answers questions using two official data tools:
 
-- `execute_sql(sql)` over the local DuckDB/parquet database
+- `execute_sql(sql)` over local DuckDB/parquet data
 - `call_api(method, url, params, headers)` for Adobe API requests
 
-The main data flow is:
+The full data path is:
 
 ```text
 User query
--> simple prompt gate
--> query normalization/token extraction
--> relevance scoring and QueryAnalysis
--> metadata/context selection
--> SQL/API planning
--> evidence policy and call budget
--> validation
+-> Prompt Router
+-> query normalization and token extraction
+-> candidate/full schema context selection
+-> QueryAnalysis and metadata selection
+-> SQL/API planning or optional LLM NL-to-SQL
+-> validation and optional repair/fallback
 -> SQL/API execution
 -> EvidenceBus forwarding
 -> answer slots and claim verification
@@ -29,42 +28,9 @@ User query
 -> trajectory JSON with checkpoints
 ```
 
-In simple terms, the system first decides whether the question needs data. For data questions, it chooses the relevant tables and APIs, builds a safe plan, validates it, runs only the needed tools, extracts evidence, verifies the final answer, and writes a reproducible trace.
+The project hardcodes routing policy, not final answers. Templates and LLM SQL are both validated before execution.
 
-## 2. Repository Layout
-
-Core backend modules:
-
-- `dashagent/db.py`: read-only DuckDB/parquet loading and SQL execution.
-- `dashagent/schema_index.py`: schema summaries, ID detection, bridge detection, and join hints.
-- `dashagent/endpoint_catalog.py`: allowed Adobe endpoint catalog.
-- `dashagent/router.py`: deterministic query routing.
-- `dashagent/query_normalizer.py`, `dashagent/query_tokens.py`, `dashagent/relevance_scorer.py`: lightweight NLP helpers.
-- `dashagent/query_analysis.py`: one-pass shared query analysis.
-- `dashagent/sql_templates.py`, `dashagent/api_templates.py`, `dashagent/answer_templates.py`: reusable SQL/API/answer templates.
-- `dashagent/evidence_policy.py`, `dashagent/call_budget.py`, `dashagent/plan_optimizer.py`, `dashagent/plan_ensemble.py`: efficiency and safety controls.
-- `dashagent/evidence_bus.py`: forwards structured SQL/API evidence.
-- `dashagent/answer_slots.py`, `dashagent/answer_claims.py`, `dashagent/answer_verifier.py`, `dashagent/answer_reranker.py`: verification-first answer layer.
-- `dashagent/checkpoints.py`, `dashagent/agent_tools.py`, `dashagent/simple_prompt_gate.py`: LLM-agent-compatible checkpoint and wrapper layer.
-- `dashagent/executor.py`: main per-query execution path.
-- `dashagent/eval_harness.py`: public-example evaluation.
-
-Important scripts:
-
-- `scripts/warm_cache.py`: precompute reusable schema/API/gold-pattern caches.
-- `scripts/inspect_schema.py`: inspect DBSnapshot parquet files and write schema reports.
-- `scripts/run_one_query.py`: run a single query.
-- `scripts/run_dev_eval.py`: run public-example evaluation across strategies.
-- `scripts/generate_failure_analysis.py`: rank low-scoring examples.
-- `scripts/generate_family_score_report.py`: group results by query family.
-- `scripts/generate_pareto_report.py`: compare correctness and efficiency tradeoffs.
-- `scripts/generate_template_generalization_report.py`: check overfitting risk.
-- `scripts/generate_checkpoint_report.py`: summarize checkpoint coverage and data flow.
-- `scripts/package_submission.py`: create `outputs/source_code.zip`.
-- `scripts/package_query_outputs.py`: create final per-query output folders.
-- `scripts/check_submission_ready.py`: verify packaging, JSON validity, secrets, placeholders, and default strategy.
-
-## 3. Setup
+## 2. Setup
 
 Use Python 3.11 or newer.
 
@@ -74,20 +40,14 @@ source .venv/bin/activate
 python3 -m pip install -r requirements.txt
 ```
 
-If you prefer not to use a virtual environment, install the same requirements in your active Python environment.
-
-## 4. Data Placement
-
-Place the official DASHSys data here:
+Place data at:
 
 ```text
 data/data.json
 data/DBSnapshot/*.parquet
 ```
 
-These files are intentionally ignored by git because they are external data artifacts.
-
-You can override paths with environment variables:
+Optional path overrides:
 
 ```bash
 export DASHAGENT_DATA_JSON=/path/to/data.json
@@ -96,11 +56,9 @@ export DASHAGENT_OUTPUTS_DIR=/path/to/outputs
 export DASHAGENT_PROMPTS_DIR=/path/to/prompts
 ```
 
-Do not hard-code machine-local paths in source code.
+## 3. Credentials
 
-## 5. Adobe Credentials And Dry-Run Mode
-
-Adobe credentials must come only from environment variables:
+Adobe credentials are optional for local/public evaluation. Missing credentials put API calls in dry-run mode.
 
 ```bash
 export CLIENT_ID=...
@@ -111,44 +69,181 @@ export ACCESS_TOKEN=...
 export ADOBE_BASE_URL=https://platform.adobe.io
 ```
 
-Never commit credentials. The code redacts secret-looking values in trajectories and packaging checks.
-
-Missing credentials are expected during local/public evaluation. In that case, API calls run in dry-run mode. Dry-run validates the planned method, endpoint, params, and call order, but it does not prove live Adobe API behavior.
-
-## 6. Warm Cache And Inspect Schema
-
-Run cache warmup before a full evaluation or final package:
+Real LLM integration is also optional:
 
 ```bash
-python3 scripts/warm_cache.py
+export OPENAI_API_KEY=...
+export OPENAI_MODEL=gpt-4o-mini
 ```
 
-Then inspect the local schema:
+No credentials are required for tests. Secrets are redacted from trajectories and reports.
+
+## 4. Prompt Routing Policy
+
+The first decision is whether the prompt needs evidence:
+
+| Prompt | Route | Why |
+| --- | --- | --- |
+| Explain how checkpoints work | `LLM_DIRECT` | conceptual, no DB/API evidence needed |
+| List all journeys | `LOCAL_DB_ONLY` | local snapshot is enough |
+| Is the 'Birthday Message' journey published? | `SQL_PLUS_API` | SQL grounds the journey, API can verify live state |
+| How many merge policies are configured? | `API_ONLY` | merge policies are an API/platform family |
+| What overall pattern do you see? | data pipeline if ambiguous | avoids unsupported facts |
+
+The router lives in `dashagent/prompt_router.py` and records `checkpoint_00_prompt_router`.
+
+## 5. Real LLM Integration
+
+Main modes:
+
+- Deterministic backend: no LLM key required; uses `SQL_FIRST_API_VERIFY`.
+- Optimized LLM controller: LLM routes or calls the optimized backend tool, then writes a grounded final answer.
+- Naive real LLM baseline: LLM only gets `execute_sql` and `call_api` in a bounded multi-turn loop.
+- LLM SQL strategies: LLM can generate SQL from candidate or full schema context, then validation/repair/fallback runs before execution.
+
+Commands:
 
 ```bash
-python3 scripts/inspect_schema.py
+python3 scripts/run_llm_query.py "Explain how checkpoints work" --mode optimized
+python3 scripts/run_llm_query.py "Is the 'Birthday Message' journey published?" --mode deterministic
+python3 scripts/run_llm_query.py "Is the 'Birthday Message' journey published?" --mode baseline
+python3 scripts/run_llm_query.py "Is the 'Birthday Message' journey published?" --mode candidate-sql
+python3 scripts/run_llm_query.py "Is the 'Birthday Message' journey published?" --mode full-schema-sql
+python3 scripts/run_llm_baseline_eval.py
 ```
 
-These commands write reusable artifacts such as:
+If `OPENAI_API_KEY` is missing, real LLM modes report `skipped` or fall back to `SQL_FIRST_API_VERIFY`.
 
-- `outputs/schema_summary.json`
-- `outputs/join_graph.json`
-- `outputs/endpoint_catalog.json`
-- `outputs/gold_sql_patterns.json`
-- `outputs/gold_api_patterns.json`
-- `outputs/gold_answer_patterns.json`
+## 6. LLM NL-To-SQL
 
-The cache is reused when DBSnapshot parquet file names/mtimes and `data/data.json` mtime are unchanged.
+Optional strategies:
 
-## 7. Run One Query
+- `CANDIDATE_GUIDED_LLM_SQL`
+- `FULL_SCHEMA_LLM_SQL`
+- `LLM_SQL_FIRST_API_VERIFY`
 
-Example:
+Candidate context is retrieval only. It narrows likely tables, columns, joins, and APIs, but it does not decide the final SQL or answer. If candidate confidence is low or validation fails, the system falls back to full schema and then to deterministic `SQL_FIRST_API_VERIFY`.
+
+Run an optional LLM strategy:
+
+```bash
+python3 scripts/run_dev_eval.py --strategies LLM_SQL_FIRST_API_VERIFY
+python3 scripts/run_dev_eval.py --strict --strategies LLM_SQL_FIRST_API_VERIFY
+```
+
+Without an LLM key, these strategies still complete by using the deterministic fallback.
+
+## 7. Candidate Context Report
+
+Generate a report showing that schema context selection is retrieval, not public-example hardcoding:
+
+```bash
+python3 scripts/generate_candidate_context_report.py
+```
+
+Outputs:
+
+- `outputs/candidate_context_report.md`
+- `outputs/candidate_context_report.json`
+
+The report includes candidate context token size, full-schema token size, compression ratio, and recall@k when gold SQL/API exists.
+
+## 8. Strict Evaluation
+
+Normal evaluation keeps backward-compatible scoring:
+
+```bash
+python3 scripts/run_dev_eval.py
+```
+
+Strict evaluation audits score inflation:
+
+```bash
+python3 scripts/run_dev_eval.py --strict
+```
+
+Strict mode writes:
+
+- `outputs/eval_results_strict.json`
+- `outputs/eval_results_strict.csv`
+- `outputs/strategy_comparison_strict.md`
+
+In strict mode, missing gold SQL/API/answer fields are unscored, not treated as free `1.0`.
+
+## 9. Baseline Comparison
+
+Compare naive LLM/tool behavior against the optimized system:
+
+```bash
+python3 scripts/run_dev_eval.py
+python3 scripts/run_dev_eval.py --strict
+python3 scripts/run_llm_baseline_eval.py
+python3 scripts/generate_baseline_comparison_report.py
+```
+
+Outputs:
+
+- `outputs/baseline_comparison_report.md`
+- `outputs/baseline_comparison_report.json`
+- `outputs/llm_baseline_comparison.md`
+
+The real LLM baseline is marked skipped when no `OPENAI_API_KEY` is available.
+
+## 10. Visualize Prompt-To-Answer Data Flow
+
+Run one query:
 
 ```bash
 python3 scripts/run_one_query.py "Is the 'Birthday Message' journey published?" --strategy SQL_FIRST_API_VERIFY
 ```
 
-Per-query outputs are written under:
+Then generate dataflow artifacts:
+
+```bash
+python3 scripts/generate_dataflow_visualization.py outputs/is_the_birthday_message_journey_published/sql_first_api_verify/trajectory.json
+```
+
+Outputs:
+
+- `outputs/demo_dataflow/dataflow.mmd`
+- `outputs/demo_dataflow/dataflow.md`
+- `outputs/demo_dataflow/dataflow.html`
+
+The visualization shows prompt routing, normalized query, tokens/entities, selected tables/APIs, SQL/API calls, validation, execution results, EvidenceBus, answer slots, verification, and final answer.
+
+## 11. OpenAI Trace Export
+
+Export real trajectory checkpoints as optional OpenAI Agents SDK spans:
+
+```bash
+python3 scripts/export_trajectory_to_openai_trace.py outputs/is_the_birthday_message_journey_published/sql_first_api_verify/trajectory.json --trace-name dashsys-full-query-checkpoints
+```
+
+If the SDK or `OPENAI_API_KEY` is missing, the command no-ops safely and prints a warning.
+
+## 12. Core Repository Layout
+
+- `dashagent/db.py`: read-only DuckDB/parquet execution.
+- `dashagent/schema_index.py`: schema summary and join hints.
+- `dashagent/endpoint_catalog.py`: allowed Adobe endpoints.
+- `dashagent/prompt_router.py`: `LLM_DIRECT`, `LOCAL_DB_ONLY`, `SQL_PLUS_API`, `API_ONLY` routing.
+- `dashagent/candidate_context_builder.py`: candidate/full schema context retrieval.
+- `dashagent/llm_client.py`, `dashagent/llm_sql_generator.py`, `dashagent/llm_tool_agent.py`: optional real LLM paths.
+- `dashagent/query_normalizer.py`, `dashagent/query_tokens.py`, `dashagent/relevance_scorer.py`: lightweight NLP helpers.
+- `dashagent/query_analysis.py`, `dashagent/metadata_selector.py`, `dashagent/planner.py`: deterministic planning path.
+- `dashagent/evidence_policy.py`, `dashagent/call_budget.py`, `dashagent/plan_optimizer.py`: efficiency controls.
+- `dashagent/evidence_bus.py`, `dashagent/answer_slots.py`, `dashagent/answer_verifier.py`, `dashagent/answer_reranker.py`: evidence and answer verification.
+- `dashagent/checkpoints.py`, `dashagent/dataflow_visualizer.py`, `dashagent/agents_sdk_adapter.py`: traceability and visualization.
+- `dashagent/executor.py`: main per-query execution path.
+- `dashagent/eval_harness.py`: normal and strict evaluation.
+
+## 13. Run One Query
+
+```bash
+python3 scripts/run_one_query.py "Is the 'Birthday Message' journey published?" --strategy SQL_FIRST_API_VERIFY
+```
+
+Per-query outputs:
 
 ```text
 outputs/<query_id>/<strategy>/
@@ -157,45 +252,7 @@ outputs/<query_id>/<strategy>/
   trajectory.json
 ```
 
-Every trajectory includes:
-
-- the original query
-- selected strategy
-- route/domain information
-- checkpointed data flow
-- validation results
-- SQL/API tool calls
-- answer diagnostics
-- final answer
-- tool-call count, runtime, and estimated tokens
-
-## 8. Run Development Evaluation
-
-Run all strategies on the public examples:
-
-```bash
-python3 scripts/run_dev_eval.py
-```
-
-Strategies evaluated:
-
-- `SQL_ONLY_BASELINE`
-- `LLM_FREE_AGENT_BASELINE`
-- `DETERMINISTIC_ROUTER_SELECTED_METADATA`
-- `SQL_FIRST_API_VERIFY`
-- `TEMPLATE_FIRST`
-
-Primary outputs:
-
-- `outputs/eval_results.json`
-- `outputs/eval_results.csv`
-- `outputs/strategy_comparison.md`
-
-The expected default and recommended final-submission strategy is `SQL_FIRST_API_VERIFY`.
-
-## 9. Generate Diagnostic Reports
-
-After evaluation, generate the diagnostic reports:
+## 14. Diagnostic Reports
 
 ```bash
 python3 scripts/generate_failure_analysis.py
@@ -203,129 +260,40 @@ python3 scripts/generate_family_score_report.py
 python3 scripts/generate_pareto_report.py
 python3 scripts/generate_template_generalization_report.py
 python3 scripts/generate_checkpoint_report.py
+python3 scripts/generate_candidate_context_report.py
+python3 scripts/generate_baseline_comparison_report.py
 ```
 
-Important generated reports:
+Generated reports under `outputs/` are useful project evidence and should remain readable.
 
-- `outputs/failure_analysis.md`
-- `outputs/family_score_report.md`
-- `outputs/pareto_report.md`
-- `outputs/template_generalization_check.md`
-- `outputs/checkpoint_report.md`
+## 15. Tests And Packaging
 
-These reports are intentionally not broadly gitignored. Future agents and GPT runs need to inspect them.
-
-## 10. Checkpointed Agent Layer
-
-The checkpoint layer makes the optimized backend easier to inspect from an LLM-agent harness such as Claude Agent SDK or OpenAI Agents SDK.
-
-Each full data query records checkpoints such as:
-
-- raw query capture
-- query normalization
-- token/entity extraction
-- relevance scoring
-- QueryAnalysis
-- lookup path prediction
-- compact context card
-- candidate plan selection
-- plan optimization
-- evidence policy
-- call budget
-- validation
-- tool execution
-- EvidenceBus forwarding
-- answer slots
-- answer verification
-- answer reranking
-- final answer
-
-High-level LLM-facing wrappers are available in `dashagent/agent_tools.py`:
-
-- `analyze_query_tool(query)`
-- `plan_data_answer_tool(query)`
-- `run_data_answer_tool(query)`
-- `verify_answer_tool(query, answer, evidence)`
-
-The optional `dashagent/agents_sdk_adapter.py` exports checkpoints as custom spans when the OpenAI Agents SDK is installed. If the SDK is absent, it no-ops safely.
-
-## 11. Run Tests
-
-Run the test suite:
+Run tests:
 
 ```bash
 python3 -m pytest
 ```
 
-The tests cover database loading, validators, routing, metadata selection, templates, efficiency policy, NLP helpers, answer verification, checkpoint logging, packaging helpers, and readiness behavior.
-
-## 12. Package The Submission
-
-First package source code:
+Package source and query outputs:
 
 ```bash
 python3 scripts/package_submission.py
-```
-
-This writes:
-
-```text
-outputs/source_code/
-outputs/source_code.zip
-```
-
-Then package per-query outputs:
-
-```bash
 python3 scripts/package_query_outputs.py
-```
-
-This writes:
-
-```text
-outputs/final_submission/
-outputs/final_submission_manifest.json
-```
-
-By default, `package_query_outputs.py` selects `SQL_FIRST_API_VERIFY` when multiple strategy outputs exist for the same query.
-
-To override for experiments only:
-
-```bash
-export DASHAGENT_SUBMISSION_STRATEGY=TEMPLATE_FIRST
-```
-
-Do not override the final-submission strategy unless evaluation and the user explicitly approve it.
-
-## 13. Readiness Check
-
-Run:
-
-```bash
 python3 scripts/check_submission_ready.py
 ```
 
-The checker verifies:
+`package_query_outputs.py` defaults to `SQL_FIRST_API_VERIFY`.
 
-- `outputs/source_code.zip` exists
-- `prompts/system_prompt_template.txt` exists
-- final submission query folders contain `metadata.json`, `filled_system_prompt.txt`, and `trajectory.json`
-- JSON files parse
-- trajectory files contain required fields
-- no obvious secrets are present
-- no unresolved API path placeholders remain
-- unresolved API params are explicitly warned
-- default strategy is `SQL_FIRST_API_VERIFY`
-- generated diagnostic reports exist
-
-## 14. Recommended Full Pipeline
-
-Use this before handing off final work:
+## 16. Recommended Full Pipeline
 
 ```bash
 python3 scripts/warm_cache.py
 python3 scripts/inspect_schema.py
 python3 scripts/run_dev_eval.py
+python3 scripts/run_dev_eval.py --strict
+python3 scripts/run_llm_baseline_eval.py
+python3 scripts/generate_candidate_context_report.py
+python3 scripts/generate_baseline_comparison_report.py
 python3 scripts/generate_failure_analysis.py
 python3 scripts/generate_family_score_report.py
 python3 scripts/generate_pareto_report.py
@@ -337,53 +305,11 @@ python3 scripts/package_query_outputs.py
 python3 scripts/check_submission_ready.py
 ```
 
-For optional robustness and threshold diagnostics:
+## 17. Safety Rules
 
-```bash
-python3 scripts/tune_thresholds.py
-python3 scripts/run_robustness_eval.py
-```
-
-## 15. Safety Rules
-
-SQL is read-only. The SQL validator blocks destructive or environment-changing statements such as:
-
-- `INSERT`
-- `UPDATE`
-- `DELETE`
-- `DROP`
-- `ALTER`
-- `CREATE`
-- `COPY`
-- `ATTACH`
-- `DETACH`
-
-API calls must match the endpoint catalog unless explicit fallback mode is enabled. Avoid unresolved placeholders such as `{schema_id}` or `<destination_id>`; when possible, forward IDs from SQL evidence through `EvidenceBus`.
-
-## 16. Cleanup Rules
-
-Do not commit local machine artifacts:
-
-- `.DS_Store`
-- `__pycache__/`
-- `.pytest_cache/`
-- `.mypy_cache/`
-- `.ruff_cache/`
-- `.ipynb_checkpoints/`
-- editor swap/temp/backup files
-
-`outputs/source_code.zip` should not include those files. Re-run `python3 scripts/package_submission.py` after cleanup to rebuild the zip.
-
-Generated top-level reports under `outputs/` are useful project evidence and should remain readable unless the user asks to remove them.
-
-## 17. Current Development Principle
-
-Keep the project deterministic-first:
-
-- Do not rewrite the architecture.
-- Do not add multi-agent complexity.
-- Do not hard-code public-example answers or exact public query strings.
-- Do not remove checkpoint logging.
-- Do not weaken validation, secret redaction, or packaging checks.
-- Do not increase tool calls unless evaluation proves it is necessary.
-- Keep `SQL_FIRST_API_VERIFY` as the default strategy.
+- Keep `SQL_FIRST_API_VERIFY` as the deterministic default.
+- Do not hard-code public-example answers, exact public query strings, or hidden-test assumptions.
+- Keep SQL read-only; validators block destructive statements.
+- API calls must match the endpoint catalog unless explicit fallback mode is enabled.
+- Never commit credentials or generated secrets.
+- Do not remove checkpoint logging, validation, secret redaction, packaging, or readiness checks.

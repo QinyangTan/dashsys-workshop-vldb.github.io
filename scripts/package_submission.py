@@ -24,12 +24,18 @@ REQUIRED_PATHS = [
     "scripts/run_dev_eval.py",
     "scripts/package_submission.py",
     "scripts/package_query_outputs.py",
+    "scripts/run_llm_query.py",
+    "scripts/run_llm_baseline_eval.py",
     "scripts/generate_failure_analysis.py",
     "scripts/generate_family_score_report.py",
     "scripts/generate_pareto_report.py",
     "scripts/generate_template_generalization_report.py",
+    "scripts/generate_candidate_context_report.py",
+    "scripts/generate_baseline_comparison_report.py",
+    "scripts/generate_dataflow_visualization.py",
     "scripts/tune_thresholds.py",
     "scripts/run_robustness_eval.py",
+    "scripts/export_trajectory_to_openai_trace.py",
     "scripts/check_submission_ready.py",
     "scripts/warm_cache.py",
     "tests",
@@ -90,7 +96,7 @@ def main() -> int:
 
 
 def ignore_package_paths(directory: str, names: list[str]) -> set[str]:
-    ignored = {"__pycache__", ".pytest_cache", ".mypy_cache"}
+    ignored = {"__pycache__", ".pytest_cache", ".mypy_cache", ".ruff_cache", ".ipynb_checkpoints", ".DS_Store"}
     return {name for name in names if name in ignored or name.endswith(".pyc") or name == "answer_synthesizer 2.py"}
 
 

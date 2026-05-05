@@ -26,21 +26,25 @@ from .cache import (
     sql_result_cache_key,
     write_cache_manifest,
 )
+from .candidate_context_builder import build_candidate_context, build_full_schema_context
 from .call_budget import budget_for_strategy
 from .checkpoints import CheckpointLogger
 from .config import Config, DEFAULT_CONFIG
 from .db import DuckDBDatabase
 from .endpoint_catalog import EndpointCatalog
 from .evidence_bus import EvidenceBus
+from .evidence_policy import API_SKIP
 from .metadata_selector import MetadataSelector
 from .plan_ensemble import select_plan_candidate
-from .planner import STRATEGIES, StrategyPlanner
+from .planner import ALL_STRATEGIES, LLM_SQL_STRATEGIES, Plan, PlanStep, STRATEGIES, StrategyPlanner
 from .query_normalizer import normalize_query
 from .query_tokens import extract_query_tokens
+from .llm_sql_generator import generate_sql_with_llm, repair_sql_with_llm
 from .query_analysis import analyze_query
 from .router import QueryRouter
 from .schema_index import SchemaIndex
 from .simple_prompt_gate import decide_simple_prompt
+from .prompt_router import LLM_DIRECT, route_prompt
 from .trajectory import TrajectoryLogger, estimate_tokens
 from .validators import APIValidator, SQLValidator, ValidationResult
 
@@ -85,8 +89,8 @@ class AgentExecutor:
         query_id: str | None = None,
         output_dir: Path | None = None,
     ) -> dict[str, Any]:
-        if strategy not in STRATEGIES:
-            raise ValueError(f"Unknown strategy {strategy}. Expected one of {STRATEGIES}.")
+        if strategy not in ALL_STRATEGIES:
+            raise ValueError(f"Unknown strategy {strategy}. Expected one of {ALL_STRATEGIES}.")
         qid = query_id or slugify(query)
         out_dir = output_dir or (self.config.outputs_dir / qid / strategy.lower())
         out_dir.mkdir(parents=True, exist_ok=True)
@@ -100,6 +104,17 @@ class AgentExecutor:
             correctness_role="keeps later normalization from changing the user-facing question",
             efficiency_role="starts one trace without extra tool calls",
         )
+        prompt_route = route_prompt(query)
+        checkpoint_logger.add_checkpoint(
+            "checkpoint_00_prompt_router",
+            stage="prompt routing",
+            technique="LLM_DIRECT / LOCAL_DB_ONLY / SQL_PLUS_API / API_ONLY routing policy",
+            input_summary={"query": query},
+            output=prompt_route.to_dict(),
+            effect="chooses whether the prompt can be answered directly or needs SQL/API evidence",
+            correctness_role="routes data questions to evidence tools instead of unsupported direct answers",
+            efficiency_role="allows clearly conceptual prompts to avoid unnecessary SQL/API calls",
+        )
         simple_decision = decide_simple_prompt(query)
         checkpoint_logger.add_checkpoint(
             "checkpoint_simple_prompt_gate",
@@ -111,6 +126,54 @@ class AgentExecutor:
             correctness_role="prevents direct answers for data questions that need SQL/API evidence",
             efficiency_role="can skip the data pipeline only for safe conceptual prompts",
         )
+        if prompt_route.mode == LLM_DIRECT:
+            metadata = {
+                "query_id": qid,
+                "query": query,
+                "strategy": strategy,
+                "prompt_route": prompt_route.to_dict(),
+                "note": "Conceptual prompt routed for direct LLM handling; deterministic backend did not execute SQL/API tools.",
+            }
+            self.metadata_selector.save(metadata, out_dir)
+            filled_prompt = render_system_prompt(self.config, metadata)
+            (out_dir / "filled_system_prompt.txt").write_text(filled_prompt, encoding="utf-8")
+            final_answer = (
+                "This is a conceptual prompt that does not require local SQL or Adobe API evidence. "
+                "Use the optimized LLM controller mode for a real direct LLM response; the deterministic backend skipped SQL/API calls."
+            )
+            trajectory = TrajectoryLogger(
+                query_id=qid,
+                original_query=query,
+                strategy=strategy,
+                route_type="LLM_DIRECT",
+                domain_type="CONCEPTUAL",
+                max_preview_chars=self.config.max_preview_chars,
+            )
+            trajectory.add_step("prompt_router", prompt_route.to_dict())
+            trajectory.add_step("metadata", {"estimated_tokens": estimate_tokens(metadata), "prompt_tokens": estimate_tokens(filled_prompt), "metadata_path": str(out_dir / "metadata.json")})
+            checkpoint_logger.add_checkpoint(
+                "checkpoint_18_final_answer",
+                stage="final response",
+                technique="deterministic no-key direct fallback",
+                output={"final_answer": final_answer, "answer_length": len(final_answer), "final_token_estimate": estimate_tokens(final_answer)},
+                effect="returns a safe no-tool fallback for conceptual prompts",
+                correctness_role="does not invent local DB/API evidence",
+                efficiency_role="uses zero SQL/API tool calls",
+            )
+            trajectory.set_checkpoints(checkpoint_logger.to_list())
+            trajectory_payload = trajectory.save(out_dir / "trajectory.json", final_answer)
+            return {
+                "query_id": qid,
+                "query": query,
+                "strategy": strategy,
+                "output_dir": str(out_dir),
+                "metadata": metadata,
+                "plan": {"strategy": strategy, "rationale": "LLM_DIRECT prompt; deterministic backend skipped data tools.", "steps": []},
+                "tool_results": [],
+                "final_answer": final_answer,
+                "checkpoints": checkpoint_logger.to_list(),
+                "trajectory": trajectory_payload,
+            }
 
         preprocessing_start = time.perf_counter()
         normalization = normalize_query(query)
@@ -236,7 +299,11 @@ class AgentExecutor:
         preprocessing_time = time.perf_counter() - preprocessing_start
 
         planning_start = time.perf_counter()
-        plan = self.planner.create_plan(query, routing, metadata, strategy, analysis=analysis)
+        plan_strategy = "SQL_FIRST_API_VERIFY" if strategy in LLM_SQL_STRATEGIES else strategy
+        if strategy in LLM_SQL_STRATEGIES:
+            plan = self._create_llm_sql_plan(query, routing, metadata, strategy, analysis, checkpoint_logger)
+        else:
+            plan = self.planner.create_plan(query, routing, metadata, plan_strategy, analysis=analysis)
         original_planned_step_count = len(plan.steps)
         ensemble_metadata = None
         if strategy == "SQL_FIRST_API_VERIFY":
@@ -537,6 +604,149 @@ class AgentExecutor:
             "checkpoints": checkpoint_logger.to_list(),
             "trajectory": trajectory_payload,
         }
+
+    def _create_llm_sql_plan(
+        self,
+        query: str,
+        routing: Any,
+        metadata: dict[str, Any],
+        strategy: str,
+        analysis: Any,
+        checkpoint_logger: CheckpointLogger,
+    ) -> Plan:
+        fallback = self.planner.create_plan(query, routing, metadata, "SQL_FIRST_API_VERIFY", analysis=analysis)
+
+        prefer_full_schema = strategy == "FULL_SCHEMA_LLM_SQL"
+        candidate_context = None
+        if not prefer_full_schema:
+            candidate_context = build_candidate_context(query, self.schema_index, self.endpoint_catalog)
+            prefer_full_schema = (
+                candidate_context.get("confidence", 0.0) < 0.45
+                or candidate_context.get("score_margin", 0.0) < 0.15
+            )
+        schema_context = (
+            build_full_schema_context(self.schema_index, self.endpoint_catalog)
+            if prefer_full_schema
+            else candidate_context
+        )
+        mode = "full_schema" if prefer_full_schema else "candidate_guided"
+        generation = generate_sql_with_llm(query, schema_context or {}, mode=mode)
+        checkpoint_logger.add_checkpoint(
+            "checkpoint_llm_sql_generation",
+            stage="llm nl-to-sql",
+            technique=f"{mode} LLM SQL generation",
+            input_summary={
+                "strategy": strategy,
+                "candidate_confidence": candidate_context.get("confidence") if candidate_context else None,
+                "candidate_score_margin": candidate_context.get("score_margin") if candidate_context else None,
+            },
+            output={
+                "ok": generation.get("ok"),
+                "skipped": generation.get("skipped"),
+                "provider": generation.get("provider"),
+                "model": generation.get("model"),
+                "mode": generation.get("mode"),
+                "sql": generation.get("sql"),
+                "error": generation.get("error"),
+            },
+            effect="uses a real LLM for NL-to-SQL when credentials are available",
+            correctness_role="generates SQL from retrieved schema context and records fallback when unavailable",
+            efficiency_role="uses candidate context first when confidence is sufficient",
+        )
+        sql = str(generation.get("sql") or "")
+        validation = self.sql_validator.validate(sql) if sql else ValidationResult(False, errors=["No SQL generated."])
+        checkpoint_logger.add_checkpoint(
+            "checkpoint_llm_sql_validation",
+            stage="llm sql validation",
+            technique="SQL safety and schema validation for LLM SQL",
+            input_summary={"sql": sql},
+            output=validation.to_dict(),
+            effect="validates LLM-generated SQL before execution",
+            correctness_role="blocks destructive SQL and unknown tables/columns",
+            efficiency_role="prevents wasted execution on invalid LLM output",
+        )
+        if sql and not validation.ok and not generation.get("skipped"):
+            repair = repair_sql_with_llm(query, sql, validation.errors, schema_context or {})
+            checkpoint_logger.add_checkpoint(
+                "checkpoint_llm_sql_repair",
+                stage="llm sql repair",
+                technique="one-shot LLM SQL repair",
+                input_summary={"bad_sql": sql, "validation_errors": validation.errors},
+                output={
+                    "ok": repair.get("ok"),
+                    "skipped": repair.get("skipped"),
+                    "sql": repair.get("sql"),
+                    "error": repair.get("error"),
+                },
+                effect="attempts one repair using validator feedback",
+                correctness_role="repairs schema or safety mistakes without executing invalid SQL",
+                efficiency_role="caps repair to one attempt",
+            )
+            if repair.get("ok") and repair.get("sql"):
+                sql = str(repair["sql"])
+                validation = self.sql_validator.validate(sql)
+
+        if strategy == "CANDIDATE_GUIDED_LLM_SQL" and (not validation.ok or not sql) and not generation.get("skipped"):
+            full_context = build_full_schema_context(self.schema_index, self.endpoint_catalog)
+            full_generation = generate_sql_with_llm(query, full_context, mode="full_schema")
+            checkpoint_logger.add_checkpoint(
+                "checkpoint_llm_sql_fallback",
+                stage="llm sql fallback",
+                technique="candidate-context to full-schema fallback",
+                input_summary={"candidate_validation": validation.to_dict()},
+                output={
+                    "fallback": "full_schema",
+                    "ok": full_generation.get("ok"),
+                    "skipped": full_generation.get("skipped"),
+                    "sql": full_generation.get("sql"),
+                    "error": full_generation.get("error"),
+                },
+                effect="uses full schema when candidate context is insufficient",
+                correctness_role="prevents candidate retrieval from becoming a hard constraint",
+                efficiency_role="only expands context after candidate failure/uncertainty",
+            )
+            if full_generation.get("ok") and full_generation.get("sql"):
+                sql = str(full_generation["sql"])
+                validation = self.sql_validator.validate(sql)
+
+        if not sql or not validation.ok:
+            checkpoint_logger.add_checkpoint(
+                "checkpoint_llm_sql_fallback",
+                stage="llm sql fallback",
+                technique="LLM SQL to deterministic backend fallback",
+                input_summary={"strategy": strategy, "validation": validation.to_dict()},
+                output={"fallback": "SQL_FIRST_API_VERIFY", "reason": generation.get("error") or validation.errors},
+                effect="keeps deterministic backend fully functional when LLM SQL is unavailable or invalid",
+                correctness_role="preserves validated SQL/API behavior",
+                efficiency_role="avoids repeated LLM retries",
+            )
+            return Plan(strategy, f"LLM SQL unavailable/invalid; fell back to SQL_FIRST_API_VERIFY. {fallback.rationale}", fallback.steps, fallback.optimizer_actions)
+
+        steps = [
+            PlanStep(
+                action="sql",
+                purpose=f"{strategy} validated LLM-generated SQL grounding.",
+                sql=sql,
+                allow_full_result=True,
+                family="llm_sql",
+            )
+        ]
+        if strategy == "LLM_SQL_FIRST_API_VERIFY" and analysis.api_need_decision.mode != API_SKIP:
+            steps.extend(
+                self.planner._api_steps(
+                    query,
+                    routing,
+                    metadata,
+                    templates=analysis.api_templates,
+                    allowed_families=analysis.api_need_decision.allowed_api_families,
+                )
+            )
+        return Plan(
+            strategy,
+            f"{strategy} used validated {mode} LLM SQL with deterministic validation and fallback policy.",
+            steps,
+            optimizer_actions=[],
+        )
 
 
 def slugify(text: str, max_length: int = 48) -> str:

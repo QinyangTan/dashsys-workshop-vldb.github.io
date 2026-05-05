@@ -1,0 +1,414 @@
+{
+  "failure_comparison": [
+    {
+      "delta": -0.0005,
+      "likely_reason": "optimized path uses validated templates/evidence policy/checkpoints",
+      "naive_final_score": 0.8355,
+      "optimized_final_score": 0.835,
+      "query": "Show me the IDs of failed dataflow runs",
+      "query_id": "example_004"
+    },
+    {
+      "delta": 0.013,
+      "likely_reason": "optimized path uses validated templates/evidence policy/checkpoints",
+      "naive_final_score": 0.7878,
+      "optimized_final_score": 0.8008,
+      "query": "How many merge policies are configured in this sandbox?",
+      "query_id": "example_020"
+    },
+    {
+      "delta": 0.013,
+      "likely_reason": "optimized path uses validated templates/evidence policy/checkpoints",
+      "naive_final_score": 0.8014,
+      "optimized_final_score": 0.8144,
+      "query": "How many segment definitions exist in this sandbox?",
+      "query_id": "example_022"
+    },
+    {
+      "delta": 0.0131,
+      "likely_reason": "optimized path uses validated templates/evidence policy/checkpoints",
+      "naive_final_score": 0.7947,
+      "optimized_final_score": 0.8078,
+      "query": "How many tags exist in this sandbox?",
+      "query_id": "example_015"
+    },
+    {
+      "delta": 0.0131,
+      "likely_reason": "optimized path uses validated templates/evidence policy/checkpoints",
+      "naive_final_score": 0.7978,
+      "optimized_final_score": 0.8109,
+      "query": "How many segment jobs are currently processing?",
+      "query_id": "example_026"
+    },
+    {
+      "delta": 0.0131,
+      "likely_reason": "optimized path uses validated templates/evidence policy/checkpoints",
+      "naive_final_score": 0.7969,
+      "optimized_final_score": 0.81,
+      "query": "Show ingestion record counts and batch success counts for the last 90 days.",
+      "query_id": "example_034"
+    },
+    {
+      "delta": 0.0134,
+      "likely_reason": "optimized path uses validated templates/evidence policy/checkpoints",
+      "naive_final_score": 0.7811,
+      "optimized_final_score": 0.7945,
+      "query": "How many batches have status 'success'?",
+      "query_id": "example_029"
+    },
+    {
+      "delta": 0.0135,
+      "likely_reason": "optimized path uses validated templates/evidence policy/checkpoints",
+      "naive_final_score": 0.7897,
+      "optimized_final_score": 0.8032,
+      "query": "Which tags belong to the category 'Uncategorized'?",
+      "query_id": "example_017"
+    },
+    {
+      "delta": 0.0135,
+      "likely_reason": "optimized path uses validated templates/evidence policy/checkpoints",
+      "naive_final_score": 0.7838,
+      "optimized_final_score": 0.7973,
+      "query": "What are the daily 'timeseries.ingestion.dataset.recordsuccess.count' values between '2026-03-15' and '2026-03-31'?",
+      "query_id": "example_033"
+    },
+    {
+      "delta": 0.0136,
+      "likely_reason": "optimized path uses validated templates/evidence policy/checkpoints",
+      "naive_final_score": 0.7937,
+      "optimized_final_score": 0.8073,
+      "query": "Show me the details of the tag named 'cool'.",
+      "query_id": "example_018"
+    }
+  ],
+  "improvement_vs_naive": [
+    {
+      "absolute_gain": 0.8733,
+      "metric": "SQL correctness",
+      "naive": 0.06,
+      "optimized": 0.9333,
+      "relative_gain": 14.555
+    },
+    {
+      "absolute_gain": 0.0049,
+      "metric": "API correctness",
+      "naive": 0.9742,
+      "optimized": 0.9791,
+      "relative_gain": 0.005
+    },
+    {
+      "absolute_gain": 0.0626,
+      "metric": "answer correctness",
+      "naive": 0.245,
+      "optimized": 0.3076,
+      "relative_gain": 0.2555
+    },
+    {
+      "absolute_gain": 0.1864,
+      "metric": "overall correctness",
+      "naive": 0.4879,
+      "optimized": 0.6743,
+      "relative_gain": 0.382
+    },
+    {
+      "absolute_gain": 0.1957,
+      "metric": "final score",
+      "naive": 0.4533,
+      "optimized": 0.649,
+      "relative_gain": 0.4317
+    },
+    {
+      "absolute_gain": -0.6572,
+      "metric": "tool calls",
+      "naive": 2.1143,
+      "optimized": 1.4571,
+      "relative_gain": -0.3108
+    },
+    {
+      "absolute_gain": -124.1715,
+      "metric": "tokens",
+      "naive": 975.9429,
+      "optimized": 851.7714,
+      "relative_gain": -0.1272
+    },
+    {
+      "absolute_gain": -0.0074,
+      "metric": "runtime",
+      "naive": 0.0178,
+      "optimized": 0.0104,
+      "relative_gain": -0.4157
+    }
+  ],
+  "llm_baseline": {
+    "reason": "OPENAI_API_KEY is not set",
+    "rows": [],
+    "skipped": true,
+    "systems": [
+      "REAL_LLM_TWO_TOOLS_BASELINE",
+      "LLM_CONTROLLER_OPTIMIZED_AGENT"
+    ]
+  },
+  "mermaid": "flowchart LR\n  A[User Prompt] --> B[Naive LLM]\n  B --> C[execute_sql / call_api]\n  C --> D[Final Answer]\n  A --> E[Prompt Router]\n  E --> F[Candidate/Full Schema Context]\n  F --> G[LLM NL-to-SQL or SQL_FIRST fallback]\n  G --> H[Validation / Repair]\n  H --> I[execute_sql / call_api]\n  I --> J[EvidenceBus]\n  J --> K[Answer Verification]\n  K --> L[Final Answer + Checkpoints + Dataflow + Trace]\n",
+  "normal_available": true,
+  "strict_available": true,
+  "systems": [
+    {
+      "description": "Real naive LLM with execute_sql/call_api only",
+      "llm_status": {
+        "applicable": true,
+        "reason": "OPENAI_API_KEY is not set",
+        "status": "skipped"
+      },
+      "normal": null,
+      "strict": null,
+      "system": "REAL_LLM_TWO_TOOLS_BASELINE"
+    },
+    {
+      "description": "Deterministic approximation of a broad LLM agent",
+      "llm_status": {
+        "applicable": false
+      },
+      "normal": {
+        "avg_answer_score": 0.461,
+        "avg_answer_time": 0.0013,
+        "avg_api_score": 0.9784,
+        "avg_correctness_score": 0.6707,
+        "avg_estimated_tokens": 975.9429,
+        "avg_execution_time": 0.0013,
+        "avg_final_score": 0.6361,
+        "avg_metadata_tokens": 5782.1714,
+        "avg_planning_time": 0.0001,
+        "avg_preprocessing_time": 0.0076,
+        "avg_prompt_tokens": 7759.2571,
+        "avg_runtime": 0.0179,
+        "avg_sql_score": 0.5971,
+        "avg_tool_call_count": 2.1143
+      },
+      "strict": {
+        "avg_answer_score": 0.245,
+        "avg_answer_time": 0.0013,
+        "avg_api_score": 0.9742,
+        "avg_correctness_score": 0.4879,
+        "avg_estimated_tokens": 975.9429,
+        "avg_execution_time": 0.0013,
+        "avg_final_score": 0.4533,
+        "avg_metadata_tokens": 5782.1714,
+        "avg_planning_time": 0.0001,
+        "avg_preprocessing_time": 0.0075,
+        "avg_prompt_tokens": 7759.2571,
+        "avg_runtime": 0.0178,
+        "avg_sql_score": 0.06,
+        "avg_tool_call_count": 2.1143
+      },
+      "system": "LLM_FREE_AGENT_BASELINE"
+    },
+    {
+      "description": "Local DB only",
+      "llm_status": {
+        "applicable": false
+      },
+      "normal": {
+        "avg_answer_score": 0.5114,
+        "avg_answer_time": 0.0009,
+        "avg_api_score": 0.1143,
+        "avg_correctness_score": 0.5763,
+        "avg_estimated_tokens": 708.4571,
+        "avg_execution_time": 0.0013,
+        "avg_final_score": 0.5578,
+        "avg_metadata_tokens": 819.1429,
+        "avg_planning_time": 0.0001,
+        "avg_preprocessing_time": 0.0049,
+        "avg_prompt_tokens": 1463.0,
+        "avg_runtime": 0.0113,
+        "avg_sql_score": 0.9714,
+        "avg_tool_call_count": 1.0
+      },
+      "strict": {
+        "avg_answer_score": 0.3044,
+        "avg_answer_time": 0.0009,
+        "avg_api_score": 0.0,
+        "avg_correctness_score": 0.2983,
+        "avg_estimated_tokens": 708.4571,
+        "avg_execution_time": 0.0013,
+        "avg_final_score": 0.2799,
+        "avg_metadata_tokens": 819.1429,
+        "avg_planning_time": 0.0001,
+        "avg_preprocessing_time": 0.0049,
+        "avg_prompt_tokens": 1463.0,
+        "avg_runtime": 0.0113,
+        "avg_sql_score": 0.9333,
+        "avg_tool_call_count": 1.0
+      },
+      "system": "SQL_ONLY_BASELINE"
+    },
+    {
+      "description": "Current deterministic optimized backend",
+      "llm_status": {
+        "applicable": false
+      },
+      "normal": {
+        "avg_answer_score": 0.5208,
+        "avg_answer_time": 0.0005,
+        "avg_api_score": 0.9864,
+        "avg_correctness_score": 0.8407,
+        "avg_estimated_tokens": 851.7714,
+        "avg_execution_time": 0.0004,
+        "avg_final_score": 0.8154,
+        "avg_metadata_tokens": 819.1429,
+        "avg_planning_time": 0.0003,
+        "avg_preprocessing_time": 0.0024,
+        "avg_prompt_tokens": 1463.0,
+        "avg_runtime": 0.0104,
+        "avg_sql_score": 0.9714,
+        "avg_tool_call_count": 1.4571
+      },
+      "strict": {
+        "avg_answer_score": 0.3076,
+        "avg_answer_time": 0.0005,
+        "avg_api_score": 0.9791,
+        "avg_correctness_score": 0.6743,
+        "avg_estimated_tokens": 851.7714,
+        "avg_execution_time": 0.0004,
+        "avg_final_score": 0.649,
+        "avg_metadata_tokens": 819.1429,
+        "avg_planning_time": 0.0003,
+        "avg_preprocessing_time": 0.0024,
+        "avg_prompt_tokens": 1463.0,
+        "avg_runtime": 0.0104,
+        "avg_sql_score": 0.9333,
+        "avg_tool_call_count": 1.4571
+      },
+      "system": "SQL_FIRST_API_VERIFY"
+    },
+    {
+      "description": "Optional candidate-context LLM SQL with fallback",
+      "llm_status": {
+        "applicable": false
+      },
+      "normal": null,
+      "strict": null,
+      "system": "CANDIDATE_GUIDED_LLM_SQL"
+    },
+    {
+      "description": "Optional full-schema LLM SQL with fallback",
+      "llm_status": {
+        "applicable": false
+      },
+      "normal": null,
+      "strict": null,
+      "system": "FULL_SCHEMA_LLM_SQL"
+    },
+    {
+      "description": "Optional LLM SQL plus deterministic API verification",
+      "llm_status": {
+        "applicable": false
+      },
+      "normal": null,
+      "strict": null,
+      "system": "LLM_SQL_FIRST_API_VERIFY"
+    },
+    {
+      "description": "Optional LLM controller with optimized backend tool",
+      "llm_status": {
+        "applicable": true,
+        "reason": "OPENAI_API_KEY is not set",
+        "status": "skipped"
+      },
+      "normal": null,
+      "strict": null,
+      "system": "LLM_CONTROLLER_OPTIMIZED_AGENT"
+    }
+  ],
+  "techniques": [
+    {
+      "active_in_naive_baseline": false,
+      "active_in_optimized_system": true,
+      "expected_effect": "keeps conceptual prompts out of the data pipeline and routes evidence prompts safely",
+      "technique": "prompt router"
+    },
+    {
+      "active_in_naive_baseline": false,
+      "active_in_optimized_system": true,
+      "expected_effect": "improves correctness, efficiency, or observability in the optimized path",
+      "technique": "query normalization"
+    },
+    {
+      "active_in_naive_baseline": false,
+      "active_in_optimized_system": true,
+      "expected_effect": "improves correctness, efficiency, or observability in the optimized path",
+      "technique": "token extraction"
+    },
+    {
+      "active_in_naive_baseline": false,
+      "active_in_optimized_system": true,
+      "expected_effect": "narrows schema/API context without deciding final SQL",
+      "technique": "candidate context retrieval"
+    },
+    {
+      "active_in_naive_baseline": false,
+      "active_in_optimized_system": true,
+      "expected_effect": "prevents retrieval misses from blocking NL-to-SQL",
+      "technique": "full-schema fallback"
+    },
+    {
+      "active_in_naive_baseline": true,
+      "active_in_optimized_system": true,
+      "expected_effect": "lets a real model generate SQL when credentials exist",
+      "technique": "LLM NL-to-SQL"
+    },
+    {
+      "active_in_naive_baseline": false,
+      "active_in_optimized_system": true,
+      "expected_effect": "improves correctness, efficiency, or observability in the optimized path",
+      "technique": "SQL/API templates"
+    },
+    {
+      "active_in_naive_baseline": false,
+      "active_in_optimized_system": true,
+      "expected_effect": "improves correctness, efficiency, or observability in the optimized path",
+      "technique": "plan optimizer"
+    },
+    {
+      "active_in_naive_baseline": false,
+      "active_in_optimized_system": true,
+      "expected_effect": "improves correctness, efficiency, or observability in the optimized path",
+      "technique": "evidence policy"
+    },
+    {
+      "active_in_naive_baseline": false,
+      "active_in_optimized_system": true,
+      "expected_effect": "improves correctness, efficiency, or observability in the optimized path",
+      "technique": "call budget"
+    },
+    {
+      "active_in_naive_baseline": false,
+      "active_in_optimized_system": true,
+      "expected_effect": "forwards exact SQL/API evidence into later steps",
+      "technique": "EvidenceBus"
+    },
+    {
+      "active_in_naive_baseline": false,
+      "active_in_optimized_system": true,
+      "expected_effect": "blocks unsupported final-answer claims",
+      "technique": "answer verifier"
+    },
+    {
+      "active_in_naive_baseline": false,
+      "active_in_optimized_system": true,
+      "expected_effect": "improves correctness, efficiency, or observability in the optimized path",
+      "technique": "answer reranker"
+    },
+    {
+      "active_in_naive_baseline": false,
+      "active_in_optimized_system": true,
+      "expected_effect": "improves correctness, efficiency, or observability in the optimized path",
+      "technique": "checkpoint visualization"
+    },
+    {
+      "active_in_naive_baseline": false,
+      "active_in_optimized_system": true,
+      "expected_effect": "improves correctness, efficiency, or observability in the optimized path",
+      "technique": "OpenAI trace export"
+    }
+  ]
+}

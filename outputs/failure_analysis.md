@@ -32,7 +32,7 @@ Rows are sorted from lowest final score to highest.
 | 26 | example_018 | SQL_ONLY_BASELINE | 0.5023 | 1.0000 | 0.0000 | 0.3993 | API_CALL_COUNT_MISMATCH | Emit the expected sequence of API calls or intentionally document why a call is skipped. |
 | 27 | example_023 | SQL_ONLY_BASELINE | 0.5041 | 1.0000 | 0.0000 | 0.4163 | API_CALL_COUNT_MISMATCH | Emit the expected sequence of API calls or intentionally document why a call is skipped. |
 | 28 | example_012 | SQL_ONLY_BASELINE | 0.5050 | 1.0000 | 0.0000 | 0.4163 | API_CALL_COUNT_MISMATCH | Emit the expected sequence of API calls or intentionally document why a call is skipped. |
-| 29 | example_000 | LLM_FREE_AGENT_BASELINE | 0.5063 | 0.0000 | 1.0000 | 0.7922 | SQL_COLUMN_MISMATCH | Align the selected projection/aliases with the requested fields and known gold-style columns. |
+| 29 | example_000 | LLM_FREE_AGENT_BASELINE | 0.5062 | 0.0000 | 1.0000 | 0.7922 | SQL_COLUMN_MISMATCH | Align the selected projection/aliases with the requested fields and known gold-style columns. |
 | 30 | example_029 | SQL_ONLY_BASELINE | 0.5084 | 1.0000 | 0.0000 | 0.4156 | API_CALL_COUNT_MISMATCH | Emit the expected sequence of API calls or intentionally document why a call is skipped. |
 | 31 | example_026 | SQL_ONLY_BASELINE | 0.5094 | 1.0000 | 0.0000 | 0.4218 | API_CALL_COUNT_MISMATCH | Emit the expected sequence of API calls or intentionally document why a call is skipped. |
 | 32 | example_034 | SQL_ONLY_BASELINE | 0.5123 | 1.0000 | 0.0000 | 0.4283 | API_CALL_COUNT_MISMATCH | Emit the expected sequence of API calls or intentionally document why a call is skipped. |
@@ -49,14 +49,14 @@ Rows are sorted from lowest final score to highest.
 | 43 | example_002 | SQL_ONLY_BASELINE | 0.5354 | 0.9000 | 0.0000 | 0.6419 | API_CALL_COUNT_MISMATCH | Emit the expected sequence of API calls or intentionally document why a call is skipped. |
 | 44 | example_010 | LLM_FREE_AGENT_BASELINE | 0.5587 | 0.0000 | 1.0000 | 0.9694 | SQL_COLUMN_MISMATCH | Align the selected projection/aliases with the requested fields and known gold-style columns. |
 | 45 | example_014 | DETERMINISTIC_ROUTER_SELECTED_METADATA | 0.5611 | 0.9000 | 0.0000 | 0.7283 | API_CALL_COUNT_MISMATCH | Emit the expected sequence of API calls or intentionally document why a call is skipped. |
-| 46 | example_014 | SQL_ONLY_BASELINE | 0.5612 | 0.9000 | 0.0000 | 0.7283 | API_CALL_COUNT_MISMATCH | Emit the expected sequence of API calls or intentionally document why a call is skipped. |
+| 46 | example_014 | SQL_ONLY_BASELINE | 0.5611 | 0.9000 | 0.0000 | 0.7283 | API_CALL_COUNT_MISMATCH | Emit the expected sequence of API calls or intentionally document why a call is skipped. |
 | 47 | example_005 | SQL_ONLY_BASELINE | 0.5799 | 1.0000 | 0.0000 | 0.6677 | API_CALL_COUNT_MISMATCH | Emit the expected sequence of API calls or intentionally document why a call is skipped. |
 | 48 | example_007 | DETERMINISTIC_ROUTER_SELECTED_METADATA | 0.5911 | 0.9000 | 0.0000 | 0.8333 | API_CALL_COUNT_MISMATCH | Emit the expected sequence of API calls or intentionally document why a call is skipped. |
 | 49 | example_007 | SQL_ONLY_BASELINE | 0.5911 | 0.9000 | 0.0000 | 0.8333 | API_CALL_COUNT_MISMATCH | Emit the expected sequence of API calls or intentionally document why a call is skipped. |
 | 50 | example_006 | SQL_ONLY_BASELINE | 0.6264 | 1.0000 | 0.0000 | 0.8204 | API_CALL_COUNT_MISMATCH | Emit the expected sequence of API calls or intentionally document why a call is skipped. |
 | 51 | example_010 | DETERMINISTIC_ROUTER_SELECTED_METADATA | 0.6367 | 0.9000 | 0.0000 | 0.9825 | API_CALL_COUNT_MISMATCH | Emit the expected sequence of API calls or intentionally document why a call is skipped. |
 | 52 | example_010 | SQL_ONLY_BASELINE | 0.6367 | 0.9000 | 0.0000 | 0.9825 | API_CALL_COUNT_MISMATCH | Emit the expected sequence of API calls or intentionally document why a call is skipped. |
-| 53 | example_021 | LLM_FREE_AGENT_BASELINE | 0.7014 | 1.0000 | 0.7200 | 0.4408 | API_CALL_COUNT_MISMATCH | Emit the expected sequence of API calls or intentionally document why a call is skipped. |
+| 53 | example_021 | LLM_FREE_AGENT_BASELINE | 0.7015 | 1.0000 | 0.7200 | 0.4408 | API_CALL_COUNT_MISMATCH | Emit the expected sequence of API calls or intentionally document why a call is skipped. |
 | 54 | example_017 | DETERMINISTIC_ROUTER_SELECTED_METADATA | 0.7284 | 1.0000 | 0.7000 | 0.4532 | API_CALL_COUNT_MISMATCH | Emit the expected sequence of API calls or intentionally document why a call is skipped. |
 | 55 | example_032 | LLM_FREE_AGENT_BASELINE | 0.7471 | 1.0000 | 1.0000 | 0.2736 | ANSWER_WRONG_FACT | Audit answer template field selection and avoid summarizing the wrong row/value. |
 | 56 | example_021 | DETERMINISTIC_ROUTER_SELECTED_METADATA | 0.7634 | 1.0000 | 0.8304 | 0.4408 | ANSWER_TOO_GENERIC | Add a query-family answer template that names concrete SQL/API evidence. |
@@ -1349,7 +1349,7 @@ Generated answer: Based on the SQL evidence, 1 audience(s) match: Gender: Male (
 
 Gold answer: Based on the evidence, one audience has been newly mapped to a destination in the last 3 months: **Gender: Male**, which was mapped to Amazon S3 on March 29, 2026. This is confirmed by both the SQL query showing the segment-to-destination mapping and the audit log entry recording the activation creation event.
 
-### example_000 / LLM_FREE_AGENT_BASELINE / 0.5063
+### example_000 / LLM_FREE_AGENT_BASELINE / 0.5062
 
 Query: When was the journey 'Birthday Message' published?
 
@@ -2001,7 +2001,7 @@ Generated answer: Based on the evidence provided, no entities were created by do
 
 Gold answer: Based on the evidence provided, no entities were created by download. The SQL query returned zero results, and the audit log shows only a Segment entity that was created by a user, not by a download process.
 
-### example_014 / SQL_ONLY_BASELINE / 0.5612
+### example_014 / SQL_ONLY_BASELINE / 0.5611
 
 Query: Show me all entities created by download
 
@@ -2283,7 +2283,7 @@ Generated answer: Based on the SQL query result, there are 0 XDM Experience Even
 
 Gold answer: Based on the SQL query result, there are **0 XDM Experience Event schemas enabled for profile** in your environment.
 
-### example_021 / LLM_FREE_AGENT_BASELINE / 0.7014
+### example_021 / LLM_FREE_AGENT_BASELINE / 0.7015
 
 Query: Show the default merge policy for schema class '_xdm.context.profile'.
 

@@ -67,6 +67,7 @@ class EvalHarness:
         strategies: list[str] | None = None,
         examples: list[EvalExample] | None = None,
         include_live_api_metrics: bool = False,
+        strict: bool = False,
     ) -> dict[str, Any]:
         strategies = strategies or STRATEGIES
         examples = examples if examples is not None else self.load_examples()
@@ -89,14 +90,23 @@ class EvalHarness:
                 generated_sql = first_generated_sql(trajectory)
                 generated_api = generated_api_calls(trajectory)
                 metadata_tokens, prompt_tokens = metadata_prompt_tokens(trajectory)
-                sql_score, sql_reason = score_sql(
-                    self.executor.db,
-                    generated_sql,
-                    example.gold_sql,
-                )
-                api_score, api_reason = score_api(generated_api, example.gold_api)
-                answer_score, answer_reason = score_answer(result["final_answer"], example.gold_answer)
-                correctness_score = 0.4 * sql_score + 0.3 * api_score + 0.3 * answer_score
+                if strict:
+                    sql_score, sql_reason = score_sql_strict(self.executor.db, generated_sql, example.gold_sql)
+                    api_score, api_reason = score_api_strict(generated_api, example.gold_api)
+                    answer_score, answer_reason = score_answer_strict(result["final_answer"], example.gold_answer)
+                    correctness_score, unscored_dimension_count = aggregate_strict_correctness(
+                        {"sql": sql_score, "api": api_score, "answer": answer_score}
+                    )
+                else:
+                    sql_score, sql_reason = score_sql(
+                        self.executor.db,
+                        generated_sql,
+                        example.gold_sql,
+                    )
+                    api_score, api_reason = score_api(generated_api, example.gold_api)
+                    answer_score, answer_reason = score_answer(result["final_answer"], example.gold_answer)
+                    correctness_score = 0.4 * sql_score + 0.3 * api_score + 0.3 * answer_score
+                    unscored_dimension_count = 0
                 efficiency_penalty = min(
                     1.0,
                     (trajectory.get("tool_call_count", 0) / 8)
@@ -109,9 +119,9 @@ class EvalHarness:
                         "query_id": example.query_id,
                         "strategy": strategy,
                         "query": example.query,
-                        "sql_score": round(sql_score, 4),
-                        "api_score": round(api_score, 4),
-                        "answer_score": round(answer_score, 4),
+                        "sql_score": round(sql_score, 4) if sql_score is not None else None,
+                        "api_score": round(api_score, 4) if api_score is not None else None,
+                        "answer_score": round(answer_score, 4) if answer_score is not None else None,
                         "correctness_score": round(correctness_score, 4),
                         "efficiency_penalty": round(efficiency_penalty, 4),
                         "final_score": round(final_score, 4),
@@ -131,14 +141,15 @@ class EvalHarness:
                         "sql_reason": sql_reason,
                         "api_reason": api_reason,
                         "answer_reason": answer_reason,
+                        "unscored_dimension_count": unscored_dimension_count,
                         "output_dir": result["output_dir"],
                     }
                 )
         summary = summarize_rows(rows, strategies)
-        payload = {"examples": len(examples), "strategies": strategies, "rows": rows, "summary": summary}
+        payload = {"examples": len(examples), "strategies": strategies, "rows": rows, "summary": summary, "strict": strict}
         if include_live_api_metrics:
             payload["live_api_metrics"] = compute_live_api_metrics(rows)
-        self._write_outputs(payload)
+        self._write_outputs(payload, strict=strict)
         return payload
 
     def _write_empty_results(self, strategies: list[str]) -> dict[str, Any]:
@@ -165,13 +176,14 @@ class EvalHarness:
         self._write_outputs(payload)
         return payload
 
-    def _write_outputs(self, payload: dict[str, Any]) -> None:
+    def _write_outputs(self, payload: dict[str, Any], *, strict: bool = False) -> None:
         self.config.outputs_dir.mkdir(parents=True, exist_ok=True)
-        (self.config.outputs_dir / "eval_results.json").write_text(
+        suffix = "_strict" if strict else ""
+        (self.config.outputs_dir / f"eval_results{suffix}.json").write_text(
             json.dumps(payload, indent=2, sort_keys=True, default=str),
             encoding="utf-8",
         )
-        csv_path = self.config.outputs_dir / "eval_results.csv"
+        csv_path = self.config.outputs_dir / f"eval_results{suffix}.csv"
         rows = payload.get("rows", [])
         with csv_path.open("w", encoding="utf-8", newline="") as handle:
             if rows:
@@ -182,7 +194,7 @@ class EvalHarness:
                 writer = csv.DictWriter(handle, fieldnames=["message"])
                 writer.writeheader()
                 writer.writerow({"message": payload["summary"]["message"]})
-        (self.config.outputs_dir / "strategy_comparison.md").write_text(
+        (self.config.outputs_dir / f"strategy_comparison{suffix}.md").write_text(
             render_strategy_comparison(payload),
             encoding="utf-8",
         )
@@ -399,6 +411,111 @@ def score_answer(generated_answer: str, gold_answer: str | None) -> tuple[float,
     return (score, "Fuzzy answer similarity.")
 
 
+def score_sql_strict(db: DuckDBDatabase, generated_sql: str | None, gold_sql: str | None) -> tuple[float | None, str]:
+    if not gold_sql:
+        return (None, "No gold SQL supplied; SQL dimension unscored in strict mode.")
+    if not generated_sql:
+        return (0.0, "No generated SQL while gold SQL exists.")
+    if normalize_sql(generated_sql) == normalize_sql(gold_sql):
+        return (1.0, "Normalized exact SQL match.")
+    generated_result = db.execute_sql(generated_sql)
+    gold_result = db.execute_sql(gold_sql)
+    if generated_result.get("ok") and gold_result.get("ok") and generated_result.get("rows") == gold_result.get("rows"):
+        return (0.9, "Strict semantic result match.")
+    return (0.0, "Strict SQL mismatch.")
+
+
+def score_api_strict(generated_calls: list[dict[str, Any]], gold_api: Any) -> tuple[float | None, str]:
+    gold_calls = extract_api_calls(gold_api)
+    if not gold_calls:
+        return (None, "No gold API supplied; API dimension unscored in strict mode.")
+    if not generated_calls:
+        return (0.0, "No generated API call while gold API exists.")
+    pair_scores = []
+    used_generated: set[int] = set()
+    for gold in gold_calls:
+        best_score = 0.0
+        best_index = -1
+        for index, generated in enumerate(generated_calls):
+            method_match = str(generated.get("method", "")).upper() == str(gold.get("method", "")).upper()
+            path_match = normalize_api_path(str(generated.get("path", ""))).lower() == normalize_api_path(str(gold.get("path", ""))).lower()
+            params = strict_param_score(generated.get("params", {}), gold.get("params", {}))
+            score = (0.35 if method_match else 0.0) + (0.45 if path_match else 0.0) + (0.2 * params)
+            if score > best_score:
+                best_score = score
+                best_index = index
+        pair_scores.append(best_score)
+        if best_index >= 0:
+            used_generated.add(best_index)
+    call_count_penalty = max(0.0, 1.0 - abs(len(generated_calls) - len(gold_calls)) / max(len(gold_calls), 1))
+    score = 0.85 * (sum(pair_scores) / len(gold_calls)) + 0.15 * call_count_penalty
+    return (round(score, 4), f"Strict API method/path/required-param/call-count score: {score:.4f}.")
+
+
+def strict_param_score(generated_params: Any, gold_params: Any) -> float:
+    generated = normalize_params(generated_params)
+    gold = normalize_params(gold_params)
+    if not gold:
+        return 1.0
+    if not generated:
+        return 0.0
+    matches = 0
+    for key, gold_value in gold.items():
+        generated_key = next((candidate for candidate in generated if normalize_param_key(candidate) == normalize_param_key(key)), None)
+        if generated_key is None:
+            continue
+        if param_value_similarity(generated[generated_key], gold_value) >= 0.9:
+            matches += 1
+    return matches / len(gold)
+
+
+def score_answer_strict(generated_answer: str, gold_answer: str | None) -> tuple[float | None, str]:
+    if not gold_answer:
+        return (None, "No gold answer supplied; answer dimension unscored in strict mode.")
+    generated = generated_answer.lower().strip()
+    gold = gold_answer.lower().strip()
+    if generated == gold:
+        return (1.0, "Exact answer match.")
+    if gold in generated or generated in gold:
+        return (0.85, "Substring answer match capped at 0.85.")
+    score = 0.0
+    generated_numbers = set(re.findall(r"-?\d+(?:\.\d+)?", generated))
+    gold_numbers = set(re.findall(r"-?\d+(?:\.\d+)?", gold))
+    if gold_numbers:
+        score += 0.25 * (len(generated_numbers & gold_numbers) / len(gold_numbers))
+    generated_dates = set(re.findall(r"\b20\d{2}-\d{2}-\d{2}\b", generated))
+    gold_dates = set(re.findall(r"\b20\d{2}-\d{2}-\d{2}\b", gold))
+    if gold_dates:
+        score += 0.2 * (len(generated_dates & gold_dates) / len(gold_dates))
+    status_words = {"published", "draft", "active", "inactive", "failed", "succeeded", "not", "no", "yes", "null", "unavailable"}
+    gold_status = {word for word in status_words if word in gold}
+    generated_status = {word for word in status_words if word in generated}
+    if gold_status:
+        score += 0.25 * (len(generated_status & gold_status) / len(gold_status))
+    generated_tokens = set(re.findall(r"[a-z0-9_]+", generated)) - status_words
+    gold_tokens = set(re.findall(r"[a-z0-9_]+", gold)) - status_words
+    if gold_tokens:
+        score += 0.05 * (len(generated_tokens & gold_tokens) / len(gold_tokens))
+    try:
+        from rapidfuzz.fuzz import ratio  # type: ignore
+
+        fuzzy = ratio(generated, gold) / 100
+    except Exception:
+        fuzzy = SequenceMatcher(None, generated, gold).ratio()
+    score += min(0.25, 0.25 * fuzzy)
+    return (round(min(score, 0.85), 4), "Strict answer score from required facts plus capped fuzzy similarity.")
+
+
+def aggregate_strict_correctness(scores: dict[str, float | None]) -> tuple[float, int]:
+    weights = {"sql": 0.4, "api": 0.3, "answer": 0.3}
+    scored = {key: value for key, value in scores.items() if value is not None}
+    if not scored:
+        return 0.0, len(scores)
+    weight_sum = sum(weights[key] for key in scored)
+    correctness = sum((scores[key] or 0.0) * weights[key] for key in scored) / weight_sum
+    return correctness, len(scores) - len(scored)
+
+
 def count_validation_failures(trajectory: dict[str, Any]) -> int:
     failures = 0
     for step in trajectory.get("steps", []):
@@ -502,8 +619,17 @@ def summarize_rows(rows: list[dict[str, Any]], strategies: list[str]) -> dict[st
 
 
 def avg(values: Any) -> float:
-    values = list(values)
+    values = [value for value in values if value is not None]
     return round(sum(values) / len(values), 4) if values else 0.0
+
+
+def fmt_score(value: Any, digits: int = 4) -> str:
+    if value is None:
+        return "unscored"
+    try:
+        return f"{float(value):.{digits}f}"
+    except Exception:
+        return str(value)
 
 
 def recommend_next_focus(best_overall: str) -> list[str]:
@@ -539,10 +665,10 @@ def render_strategy_comparison(payload: dict[str, Any]) -> str:
     ]
     for strategy, metrics in summary.get("by_strategy", {}).items():
         lines.append(
-            "| {strategy} | {correctness:.4f} | {final:.4f} | {tools:.2f} | {runtime:.4f} | {tokens:.0f} |".format(
+            "| {strategy} | {correctness} | {final} | {tools:.2f} | {runtime:.4f} | {tokens:.0f} |".format(
                 strategy=strategy,
-                correctness=metrics["avg_correctness_score"],
-                final=metrics["avg_final_score"],
+                correctness=fmt_score(metrics["avg_correctness_score"]),
+                final=fmt_score(metrics["avg_final_score"]),
                 tools=metrics["avg_tool_call_count"],
                 runtime=metrics["avg_runtime"],
                 tokens=metrics["avg_estimated_tokens"],

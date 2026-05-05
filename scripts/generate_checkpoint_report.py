@@ -17,6 +17,7 @@ from dashagent.config import Config
 
 
 CHECKPOINT_TECHNIQUES = {
+    "checkpoint_00_prompt_router": ("prompt routing policy", "chooses direct vs SQL/API evidence path", "skips tools for safe conceptual prompts"),
     "checkpoint_01_raw_query": ("raw user query capture", "preserves the original query", "starts a reproducible trace"),
     "checkpoint_02_query_normalization": ("data cleaning / query normalization", "improves matching robustness", "reduces reparsing"),
     "checkpoint_03_query_tokens": ("domain-aware tokenization/entity extraction", "extracts names/IDs/dates/metrics", "shares token structure"),

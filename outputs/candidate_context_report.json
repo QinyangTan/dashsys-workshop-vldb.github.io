@@ -1,0 +1,2761 @@
+{
+  "examples": 35,
+  "rows": [
+    {
+      "candidate_apis": [
+        {
+          "id": "journey_list",
+          "method": "GET",
+          "path": "/ajo/journey",
+          "score": 1.36,
+          "use_when": "List or inspect Journey Optimizer journeys/campaigns, statuses, published/live/inactive/draft state."
+        },
+        {
+          "id": "schema_registry_schema",
+          "method": "GET",
+          "path": "/data/foundation/schemaregistry/tenant/schemas/{schema_id}",
+          "score": 0.18,
+          "use_when": "Fetch schema details when a concrete schema ID is known."
+        },
+        {
+          "id": "unified_tag_detail",
+          "method": "GET",
+          "path": "/unifiedtags/tags/{tag_id}",
+          "score": 0.18,
+          "use_when": "Fetch tag details when a tag ID is known."
+        }
+      ],
+      "candidate_context_tokens": 484,
+      "candidate_join_hints": [
+        {
+          "path": "dim_campaign.CAMPAIGNID->br_campaign_segment.CAMPAIGNID",
+          "reason": "Curated: Campaign to segment bridge.",
+          "score": 0.7
+        }
+      ],
+      "candidate_tables": [
+        "dim_campaign"
+      ],
+      "confidence": 0.8667,
+      "full_schema_context_tokens": 4682,
+      "gold_api_paths": [],
+      "gold_tables": [
+        "dim_campaign"
+      ],
+      "query": "When was the journey 'Birthday Message' published?",
+      "query_id": "example_000",
+      "score_margin": 2.0,
+      "table_recall_at_3": 1.0,
+      "table_recall_at_5": 1.0,
+      "used_gold_patterns": false
+    },
+    {
+      "api_recall_at_3": 1.0,
+      "api_recall_at_5": 1.0,
+      "candidate_apis": [
+        {
+          "id": "journey_list",
+          "method": "GET",
+          "path": "/ajo/journey",
+          "score": 1.36,
+          "use_when": "List or inspect Journey Optimizer journeys/campaigns, statuses, published/live/inactive/draft state."
+        }
+      ],
+      "candidate_context_tokens": 337,
+      "candidate_join_hints": [
+        {
+          "path": "dim_campaign.CAMPAIGNID->br_campaign_segment.CAMPAIGNID",
+          "reason": "Curated: Campaign to segment bridge.",
+          "score": 0.7
+        }
+      ],
+      "candidate_tables": [
+        "dim_campaign"
+      ],
+      "confidence": 0.8667,
+      "full_schema_context_tokens": 4682,
+      "gold_api_paths": [
+        "/ajo/journey"
+      ],
+      "gold_tables": [
+        "DIM_CAMPAIGN"
+      ],
+      "query": "Give me inactive journeys",
+      "query_id": "example_001",
+      "score_margin": 2.0,
+      "table_recall_at_3": 0.0,
+      "table_recall_at_5": 0.0,
+      "used_gold_patterns": false
+    },
+    {
+      "api_recall_at_3": 1.0,
+      "api_recall_at_5": 1.0,
+      "candidate_apis": [
+        {
+          "id": "journey_list",
+          "method": "GET",
+          "path": "/ajo/journey",
+          "score": 1.36,
+          "use_when": "List or inspect Journey Optimizer journeys/campaigns, statuses, published/live/inactive/draft state."
+        },
+        {
+          "id": "catalog_batches",
+          "method": "GET",
+          "path": "/data/foundation/catalog/batches",
+          "score": 0.18,
+          "use_when": "List/count catalog batches."
+        },
+        {
+          "id": "catalog_datasets",
+          "method": "GET",
+          "path": "/data/foundation/catalog/dataSets",
+          "score": 0.18,
+          "use_when": "List datasets and dataset metadata."
+        },
+        {
+          "id": "export_batch_failed",
+          "method": "GET",
+          "path": "/data/foundation/export/batches/{batch_id}/failed",
+          "score": 0.18,
+          "use_when": "List failed files for an export batch."
+        },
+        {
+          "id": "export_batch_files",
+          "method": "GET",
+          "path": "/data/foundation/export/batches/{batch_id}/files",
+          "score": 0.18,
+          "use_when": "List files available for download in an export batch."
+        }
+      ],
+      "candidate_context_tokens": 556,
+      "candidate_join_hints": [
+        {
+          "path": "dim_campaign.CAMPAIGNID->br_campaign_segment.CAMPAIGNID",
+          "reason": "Curated: Campaign to segment bridge.",
+          "score": 0.7
+        }
+      ],
+      "candidate_tables": [
+        "dim_campaign"
+      ],
+      "confidence": 0.8667,
+      "full_schema_context_tokens": 4682,
+      "gold_api_paths": [
+        "/ajo/journey"
+      ],
+      "gold_tables": [
+        "DIM_CAMPAIGN"
+      ],
+      "query": "List all journeys",
+      "query_id": "example_002",
+      "score_margin": 2.0,
+      "table_recall_at_3": 0.0,
+      "table_recall_at_5": 0.0,
+      "used_gold_patterns": false
+    },
+    {
+      "api_recall_at_3": 0.0,
+      "api_recall_at_5": 0.5,
+      "candidate_apis": [
+        {
+          "id": "audit_events",
+          "method": "GET",
+          "path": "/data/foundation/audit/events",
+          "score": 1.36,
+          "use_when": "Audit events for destination/dataset/entity changes."
+        },
+        {
+          "id": "audit_events_short",
+          "method": "GET",
+          "path": "/audit/events",
+          "score": 1.18,
+          "use_when": "Gold-example shorthand for audit events."
+        },
+        {
+          "id": "merge_policies",
+          "method": "GET",
+          "path": "/data/core/ups/config/mergePolicies",
+          "score": 0.72,
+          "use_when": "List/count Real-Time Customer Profile merge policies."
+        },
+        {
+          "id": "segment_jobs",
+          "method": "GET",
+          "path": "/data/core/ups/segment/jobs",
+          "score": 0.72,
+          "use_when": "List segment evaluation jobs and statuses."
+        },
+        {
+          "id": "ups_audiences",
+          "method": "GET",
+          "path": "/data/core/ups/audiences",
+          "score": 0.72,
+          "use_when": "List or look up Real-Time CDP audiences and audience metadata/counts."
+        }
+      ],
+      "candidate_context_tokens": 1409,
+      "candidate_join_hints": [
+        {
+          "path": "br_campaign_segment.SEGMENTID->hkg_br_base_segment_used_by_dependent_segment.SEGMENTID",
+          "reason": "Matching ID-like column name.",
+          "score": 1.9
+        },
+        {
+          "path": "dim_segment.SEGMENTID->hkg_br_base_segment_used_by_dependent_segment.SEGMENTID",
+          "reason": "Matching ID-like column name.",
+          "score": 1.9
+        },
+        {
+          "path": "hkg_br_base_segment_used_by_dependent_segment.SEGMENTID->hkg_br_collection_segment.SEGMENTID",
+          "reason": "Matching ID-like column name.",
+          "score": 1.9
+        },
+        {
+          "path": "hkg_br_base_segment_used_by_dependent_segment.SEGMENTID->hkg_br_segment_property.SEGMENTID",
+          "reason": "Matching ID-like column name.",
+          "score": 1.9
+        },
+        {
+          "path": "hkg_br_base_segment_used_by_dependent_segment.SEGMENTID->hkg_br_segment_target.SEGMENTID",
+          "reason": "Matching ID-like column name.",
+          "score": 1.9
+        },
+        {
+          "path": "br_campaign_segment.SEGMENTID->dim_segment.SEGMENTID",
+          "reason": "Matching ID-like column name.",
+          "score": 1.8
+        },
+        {
+          "path": "br_campaign_segment.SEGMENTID->hkg_br_collection_segment.SEGMENTID",
+          "reason": "Matching ID-like column name.",
+          "score": 1.8
+        },
+        {
+          "path": "br_campaign_segment.SEGMENTID->hkg_br_segment_property.SEGMENTID",
+          "reason": "Matching ID-like column name.",
+          "score": 1.8
+        }
+      ],
+      "candidate_tables": [
+        "dim_segment",
+        "hkg_br_segment_target",
+        "dim_collection",
+        "dim_target",
+        "hkg_br_base_segment_used_by_dependent_segment"
+      ],
+      "confidence": 0.85,
+      "full_schema_context_tokens": 4682,
+      "gold_api_paths": [
+        "/data/core/ups/audiences",
+        "/data/foundation/flowservice/flows"
+      ],
+      "gold_tables": [
+        "dim_segment",
+        "dim_target",
+        "hkg_br_segment_target"
+      ],
+      "query": "List all segment audiences connected to the destination named 'SMS Opt-In', showing audienceId, name, totalProfiles, createdTime, updatedTime, and used in other audience count for each audience. Remove any row limit from the results.",
+      "query_id": "example_003",
+      "score_margin": 0.0,
+      "table_recall_at_3": 0.6667,
+      "table_recall_at_5": 1.0,
+      "used_gold_patterns": false
+    },
+    {
+      "candidate_apis": [
+        {
+          "id": "flowservice_runs",
+          "method": "GET",
+          "path": "/data/foundation/flowservice/runs",
+          "score": 0.54,
+          "use_when": "Inspect dataflow run status, failed/succeeded runs, and recent execution state."
+        },
+        {
+          "id": "audit_events",
+          "method": "GET",
+          "path": "/data/foundation/audit/events",
+          "score": 0.18,
+          "use_when": "Audit events for destination/dataset/entity changes."
+        },
+        {
+          "id": "export_batch_failed",
+          "method": "GET",
+          "path": "/data/foundation/export/batches/{batch_id}/failed",
+          "score": 0.18,
+          "use_when": "List failed files for an export batch."
+        },
+        {
+          "id": "flowservice_flows",
+          "method": "GET",
+          "path": "/data/foundation/flowservice/flows",
+          "score": 0.18,
+          "use_when": "List destination/dataflow/activation flows and flow metadata."
+        }
+      ],
+      "candidate_context_tokens": 664,
+      "candidate_join_hints": [
+        {
+          "path": "dim_connector.SOURCEID->hkg_br_source_collection.SOURCEID",
+          "reason": "Matching ID-like column name.",
+          "score": 0.7
+        },
+        {
+          "path": "dim_target.TARGETID->hkg_br_segment_target.TARGETID",
+          "reason": "Curated: Segment to target bridge.",
+          "score": 0.7
+        },
+        {
+          "path": "dim_target.TARGETID->hkg_br_target_property.TARGETID",
+          "reason": "Matching ID-like column name.",
+          "score": 0.7
+        }
+      ],
+      "candidate_tables": [
+        "dim_connector",
+        "dim_target"
+      ],
+      "confidence": 0.6667,
+      "full_schema_context_tokens": 4682,
+      "gold_api_paths": [],
+      "gold_tables": [
+        "DIM_CONNECTOR"
+      ],
+      "query": "Show me the IDs of failed dataflow runs",
+      "query_id": "example_004",
+      "score_margin": 0.0,
+      "table_recall_at_3": 0.0,
+      "table_recall_at_5": 0.0,
+      "used_gold_patterns": false
+    },
+    {
+      "api_recall_at_3": 1.0,
+      "api_recall_at_5": 1.0,
+      "candidate_apis": [
+        {
+          "id": "export_batch_files",
+          "method": "GET",
+          "path": "/data/foundation/export/batches/{batch_id}/files",
+          "score": 0.72,
+          "use_when": "List files available for download in an export batch."
+        },
+        {
+          "id": "export_batch_failed",
+          "method": "GET",
+          "path": "/data/foundation/export/batches/{batch_id}/failed",
+          "score": 0.54,
+          "use_when": "List failed files for an export batch."
+        },
+        {
+          "id": "flowservice_flows",
+          "method": "GET",
+          "path": "/data/foundation/flowservice/flows",
+          "score": 0.54,
+          "use_when": "List destination/dataflow/activation flows and flow metadata."
+        },
+        {
+          "id": "audit_events",
+          "method": "GET",
+          "path": "/data/foundation/audit/events",
+          "score": 0.36,
+          "use_when": "Audit events for destination/dataset/entity changes."
+        },
+        {
+          "id": "catalog_datasets",
+          "method": "GET",
+          "path": "/data/foundation/catalog/dataSets",
+          "score": 0.36,
+          "use_when": "List datasets and dataset metadata."
+        }
+      ],
+      "candidate_context_tokens": 1265,
+      "candidate_join_hints": [
+        {
+          "path": "br_campaign_segment.SEGMENTID->hkg_br_base_segment_used_by_dependent_segment.SEGMENTID",
+          "reason": "Matching ID-like column name.",
+          "score": 0.9
+        },
+        {
+          "path": "dim_segment.SEGMENTID->hkg_br_base_segment_used_by_dependent_segment.DEPENDENTSEGMENTID",
+          "reason": "Foreign-key-looking column references table root.",
+          "score": 0.9
+        },
+        {
+          "path": "dim_segment.SEGMENTID->hkg_br_base_segment_used_by_dependent_segment.SEGMENTID",
+          "reason": "Matching ID-like column name.",
+          "score": 0.9
+        },
+        {
+          "path": "hkg_br_base_segment_used_by_dependent_segment.SEGMENTID->hkg_br_collection_segment.SEGMENTID",
+          "reason": "Matching ID-like column name.",
+          "score": 0.9
+        },
+        {
+          "path": "hkg_br_base_segment_used_by_dependent_segment.SEGMENTID->hkg_br_segment_property.SEGMENTID",
+          "reason": "Matching ID-like column name.",
+          "score": 0.9
+        },
+        {
+          "path": "hkg_br_base_segment_used_by_dependent_segment.SEGMENTID->hkg_br_segment_target.SEGMENTID",
+          "reason": "Matching ID-like column name.",
+          "score": 0.9
+        },
+        {
+          "path": "dim_connector.SOURCEID->hkg_br_source_collection.SOURCEID",
+          "reason": "Matching ID-like column name.",
+          "score": 0.8
+        },
+        {
+          "path": "dim_target.TARGETID->hkg_br_target_property.TARGETID",
+          "reason": "Matching ID-like column name.",
+          "score": 0.8
+        }
+      ],
+      "candidate_tables": [
+        "dim_connector",
+        "dim_target",
+        "hkg_br_base_segment_used_by_dependent_segment"
+      ],
+      "confidence": 0.6667,
+      "full_schema_context_tokens": 4682,
+      "gold_api_paths": [
+        "/data/foundation/flowservice/flows"
+      ],
+      "gold_tables": [
+        "dim_target"
+      ],
+      "query": "Export a list of all destinations in the b2b-prod sandbox, sorted by most recently modified, including all columns associated with each destination, and include the 'modified' column for validation.",
+      "query_id": "example_005",
+      "score_margin": 0.0,
+      "table_recall_at_3": 1.0,
+      "table_recall_at_5": 1.0,
+      "used_gold_patterns": false
+    },
+    {
+      "api_recall_at_3": 0.0,
+      "api_recall_at_5": 0.0,
+      "candidate_apis": [
+        {
+          "id": "export_batch_files",
+          "method": "GET",
+          "path": "/data/foundation/export/batches/{batch_id}/files",
+          "score": 0.54,
+          "use_when": "List files available for download in an export batch."
+        },
+        {
+          "id": "audit_events",
+          "method": "GET",
+          "path": "/data/foundation/audit/events",
+          "score": 0.36,
+          "use_when": "Audit events for destination/dataset/entity changes."
+        },
+        {
+          "id": "audit_events_short",
+          "method": "GET",
+          "path": "/audit/events",
+          "score": 0.36,
+          "use_when": "Gold-example shorthand for audit events."
+        },
+        {
+          "id": "catalog_batch_detail",
+          "method": "GET",
+          "path": "/data/foundation/catalog/batches/{batch_id}",
+          "score": 0.36,
+          "use_when": "Fetch batch details by ID."
+        },
+        {
+          "id": "catalog_batches",
+          "method": "GET",
+          "path": "/data/foundation/catalog/batches",
+          "score": 0.36,
+          "use_when": "List/count catalog batches."
+        }
+      ],
+      "candidate_context_tokens": 1101,
+      "candidate_join_hints": [
+        {
+          "path": "dim_blueprint.BLUEPRINTID->hkg_br_blueprint_collection.BLUEPRINTID",
+          "reason": "Matching ID-like column name.",
+          "score": 1.4
+        },
+        {
+          "path": "dim_collection.COLLECTIONID->hkg_br_blueprint_collection.COLLECTIONID",
+          "reason": "Matching ID-like column name.",
+          "score": 1.4
+        },
+        {
+          "path": "dim_blueprint.BLUEPRINTID->hkg_br_blueprint_property.BLUEPRINTID",
+          "reason": "Matching ID-like column name.",
+          "score": 0.7
+        },
+        {
+          "path": "dim_collection.COLLECTIONID->hkg_br_collection_property.COLLECTIONID",
+          "reason": "Matching ID-like column name.",
+          "score": 0.7
+        },
+        {
+          "path": "dim_collection.COLLECTIONID->hkg_br_collection_segment.COLLECTIONID",
+          "reason": "Matching ID-like column name.",
+          "score": 0.7
+        },
+        {
+          "path": "dim_collection.COLLECTIONID->hkg_br_source_collection.COLLECTIONID",
+          "reason": "Matching ID-like column name.",
+          "score": 0.7
+        },
+        {
+          "path": "hkg_br_blueprint_collection.COLLECTIONID->hkg_br_collection_property.COLLECTIONID",
+          "reason": "Matching ID-like column name.",
+          "score": 0.7
+        },
+        {
+          "path": "hkg_br_blueprint_collection.COLLECTIONID->hkg_br_collection_segment.COLLECTIONID",
+          "reason": "Matching ID-like column name.",
+          "score": 0.7
+        }
+      ],
+      "candidate_tables": [
+        "dim_blueprint",
+        "dim_collection",
+        "hkg_br_blueprint_collection"
+      ],
+      "confidence": 0.6667,
+      "full_schema_context_tokens": 4682,
+      "gold_api_paths": [
+        "/data/foundation/catalog/dataSets",
+        "/data/foundation/schemaregistry/tenant/schemas/{schema_id}"
+      ],
+      "gold_tables": [
+        "dim_blueprint",
+        "dim_collection",
+        "hkg_br_blueprint_collection"
+      ],
+      "query": "How many datasets have been ingested using the same schema in the prod sandbox?",
+      "query_id": "example_006",
+      "score_margin": 0.0,
+      "table_recall_at_3": 1.0,
+      "table_recall_at_5": 1.0,
+      "used_gold_patterns": false
+    },
+    {
+      "api_recall_at_3": 0.0,
+      "api_recall_at_5": 0.0,
+      "candidate_apis": [
+        {
+          "id": "catalog_batches",
+          "method": "GET",
+          "path": "/data/foundation/catalog/batches",
+          "score": 0.54,
+          "use_when": "List/count catalog batches."
+        },
+        {
+          "id": "catalog_datasets",
+          "method": "GET",
+          "path": "/data/foundation/catalog/dataSets",
+          "score": 0.54,
+          "use_when": "List datasets and dataset metadata."
+        },
+        {
+          "id": "export_batch_failed",
+          "method": "GET",
+          "path": "/data/foundation/export/batches/{batch_id}/failed",
+          "score": 0.54,
+          "use_when": "List failed files for an export batch."
+        },
+        {
+          "id": "export_batch_files",
+          "method": "GET",
+          "path": "/data/foundation/export/batches/{batch_id}/files",
+          "score": 0.54,
+          "use_when": "List files available for download in an export batch."
+        },
+        {
+          "id": "schema_registry_schemas",
+          "method": "GET",
+          "path": "/data/foundation/schemaregistry/tenant/schemas",
+          "score": 0.54,
+          "use_when": "List tenant schemas or filter schema registry metadata."
+        }
+      ],
+      "candidate_context_tokens": 668,
+      "candidate_join_hints": [],
+      "candidate_tables": [
+        "br_campaign_segment",
+        "dim_property",
+        "dim_target",
+        "hkg_br_base_segment_used_by_dependent_segment",
+        "hkg_br_blueprint_collection"
+      ],
+      "confidence": 0.0833,
+      "full_schema_context_tokens": 4682,
+      "gold_api_paths": [
+        "/data/foundation/schemaregistry/tenant/schemas/{schema_id}"
+      ],
+      "gold_tables": [
+        "dim_blueprint",
+        "dim_collection",
+        "hkg_br_blueprint_collection"
+      ],
+      "query": "List all datasets that use the schema 'hkg_adls_profile_count_history'.",
+      "query_id": "example_007",
+      "score_margin": 0.0,
+      "table_recall_at_3": 0.0,
+      "table_recall_at_5": 0.3333,
+      "used_gold_patterns": false
+    },
+    {
+      "candidate_apis": [
+        {
+          "id": "audit_events",
+          "method": "GET",
+          "path": "/data/foundation/audit/events",
+          "score": 0.18,
+          "use_when": "Audit events for destination/dataset/entity changes."
+        },
+        {
+          "id": "audit_events_short",
+          "method": "GET",
+          "path": "/audit/events",
+          "score": 0.18,
+          "use_when": "Gold-example shorthand for audit events."
+        },
+        {
+          "id": "export_batch_failed",
+          "method": "GET",
+          "path": "/data/foundation/export/batches/{batch_id}/failed",
+          "score": 0.18,
+          "use_when": "List failed files for an export batch."
+        },
+        {
+          "id": "export_batch_files",
+          "method": "GET",
+          "path": "/data/foundation/export/batches/{batch_id}/files",
+          "score": 0.18,
+          "use_when": "List files available for download in an export batch."
+        },
+        {
+          "id": "schema_registry_schema",
+          "method": "GET",
+          "path": "/data/foundation/schemaregistry/tenant/schemas/{schema_id}",
+          "score": 0.18,
+          "use_when": "Fetch schema details when a concrete schema ID is known."
+        }
+      ],
+      "candidate_context_tokens": 1143,
+      "candidate_join_hints": [
+        {
+          "path": "dim_collection.COLLECTIONID->hkg_br_collection_property.COLLECTIONID",
+          "reason": "Matching ID-like column name.",
+          "score": 1.4
+        },
+        {
+          "path": "dim_segment.SEGMENTID->hkg_br_segment_property.SEGMENTID",
+          "reason": "Matching ID-like column name.",
+          "score": 1.4
+        },
+        {
+          "path": "br_campaign_segment.SEGMENTID->dim_segment.SEGMENTID",
+          "reason": "Matching ID-like column name.",
+          "score": 0.7
+        },
+        {
+          "path": "br_campaign_segment.SEGMENTID->hkg_br_segment_property.SEGMENTID",
+          "reason": "Matching ID-like column name.",
+          "score": 0.7
+        },
+        {
+          "path": "dim_collection.COLLECTIONID->hkg_br_blueprint_collection.COLLECTIONID",
+          "reason": "Matching ID-like column name.",
+          "score": 0.7
+        },
+        {
+          "path": "dim_collection.COLLECTIONID->hkg_br_collection_segment.COLLECTIONID",
+          "reason": "Matching ID-like column name.",
+          "score": 0.7
+        },
+        {
+          "path": "dim_collection.COLLECTIONID->hkg_br_source_collection.COLLECTIONID",
+          "reason": "Matching ID-like column name.",
+          "score": 0.7
+        },
+        {
+          "path": "dim_segment.SEGMENTID->br_campaign_segment.SEGMENTID",
+          "reason": "Curated: Campaign to segment bridge.",
+          "score": 0.7
+        }
+      ],
+      "candidate_tables": [
+        "dim_collection",
+        "dim_segment",
+        "hkg_br_collection_property",
+        "hkg_br_segment_property"
+      ],
+      "confidence": 0.6667,
+      "full_schema_context_tokens": 4682,
+      "gold_api_paths": [],
+      "gold_tables": [
+        "dim_segment",
+        "hkg_br_segment_property"
+      ],
+      "query": "show me the field for Person: Birthday Today 001",
+      "query_id": "example_008",
+      "score_margin": 0.0,
+      "table_recall_at_3": 0.5,
+      "table_recall_at_5": 1.0,
+      "used_gold_patterns": false
+    },
+    {
+      "candidate_apis": [
+        {
+          "id": "audit_events",
+          "method": "GET",
+          "path": "/data/foundation/audit/events",
+          "score": 0.36,
+          "use_when": "Audit events for destination/dataset/entity changes."
+        },
+        {
+          "id": "audit_events_short",
+          "method": "GET",
+          "path": "/audit/events",
+          "score": 0.36,
+          "use_when": "Gold-example shorthand for audit events."
+        },
+        {
+          "id": "catalog_batch_detail",
+          "method": "GET",
+          "path": "/data/foundation/catalog/batches/{batch_id}",
+          "score": 0.36,
+          "use_when": "Fetch batch details by ID."
+        },
+        {
+          "id": "export_batch_failed",
+          "method": "GET",
+          "path": "/data/foundation/export/batches/{batch_id}/failed",
+          "score": 0.36,
+          "use_when": "List failed files for an export batch."
+        },
+        {
+          "id": "export_batch_files",
+          "method": "GET",
+          "path": "/data/foundation/export/batches/{batch_id}/files",
+          "score": 0.36,
+          "use_when": "List files available for download in an export batch."
+        }
+      ],
+      "candidate_context_tokens": 1084,
+      "candidate_join_hints": [
+        {
+          "path": "dim_blueprint.BLUEPRINTID->hkg_br_blueprint_collection.BLUEPRINTID",
+          "reason": "Matching ID-like column name.",
+          "score": 1.4
+        },
+        {
+          "path": "dim_collection.COLLECTIONID->hkg_br_blueprint_collection.COLLECTIONID",
+          "reason": "Matching ID-like column name.",
+          "score": 1.4
+        },
+        {
+          "path": "dim_blueprint.BLUEPRINTID->hkg_br_blueprint_property.BLUEPRINTID",
+          "reason": "Matching ID-like column name.",
+          "score": 0.7
+        },
+        {
+          "path": "dim_collection.COLLECTIONID->hkg_br_collection_property.COLLECTIONID",
+          "reason": "Matching ID-like column name.",
+          "score": 0.7
+        },
+        {
+          "path": "dim_collection.COLLECTIONID->hkg_br_collection_segment.COLLECTIONID",
+          "reason": "Matching ID-like column name.",
+          "score": 0.7
+        },
+        {
+          "path": "dim_collection.COLLECTIONID->hkg_br_source_collection.COLLECTIONID",
+          "reason": "Matching ID-like column name.",
+          "score": 0.7
+        },
+        {
+          "path": "hkg_br_blueprint_collection.COLLECTIONID->hkg_br_collection_property.COLLECTIONID",
+          "reason": "Matching ID-like column name.",
+          "score": 0.7
+        },
+        {
+          "path": "hkg_br_blueprint_collection.COLLECTIONID->hkg_br_collection_segment.COLLECTIONID",
+          "reason": "Matching ID-like column name.",
+          "score": 0.7
+        }
+      ],
+      "candidate_tables": [
+        "dim_blueprint",
+        "dim_collection",
+        "hkg_br_blueprint_collection"
+      ],
+      "confidence": 0.6667,
+      "full_schema_context_tokens": 4682,
+      "gold_api_paths": [],
+      "gold_tables": [
+        "DIM_BLUEPRINT",
+        "HKG_BR_BLUEPRINT_COLLECTION",
+        "HKG_BR_BLUEPRINT_PROPERTY"
+      ],
+      "query": "Provide more details for the schema 'weRetail: Customer Actions'",
+      "query_id": "example_009",
+      "score_margin": 0.0,
+      "table_recall_at_3": 0.0,
+      "table_recall_at_5": 0.0,
+      "used_gold_patterns": false
+    },
+    {
+      "api_recall_at_3": 0.0,
+      "api_recall_at_5": 0.0,
+      "candidate_apis": [
+        {
+          "id": "audit_events",
+          "method": "GET",
+          "path": "/data/foundation/audit/events",
+          "score": 0.36,
+          "use_when": "Audit events for destination/dataset/entity changes."
+        },
+        {
+          "id": "audit_events_short",
+          "method": "GET",
+          "path": "/audit/events",
+          "score": 0.36,
+          "use_when": "Gold-example shorthand for audit events."
+        },
+        {
+          "id": "catalog_batches",
+          "method": "GET",
+          "path": "/data/foundation/catalog/batches",
+          "score": 0.36,
+          "use_when": "List/count catalog batches."
+        },
+        {
+          "id": "export_batch_failed",
+          "method": "GET",
+          "path": "/data/foundation/export/batches/{batch_id}/failed",
+          "score": 0.36,
+          "use_when": "List failed files for an export batch."
+        },
+        {
+          "id": "export_batch_files",
+          "method": "GET",
+          "path": "/data/foundation/export/batches/{batch_id}/files",
+          "score": 0.36,
+          "use_when": "List files available for download in an export batch."
+        }
+      ],
+      "candidate_context_tokens": 640,
+      "candidate_join_hints": [],
+      "candidate_tables": [
+        "br_campaign_segment",
+        "dim_property",
+        "dim_target",
+        "hkg_br_base_segment_used_by_dependent_segment",
+        "hkg_br_blueprint_collection"
+      ],
+      "confidence": 0.0833,
+      "full_schema_context_tokens": 4682,
+      "gold_api_paths": [
+        "/data/foundation/schemaregistry/tenant/schemas"
+      ],
+      "gold_tables": [
+        "DIM_BLUEPRINT"
+      ],
+      "query": "Count the number of XDM Experience Event schemas that are enabled for profile.",
+      "query_id": "example_010",
+      "score_margin": 0.0,
+      "table_recall_at_3": 0.0,
+      "table_recall_at_5": 0.0,
+      "used_gold_patterns": false
+    },
+    {
+      "api_recall_at_3": 0.0,
+      "api_recall_at_5": 0.0,
+      "candidate_apis": [
+        {
+          "id": "audit_events",
+          "method": "GET",
+          "path": "/data/foundation/audit/events",
+          "score": 0.18,
+          "use_when": "Audit events for destination/dataset/entity changes."
+        },
+        {
+          "id": "audit_events_short",
+          "method": "GET",
+          "path": "/audit/events",
+          "score": 0.18,
+          "use_when": "Gold-example shorthand for audit events."
+        },
+        {
+          "id": "catalog_batch_detail",
+          "method": "GET",
+          "path": "/data/foundation/catalog/batches/{batch_id}",
+          "score": 0.18,
+          "use_when": "Fetch batch details by ID."
+        },
+        {
+          "id": "catalog_batches",
+          "method": "GET",
+          "path": "/data/foundation/catalog/batches",
+          "score": 0.18,
+          "use_when": "List/count catalog batches."
+        },
+        {
+          "id": "catalog_datasets",
+          "method": "GET",
+          "path": "/data/foundation/catalog/dataSets",
+          "score": 0.18,
+          "use_when": "List datasets and dataset metadata."
+        }
+      ],
+      "candidate_context_tokens": 1098,
+      "candidate_join_hints": [
+        {
+          "path": "dim_blueprint.BLUEPRINTID->hkg_br_blueprint_collection.BLUEPRINTID",
+          "reason": "Matching ID-like column name.",
+          "score": 1.4
+        },
+        {
+          "path": "dim_collection.COLLECTIONID->hkg_br_blueprint_collection.COLLECTIONID",
+          "reason": "Matching ID-like column name.",
+          "score": 1.4
+        },
+        {
+          "path": "dim_blueprint.BLUEPRINTID->hkg_br_blueprint_property.BLUEPRINTID",
+          "reason": "Matching ID-like column name.",
+          "score": 0.7
+        },
+        {
+          "path": "dim_collection.COLLECTIONID->hkg_br_collection_property.COLLECTIONID",
+          "reason": "Matching ID-like column name.",
+          "score": 0.7
+        },
+        {
+          "path": "dim_collection.COLLECTIONID->hkg_br_collection_segment.COLLECTIONID",
+          "reason": "Matching ID-like column name.",
+          "score": 0.7
+        },
+        {
+          "path": "dim_collection.COLLECTIONID->hkg_br_source_collection.COLLECTIONID",
+          "reason": "Matching ID-like column name.",
+          "score": 0.7
+        },
+        {
+          "path": "hkg_br_blueprint_collection.COLLECTIONID->hkg_br_collection_property.COLLECTIONID",
+          "reason": "Matching ID-like column name.",
+          "score": 0.7
+        },
+        {
+          "path": "hkg_br_blueprint_collection.COLLECTIONID->hkg_br_collection_segment.COLLECTIONID",
+          "reason": "Matching ID-like column name.",
+          "score": 0.7
+        }
+      ],
+      "candidate_tables": [
+        "dim_blueprint",
+        "dim_collection",
+        "hkg_br_blueprint_collection"
+      ],
+      "confidence": 0.6667,
+      "full_schema_context_tokens": 4682,
+      "gold_api_paths": [
+        "/schemas"
+      ],
+      "gold_tables": [
+        "dim_blueprint"
+      ],
+      "query": "How many schemas do I have?",
+      "query_id": "example_011",
+      "score_margin": 0.0,
+      "table_recall_at_3": 1.0,
+      "table_recall_at_5": 1.0,
+      "used_gold_patterns": false
+    },
+    {
+      "api_recall_at_3": 0.0,
+      "api_recall_at_5": 0.0,
+      "candidate_apis": [
+        {
+          "id": "export_batch_files",
+          "method": "GET",
+          "path": "/data/foundation/export/batches/{batch_id}/files",
+          "score": 0.36,
+          "use_when": "List files available for download in an export batch."
+        },
+        {
+          "id": "flowservice_flows",
+          "method": "GET",
+          "path": "/data/foundation/flowservice/flows",
+          "score": 0.36,
+          "use_when": "List destination/dataflow/activation flows and flow metadata."
+        },
+        {
+          "id": "merge_policies",
+          "method": "GET",
+          "path": "/data/core/ups/config/mergePolicies",
+          "score": 0.36,
+          "use_when": "List/count Real-Time Customer Profile merge policies."
+        },
+        {
+          "id": "segment_jobs",
+          "method": "GET",
+          "path": "/data/core/ups/segment/jobs",
+          "score": 0.36,
+          "use_when": "List segment evaluation jobs and statuses."
+        },
+        {
+          "id": "ups_audiences",
+          "method": "GET",
+          "path": "/data/core/ups/audiences",
+          "score": 0.36,
+          "use_when": "List or look up Real-Time CDP audiences and audience metadata/counts."
+        }
+      ],
+      "candidate_context_tokens": 1079,
+      "candidate_join_hints": [
+        {
+          "path": "dim_target.TARGETID->hkg_br_segment_target.TARGETID",
+          "reason": "Curated: Segment to target bridge.",
+          "score": 1.0
+        },
+        {
+          "path": "dim_connector.SOURCEID->hkg_br_source_collection.SOURCEID",
+          "reason": "Matching ID-like column name.",
+          "score": 0.9
+        },
+        {
+          "path": "dim_target.TARGETID->hkg_br_target_property.TARGETID",
+          "reason": "Matching ID-like column name.",
+          "score": 0.9
+        },
+        {
+          "path": "dim_campaign.CAMPAIGNID->br_campaign_segment.CAMPAIGNID",
+          "reason": "Curated: Campaign to segment bridge.",
+          "score": 0.3
+        },
+        {
+          "path": "dim_segment.SEGMENTID->br_campaign_segment.SEGMENTID",
+          "reason": "Curated: Campaign to segment bridge.",
+          "score": 0.3
+        },
+        {
+          "path": "dim_segment.SEGMENTID->hkg_br_segment_target.SEGMENTID",
+          "reason": "Curated: Segment to target bridge.",
+          "score": 0.3
+        },
+        {
+          "path": "br_campaign_segment.SEGMENTID->dim_segment.SEGMENTID",
+          "reason": "Matching ID-like column name.",
+          "score": 0.2
+        },
+        {
+          "path": "br_campaign_segment.SEGMENTID->hkg_br_base_segment_used_by_dependent_segment.SEGMENTID",
+          "reason": "Matching ID-like column name.",
+          "score": 0.2
+        }
+      ],
+      "candidate_tables": [
+        "dim_connector",
+        "dim_target"
+      ],
+      "confidence": 0.6667,
+      "full_schema_context_tokens": 4682,
+      "gold_api_paths": [
+        "/data/foundation/audit/events"
+      ],
+      "gold_tables": [
+        "dim_segment",
+        "dim_target",
+        "hkg_br_segment_target"
+      ],
+      "query": "List all audiences in the sandbox that have been mapped to new destinations in the last 3 months.",
+      "query_id": "example_012",
+      "score_margin": 0.0,
+      "table_recall_at_3": 0.3333,
+      "table_recall_at_5": 0.3333,
+      "used_gold_patterns": false
+    },
+    {
+      "api_recall_at_3": 1.0,
+      "api_recall_at_5": 1.0,
+      "candidate_apis": [
+        {
+          "id": "audit_events",
+          "method": "GET",
+          "path": "/data/foundation/audit/events",
+          "score": 0.36,
+          "use_when": "Audit events for destination/dataset/entity changes."
+        },
+        {
+          "id": "export_batch_files",
+          "method": "GET",
+          "path": "/data/foundation/export/batches/{batch_id}/files",
+          "score": 0.36,
+          "use_when": "List files available for download in an export batch."
+        },
+        {
+          "id": "audit_events_short",
+          "method": "GET",
+          "path": "/audit/events",
+          "score": 0.18,
+          "use_when": "Gold-example shorthand for audit events."
+        },
+        {
+          "id": "catalog_batch_detail",
+          "method": "GET",
+          "path": "/data/foundation/catalog/batches/{batch_id}",
+          "score": 0.18,
+          "use_when": "Fetch batch details by ID."
+        },
+        {
+          "id": "catalog_batches",
+          "method": "GET",
+          "path": "/data/foundation/catalog/batches",
+          "score": 0.18,
+          "use_when": "List/count catalog batches."
+        }
+      ],
+      "candidate_context_tokens": 1081,
+      "candidate_join_hints": [
+        {
+          "path": "dim_blueprint.BLUEPRINTID->hkg_br_blueprint_collection.BLUEPRINTID",
+          "reason": "Matching ID-like column name.",
+          "score": 1.4
+        },
+        {
+          "path": "dim_collection.COLLECTIONID->hkg_br_blueprint_collection.COLLECTIONID",
+          "reason": "Matching ID-like column name.",
+          "score": 1.4
+        },
+        {
+          "path": "dim_blueprint.BLUEPRINTID->hkg_br_blueprint_property.BLUEPRINTID",
+          "reason": "Matching ID-like column name.",
+          "score": 0.7
+        },
+        {
+          "path": "dim_collection.COLLECTIONID->hkg_br_collection_property.COLLECTIONID",
+          "reason": "Matching ID-like column name.",
+          "score": 0.7
+        },
+        {
+          "path": "dim_collection.COLLECTIONID->hkg_br_collection_segment.COLLECTIONID",
+          "reason": "Matching ID-like column name.",
+          "score": 0.7
+        },
+        {
+          "path": "dim_collection.COLLECTIONID->hkg_br_source_collection.COLLECTIONID",
+          "reason": "Matching ID-like column name.",
+          "score": 0.7
+        },
+        {
+          "path": "hkg_br_blueprint_collection.COLLECTIONID->hkg_br_collection_property.COLLECTIONID",
+          "reason": "Matching ID-like column name.",
+          "score": 0.7
+        },
+        {
+          "path": "hkg_br_blueprint_collection.COLLECTIONID->hkg_br_collection_segment.COLLECTIONID",
+          "reason": "Matching ID-like column name.",
+          "score": 0.7
+        }
+      ],
+      "candidate_tables": [
+        "dim_blueprint",
+        "dim_collection",
+        "hkg_br_blueprint_collection"
+      ],
+      "confidence": 0.6667,
+      "full_schema_context_tokens": 4682,
+      "gold_api_paths": [
+        "/audit/events"
+      ],
+      "gold_tables": [
+        "DIM_COLLECTION"
+      ],
+      "query": "Show recent changes in datasets.",
+      "query_id": "example_013",
+      "score_margin": 0.0,
+      "table_recall_at_3": 0.0,
+      "table_recall_at_5": 0.0,
+      "used_gold_patterns": false
+    },
+    {
+      "api_recall_at_3": 1.0,
+      "api_recall_at_5": 1.0,
+      "candidate_apis": [
+        {
+          "id": "audit_events",
+          "method": "GET",
+          "path": "/data/foundation/audit/events",
+          "score": 1.0,
+          "use_when": "Audit events for destination/dataset/entity changes."
+        },
+        {
+          "id": "audit_events_short",
+          "method": "GET",
+          "path": "/audit/events",
+          "score": 1.0,
+          "use_when": "Gold-example shorthand for audit events."
+        },
+        {
+          "id": "catalog_batch_detail",
+          "method": "GET",
+          "path": "/data/foundation/catalog/batches/{batch_id}",
+          "score": 0.18,
+          "use_when": "Fetch batch details by ID."
+        },
+        {
+          "id": "export_batch_files",
+          "method": "GET",
+          "path": "/data/foundation/export/batches/{batch_id}/files",
+          "score": 0.18,
+          "use_when": "List files available for download in an export batch."
+        }
+      ],
+      "candidate_context_tokens": 1273,
+      "candidate_join_hints": [
+        {
+          "path": "dim_segment.SEGMENTID->hkg_br_base_segment_used_by_dependent_segment.DEPENDENTSEGMENTID",
+          "reason": "Foreign-key-looking column references table root.",
+          "score": 1.5
+        },
+        {
+          "path": "dim_segment.SEGMENTID->hkg_br_base_segment_used_by_dependent_segment.SEGMENTID",
+          "reason": "Matching ID-like column name.",
+          "score": 1.5
+        },
+        {
+          "path": "hkg_br_base_segment_used_by_dependent_segment.SEGMENTID->hkg_br_segment_target.SEGMENTID",
+          "reason": "Matching ID-like column name.",
+          "score": 1.5
+        },
+        {
+          "path": "dim_segment.SEGMENTID->hkg_br_segment_target.SEGMENTID",
+          "reason": "Curated: Segment to target bridge.",
+          "score": 1.4
+        },
+        {
+          "path": "dim_target.TARGETID->hkg_br_segment_target.TARGETID",
+          "reason": "Curated: Segment to target bridge.",
+          "score": 1.4
+        },
+        {
+          "path": "br_campaign_segment.SEGMENTID->hkg_br_base_segment_used_by_dependent_segment.SEGMENTID",
+          "reason": "Matching ID-like column name.",
+          "score": 0.8
+        },
+        {
+          "path": "hkg_br_base_segment_used_by_dependent_segment.SEGMENTID->hkg_br_collection_segment.SEGMENTID",
+          "reason": "Matching ID-like column name.",
+          "score": 0.8
+        },
+        {
+          "path": "hkg_br_base_segment_used_by_dependent_segment.SEGMENTID->hkg_br_segment_property.SEGMENTID",
+          "reason": "Matching ID-like column name.",
+          "score": 0.8
+        }
+      ],
+      "candidate_tables": [
+        "dim_collection",
+        "dim_segment",
+        "dim_target",
+        "hkg_br_segment_target",
+        "hkg_br_base_segment_used_by_dependent_segment"
+      ],
+      "confidence": 0.6667,
+      "full_schema_context_tokens": 4682,
+      "gold_api_paths": [
+        "/data/foundation/audit/events"
+      ],
+      "gold_tables": [
+        "dim_collection"
+      ],
+      "query": "Show me all entities created by download",
+      "query_id": "example_014",
+      "score_margin": 0.0,
+      "table_recall_at_3": 1.0,
+      "table_recall_at_5": 1.0,
+      "used_gold_patterns": false
+    },
+    {
+      "api_recall_at_3": 0.0,
+      "api_recall_at_5": 0.0,
+      "candidate_apis": [
+        {
+          "id": "unified_tag_categories",
+          "method": "GET",
+          "path": "/unifiedtags/tagCategory",
+          "score": 1.18,
+          "use_when": "List tag categories."
+        },
+        {
+          "id": "export_batch_files",
+          "method": "GET",
+          "path": "/data/foundation/export/batches/{batch_id}/files",
+          "score": 0.18,
+          "use_when": "List files available for download in an export batch."
+        },
+        {
+          "id": "unified_tag_detail",
+          "method": "GET",
+          "path": "/unifiedtags/tags/{tag_id}",
+          "score": 0.18,
+          "use_when": "Fetch tag details when a tag ID is known."
+        }
+      ],
+      "candidate_context_tokens": 512,
+      "candidate_join_hints": [],
+      "candidate_tables": [
+        "br_campaign_segment",
+        "dim_property",
+        "dim_target",
+        "hkg_br_base_segment_used_by_dependent_segment",
+        "hkg_br_blueprint_collection"
+      ],
+      "confidence": 0.0833,
+      "full_schema_context_tokens": 4682,
+      "gold_api_paths": [
+        "/unifiedtags/tags"
+      ],
+      "gold_tables": [],
+      "query": "How many tags exist in this sandbox?",
+      "query_id": "example_015",
+      "score_margin": 0.0,
+      "used_gold_patterns": false
+    },
+    {
+      "api_recall_at_3": 0.0,
+      "api_recall_at_5": 0.0,
+      "candidate_apis": [
+        {
+          "id": "unified_tag_categories",
+          "method": "GET",
+          "path": "/unifiedtags/tagCategory",
+          "score": 1.36,
+          "use_when": "List tag categories."
+        },
+        {
+          "id": "export_batch_files",
+          "method": "GET",
+          "path": "/data/foundation/export/batches/{batch_id}/files",
+          "score": 0.36,
+          "use_when": "List files available for download in an export batch."
+        },
+        {
+          "id": "catalog_batches",
+          "method": "GET",
+          "path": "/data/foundation/catalog/batches",
+          "score": 0.18,
+          "use_when": "List/count catalog batches."
+        },
+        {
+          "id": "catalog_datasets",
+          "method": "GET",
+          "path": "/data/foundation/catalog/dataSets",
+          "score": 0.18,
+          "use_when": "List datasets and dataset metadata."
+        },
+        {
+          "id": "export_batch_failed",
+          "method": "GET",
+          "path": "/data/foundation/export/batches/{batch_id}/failed",
+          "score": 0.18,
+          "use_when": "List failed files for an export batch."
+        }
+      ],
+      "candidate_context_tokens": 613,
+      "candidate_join_hints": [],
+      "candidate_tables": [
+        "br_campaign_segment",
+        "dim_property",
+        "dim_target",
+        "hkg_br_base_segment_used_by_dependent_segment",
+        "hkg_br_blueprint_collection"
+      ],
+      "confidence": 0.0833,
+      "full_schema_context_tokens": 4682,
+      "gold_api_paths": [
+        "/unifiedtags/tags"
+      ],
+      "gold_tables": [],
+      "query": "List all tags in this sandbox.",
+      "query_id": "example_016",
+      "score_margin": 0.0,
+      "used_gold_patterns": false
+    },
+    {
+      "api_recall_at_3": 0.5,
+      "api_recall_at_5": 0.5,
+      "candidate_apis": [
+        {
+          "id": "unified_tag_categories",
+          "method": "GET",
+          "path": "/unifiedtags/tagCategory",
+          "score": 1.18,
+          "use_when": "List tag categories."
+        },
+        {
+          "id": "unified_tag_detail",
+          "method": "GET",
+          "path": "/unifiedtags/tags/{tag_id}",
+          "score": 0.18,
+          "use_when": "Fetch tag details when a tag ID is known."
+        }
+      ],
+      "candidate_context_tokens": 712,
+      "candidate_join_hints": [
+        {
+          "path": "dim_campaign.CAMPAIGNID->br_campaign_segment.CAMPAIGNID",
+          "reason": "Curated: Campaign to segment bridge.",
+          "score": 0.1
+        },
+        {
+          "path": "dim_segment.SEGMENTID->br_campaign_segment.SEGMENTID",
+          "reason": "Curated: Campaign to segment bridge.",
+          "score": 0.1
+        },
+        {
+          "path": "dim_segment.SEGMENTID->hkg_br_segment_target.SEGMENTID",
+          "reason": "Curated: Segment to target bridge.",
+          "score": 0.1
+        },
+        {
+          "path": "dim_target.TARGETID->hkg_br_segment_target.TARGETID",
+          "reason": "Curated: Segment to target bridge.",
+          "score": 0.1
+        }
+      ],
+      "candidate_tables": [
+        "br_campaign_segment",
+        "dim_property",
+        "dim_target",
+        "hkg_br_base_segment_used_by_dependent_segment",
+        "hkg_br_blueprint_collection"
+      ],
+      "confidence": 0.0833,
+      "full_schema_context_tokens": 4682,
+      "gold_api_paths": [
+        "/unifiedtags/tagCategory",
+        "/unifiedtags/tags"
+      ],
+      "gold_tables": [],
+      "query": "Which tags belong to the category 'Uncategorized'?",
+      "query_id": "example_017",
+      "score_margin": 0.0,
+      "used_gold_patterns": false
+    },
+    {
+      "api_recall_at_3": 0.0,
+      "api_recall_at_5": 0.0,
+      "candidate_apis": [
+        {
+          "id": "unified_tag_categories",
+          "method": "GET",
+          "path": "/unifiedtags/tagCategory",
+          "score": 1.18,
+          "use_when": "List tag categories."
+        },
+        {
+          "id": "unified_tag_detail",
+          "method": "GET",
+          "path": "/unifiedtags/tags/{tag_id}",
+          "score": 0.36,
+          "use_when": "Fetch tag details when a tag ID is known."
+        },
+        {
+          "id": "catalog_batch_detail",
+          "method": "GET",
+          "path": "/data/foundation/catalog/batches/{batch_id}",
+          "score": 0.18,
+          "use_when": "Fetch batch details by ID."
+        },
+        {
+          "id": "schema_registry_schema",
+          "method": "GET",
+          "path": "/data/foundation/schemaregistry/tenant/schemas/{schema_id}",
+          "score": 0.18,
+          "use_when": "Fetch schema details when a concrete schema ID is known."
+        }
+      ],
+      "candidate_context_tokens": 589,
+      "candidate_join_hints": [],
+      "candidate_tables": [
+        "br_campaign_segment",
+        "dim_property",
+        "dim_target",
+        "hkg_br_base_segment_used_by_dependent_segment",
+        "hkg_br_blueprint_collection"
+      ],
+      "confidence": 0.0833,
+      "full_schema_context_tokens": 4682,
+      "gold_api_paths": [
+        "/unifiedtags/tags/51175a7f-aa60-4533-bef1-717b3cef7818"
+      ],
+      "gold_tables": [],
+      "query": "Show me the details of the tag named 'cool'.",
+      "query_id": "example_018",
+      "score_margin": 0.0,
+      "used_gold_patterns": false
+    },
+    {
+      "api_recall_at_3": 1.0,
+      "api_recall_at_5": 1.0,
+      "candidate_apis": [
+        {
+          "id": "merge_policies",
+          "method": "GET",
+          "path": "/data/core/ups/config/mergePolicies",
+          "score": 1.56,
+          "use_when": "List/count Real-Time Customer Profile merge policies."
+        },
+        {
+          "id": "export_batch_files",
+          "method": "GET",
+          "path": "/data/foundation/export/batches/{batch_id}/files",
+          "score": 0.36,
+          "use_when": "List files available for download in an export batch."
+        },
+        {
+          "id": "catalog_batches",
+          "method": "GET",
+          "path": "/data/foundation/catalog/batches",
+          "score": 0.18,
+          "use_when": "List/count catalog batches."
+        },
+        {
+          "id": "catalog_datasets",
+          "method": "GET",
+          "path": "/data/foundation/catalog/dataSets",
+          "score": 0.18,
+          "use_when": "List datasets and dataset metadata."
+        },
+        {
+          "id": "export_batch_failed",
+          "method": "GET",
+          "path": "/data/foundation/export/batches/{batch_id}/failed",
+          "score": 0.18,
+          "use_when": "List failed files for an export batch."
+        }
+      ],
+      "candidate_context_tokens": 623,
+      "candidate_join_hints": [],
+      "candidate_tables": [
+        "br_campaign_segment",
+        "dim_property",
+        "dim_target",
+        "hkg_br_base_segment_used_by_dependent_segment",
+        "hkg_br_blueprint_collection"
+      ],
+      "confidence": 0.0833,
+      "full_schema_context_tokens": 4682,
+      "gold_api_paths": [
+        "/data/core/ups/config/mergePolicies"
+      ],
+      "gold_tables": [],
+      "query": "List all merge policies in this sandbox.",
+      "query_id": "example_019",
+      "score_margin": 0.0,
+      "used_gold_patterns": false
+    },
+    {
+      "api_recall_at_3": 1.0,
+      "api_recall_at_5": 1.0,
+      "candidate_apis": [
+        {
+          "id": "merge_policies",
+          "method": "GET",
+          "path": "/data/core/ups/config/mergePolicies",
+          "score": 1.18,
+          "use_when": "List/count Real-Time Customer Profile merge policies."
+        },
+        {
+          "id": "export_batch_files",
+          "method": "GET",
+          "path": "/data/foundation/export/batches/{batch_id}/files",
+          "score": 0.18,
+          "use_when": "List files available for download in an export batch."
+        }
+      ],
+      "candidate_context_tokens": 463,
+      "candidate_join_hints": [],
+      "candidate_tables": [
+        "br_campaign_segment",
+        "dim_property",
+        "dim_target",
+        "hkg_br_base_segment_used_by_dependent_segment",
+        "hkg_br_blueprint_collection"
+      ],
+      "confidence": 0.0833,
+      "full_schema_context_tokens": 4682,
+      "gold_api_paths": [
+        "/data/core/ups/config/mergePolicies"
+      ],
+      "gold_tables": [],
+      "query": "How many merge policies are configured in this sandbox?",
+      "query_id": "example_020",
+      "score_margin": 0.0,
+      "used_gold_patterns": false
+    },
+    {
+      "api_recall_at_3": 0.0,
+      "api_recall_at_5": 1.0,
+      "candidate_apis": [
+        {
+          "id": "audit_events",
+          "method": "GET",
+          "path": "/data/foundation/audit/events",
+          "score": 0.36,
+          "use_when": "Audit events for destination/dataset/entity changes."
+        },
+        {
+          "id": "audit_events_short",
+          "method": "GET",
+          "path": "/audit/events",
+          "score": 0.36,
+          "use_when": "Gold-example shorthand for audit events."
+        },
+        {
+          "id": "export_batch_failed",
+          "method": "GET",
+          "path": "/data/foundation/export/batches/{batch_id}/failed",
+          "score": 0.36,
+          "use_when": "List failed files for an export batch."
+        },
+        {
+          "id": "export_batch_files",
+          "method": "GET",
+          "path": "/data/foundation/export/batches/{batch_id}/files",
+          "score": 0.36,
+          "use_when": "List files available for download in an export batch."
+        },
+        {
+          "id": "merge_policies",
+          "method": "GET",
+          "path": "/data/core/ups/config/mergePolicies",
+          "score": 0.36,
+          "use_when": "List/count Real-Time Customer Profile merge policies."
+        }
+      ],
+      "candidate_context_tokens": 675,
+      "candidate_join_hints": [],
+      "candidate_tables": [
+        "br_campaign_segment",
+        "dim_property",
+        "dim_target",
+        "hkg_br_base_segment_used_by_dependent_segment",
+        "hkg_br_blueprint_collection"
+      ],
+      "confidence": 0.0833,
+      "full_schema_context_tokens": 4682,
+      "gold_api_paths": [
+        "/data/core/ups/config/mergePolicies"
+      ],
+      "gold_tables": [],
+      "query": "Show the default merge policy for schema class '_xdm.context.profile'.",
+      "query_id": "example_021",
+      "score_margin": 0.0,
+      "used_gold_patterns": false
+    },
+    {
+      "api_recall_at_3": 1.0,
+      "api_recall_at_5": 1.0,
+      "candidate_apis": [
+        {
+          "id": "segment_definitions",
+          "method": "GET",
+          "path": "/data/core/ups/segment/definitions",
+          "score": 0.38,
+          "use_when": "Look up segment definitions, names, statuses, and segment metadata."
+        },
+        {
+          "id": "export_batch_files",
+          "method": "GET",
+          "path": "/data/foundation/export/batches/{batch_id}/files",
+          "score": 0.18,
+          "use_when": "List files available for download in an export batch."
+        },
+        {
+          "id": "merge_policies",
+          "method": "GET",
+          "path": "/data/core/ups/config/mergePolicies",
+          "score": 0.18,
+          "use_when": "List/count Real-Time Customer Profile merge policies."
+        },
+        {
+          "id": "segment_jobs",
+          "method": "GET",
+          "path": "/data/core/ups/segment/jobs",
+          "score": 0.18,
+          "use_when": "List segment evaluation jobs and statuses."
+        },
+        {
+          "id": "ups_audiences",
+          "method": "GET",
+          "path": "/data/core/ups/audiences",
+          "score": 0.18,
+          "use_when": "List or look up Real-Time CDP audiences and audience metadata/counts."
+        }
+      ],
+      "candidate_context_tokens": 1264,
+      "candidate_join_hints": [
+        {
+          "path": "br_campaign_segment.SEGMENTID->dim_segment.SEGMENTID",
+          "reason": "Matching ID-like column name.",
+          "score": 1.5
+        },
+        {
+          "path": "br_campaign_segment.SEGMENTID->hkg_br_base_segment_used_by_dependent_segment.SEGMENTID",
+          "reason": "Matching ID-like column name.",
+          "score": 1.5
+        },
+        {
+          "path": "br_campaign_segment.SEGMENTID->hkg_br_collection_segment.SEGMENTID",
+          "reason": "Matching ID-like column name.",
+          "score": 1.5
+        },
+        {
+          "path": "br_campaign_segment.SEGMENTID->hkg_br_segment_property.SEGMENTID",
+          "reason": "Matching ID-like column name.",
+          "score": 1.5
+        },
+        {
+          "path": "br_campaign_segment.SEGMENTID->hkg_br_segment_target.SEGMENTID",
+          "reason": "Matching ID-like column name.",
+          "score": 1.5
+        },
+        {
+          "path": "dim_segment.SEGMENTID->br_campaign_segment.SEGMENTID",
+          "reason": "Curated: Campaign to segment bridge.",
+          "score": 1.5
+        },
+        {
+          "path": "dim_segment.SEGMENTID->hkg_br_base_segment_used_by_dependent_segment.DEPENDENTSEGMENTID",
+          "reason": "Foreign-key-looking column references table root.",
+          "score": 1.5
+        },
+        {
+          "path": "dim_segment.SEGMENTID->hkg_br_base_segment_used_by_dependent_segment.SEGMENTID",
+          "reason": "Matching ID-like column name.",
+          "score": 1.5
+        }
+      ],
+      "candidate_tables": [
+        "dim_segment",
+        "hkg_br_segment_target",
+        "dim_target",
+        "br_campaign_segment",
+        "hkg_br_base_segment_used_by_dependent_segment"
+      ],
+      "confidence": 0.85,
+      "full_schema_context_tokens": 4682,
+      "gold_api_paths": [
+        "/data/core/ups/segment/definitions"
+      ],
+      "gold_tables": [],
+      "query": "How many segment definitions exist in this sandbox?",
+      "query_id": "example_022",
+      "score_margin": 0.0,
+      "used_gold_patterns": false
+    },
+    {
+      "api_recall_at_3": 1.0,
+      "api_recall_at_5": 1.0,
+      "candidate_apis": [
+        {
+          "id": "segment_definitions",
+          "method": "GET",
+          "path": "/data/core/ups/segment/definitions",
+          "score": 0.38,
+          "use_when": "Look up segment definitions, names, statuses, and segment metadata."
+        },
+        {
+          "id": "merge_policies",
+          "method": "GET",
+          "path": "/data/core/ups/config/mergePolicies",
+          "score": 0.36,
+          "use_when": "List/count Real-Time Customer Profile merge policies."
+        },
+        {
+          "id": "segment_jobs",
+          "method": "GET",
+          "path": "/data/core/ups/segment/jobs",
+          "score": 0.36,
+          "use_when": "List segment evaluation jobs and statuses."
+        },
+        {
+          "id": "ups_audiences",
+          "method": "GET",
+          "path": "/data/core/ups/audiences",
+          "score": 0.36,
+          "use_when": "List or look up Real-Time CDP audiences and audience metadata/counts."
+        },
+        {
+          "id": "catalog_batches",
+          "method": "GET",
+          "path": "/data/foundation/catalog/batches",
+          "score": 0.18,
+          "use_when": "List/count catalog batches."
+        }
+      ],
+      "candidate_context_tokens": 1241,
+      "candidate_join_hints": [
+        {
+          "path": "br_campaign_segment.SEGMENTID->dim_segment.SEGMENTID",
+          "reason": "Matching ID-like column name.",
+          "score": 1.5
+        },
+        {
+          "path": "br_campaign_segment.SEGMENTID->hkg_br_base_segment_used_by_dependent_segment.SEGMENTID",
+          "reason": "Matching ID-like column name.",
+          "score": 1.5
+        },
+        {
+          "path": "br_campaign_segment.SEGMENTID->hkg_br_collection_segment.SEGMENTID",
+          "reason": "Matching ID-like column name.",
+          "score": 1.5
+        },
+        {
+          "path": "br_campaign_segment.SEGMENTID->hkg_br_segment_property.SEGMENTID",
+          "reason": "Matching ID-like column name.",
+          "score": 1.5
+        },
+        {
+          "path": "br_campaign_segment.SEGMENTID->hkg_br_segment_target.SEGMENTID",
+          "reason": "Matching ID-like column name.",
+          "score": 1.5
+        },
+        {
+          "path": "dim_segment.SEGMENTID->br_campaign_segment.SEGMENTID",
+          "reason": "Curated: Campaign to segment bridge.",
+          "score": 1.5
+        },
+        {
+          "path": "dim_segment.SEGMENTID->hkg_br_base_segment_used_by_dependent_segment.DEPENDENTSEGMENTID",
+          "reason": "Foreign-key-looking column references table root.",
+          "score": 1.5
+        },
+        {
+          "path": "dim_segment.SEGMENTID->hkg_br_base_segment_used_by_dependent_segment.SEGMENTID",
+          "reason": "Matching ID-like column name.",
+          "score": 1.5
+        }
+      ],
+      "candidate_tables": [
+        "dim_segment",
+        "hkg_br_segment_target",
+        "dim_target",
+        "br_campaign_segment",
+        "hkg_br_base_segment_used_by_dependent_segment"
+      ],
+      "confidence": 0.85,
+      "full_schema_context_tokens": 4682,
+      "gold_api_paths": [
+        "/data/core/ups/segment/definitions"
+      ],
+      "gold_tables": [],
+      "query": "List all segment definitions.",
+      "query_id": "example_023",
+      "score_margin": 0.0,
+      "used_gold_patterns": false
+    },
+    {
+      "api_recall_at_3": 1.0,
+      "api_recall_at_5": 1.0,
+      "candidate_apis": [
+        {
+          "id": "segment_definitions",
+          "method": "GET",
+          "path": "/data/core/ups/segment/definitions",
+          "score": 0.38,
+          "use_when": "Look up segment definitions, names, statuses, and segment metadata."
+        },
+        {
+          "id": "merge_policies",
+          "method": "GET",
+          "path": "/data/core/ups/config/mergePolicies",
+          "score": 0.18,
+          "use_when": "List/count Real-Time Customer Profile merge policies."
+        },
+        {
+          "id": "segment_jobs",
+          "method": "GET",
+          "path": "/data/core/ups/segment/jobs",
+          "score": 0.18,
+          "use_when": "List segment evaluation jobs and statuses."
+        },
+        {
+          "id": "ups_audiences",
+          "method": "GET",
+          "path": "/data/core/ups/audiences",
+          "score": 0.18,
+          "use_when": "List or look up Real-Time CDP audiences and audience metadata/counts."
+        }
+      ],
+      "candidate_context_tokens": 1196,
+      "candidate_join_hints": [
+        {
+          "path": "br_campaign_segment.SEGMENTID->dim_segment.SEGMENTID",
+          "reason": "Matching ID-like column name.",
+          "score": 1.5
+        },
+        {
+          "path": "br_campaign_segment.SEGMENTID->hkg_br_base_segment_used_by_dependent_segment.SEGMENTID",
+          "reason": "Matching ID-like column name.",
+          "score": 1.5
+        },
+        {
+          "path": "br_campaign_segment.SEGMENTID->hkg_br_collection_segment.SEGMENTID",
+          "reason": "Matching ID-like column name.",
+          "score": 1.5
+        },
+        {
+          "path": "br_campaign_segment.SEGMENTID->hkg_br_segment_property.SEGMENTID",
+          "reason": "Matching ID-like column name.",
+          "score": 1.5
+        },
+        {
+          "path": "br_campaign_segment.SEGMENTID->hkg_br_segment_target.SEGMENTID",
+          "reason": "Matching ID-like column name.",
+          "score": 1.5
+        },
+        {
+          "path": "dim_segment.SEGMENTID->br_campaign_segment.SEGMENTID",
+          "reason": "Curated: Campaign to segment bridge.",
+          "score": 1.5
+        },
+        {
+          "path": "dim_segment.SEGMENTID->hkg_br_base_segment_used_by_dependent_segment.DEPENDENTSEGMENTID",
+          "reason": "Foreign-key-looking column references table root.",
+          "score": 1.5
+        },
+        {
+          "path": "dim_segment.SEGMENTID->hkg_br_base_segment_used_by_dependent_segment.SEGMENTID",
+          "reason": "Matching ID-like column name.",
+          "score": 1.5
+        }
+      ],
+      "candidate_tables": [
+        "dim_segment",
+        "hkg_br_segment_target",
+        "dim_target",
+        "br_campaign_segment",
+        "hkg_br_base_segment_used_by_dependent_segment"
+      ],
+      "confidence": 0.85,
+      "full_schema_context_tokens": 4682,
+      "gold_api_paths": [
+        "/data/core/ups/segment/definitions"
+      ],
+      "gold_tables": [],
+      "query": "Which segment definitions were updated most recently?",
+      "query_id": "example_024",
+      "score_margin": 0.0,
+      "used_gold_patterns": false
+    },
+    {
+      "api_recall_at_3": 1.0,
+      "api_recall_at_5": 1.0,
+      "candidate_apis": [
+        {
+          "id": "segment_jobs",
+          "method": "GET",
+          "path": "/data/core/ups/segment/jobs",
+          "score": 0.56,
+          "use_when": "List segment evaluation jobs and statuses."
+        },
+        {
+          "id": "merge_policies",
+          "method": "GET",
+          "path": "/data/core/ups/config/mergePolicies",
+          "score": 0.36,
+          "use_when": "List/count Real-Time Customer Profile merge policies."
+        },
+        {
+          "id": "ups_audiences",
+          "method": "GET",
+          "path": "/data/core/ups/audiences",
+          "score": 0.36,
+          "use_when": "List or look up Real-Time CDP audiences and audience metadata/counts."
+        },
+        {
+          "id": "catalog_batches",
+          "method": "GET",
+          "path": "/data/foundation/catalog/batches",
+          "score": 0.18,
+          "use_when": "List/count catalog batches."
+        },
+        {
+          "id": "catalog_datasets",
+          "method": "GET",
+          "path": "/data/foundation/catalog/dataSets",
+          "score": 0.18,
+          "use_when": "List datasets and dataset metadata."
+        }
+      ],
+      "candidate_context_tokens": 1229,
+      "candidate_join_hints": [
+        {
+          "path": "br_campaign_segment.SEGMENTID->dim_segment.SEGMENTID",
+          "reason": "Matching ID-like column name.",
+          "score": 1.5
+        },
+        {
+          "path": "br_campaign_segment.SEGMENTID->hkg_br_base_segment_used_by_dependent_segment.SEGMENTID",
+          "reason": "Matching ID-like column name.",
+          "score": 1.5
+        },
+        {
+          "path": "br_campaign_segment.SEGMENTID->hkg_br_collection_segment.SEGMENTID",
+          "reason": "Matching ID-like column name.",
+          "score": 1.5
+        },
+        {
+          "path": "br_campaign_segment.SEGMENTID->hkg_br_segment_property.SEGMENTID",
+          "reason": "Matching ID-like column name.",
+          "score": 1.5
+        },
+        {
+          "path": "br_campaign_segment.SEGMENTID->hkg_br_segment_target.SEGMENTID",
+          "reason": "Matching ID-like column name.",
+          "score": 1.5
+        },
+        {
+          "path": "dim_segment.SEGMENTID->br_campaign_segment.SEGMENTID",
+          "reason": "Curated: Campaign to segment bridge.",
+          "score": 1.5
+        },
+        {
+          "path": "dim_segment.SEGMENTID->hkg_br_base_segment_used_by_dependent_segment.DEPENDENTSEGMENTID",
+          "reason": "Foreign-key-looking column references table root.",
+          "score": 1.5
+        },
+        {
+          "path": "dim_segment.SEGMENTID->hkg_br_base_segment_used_by_dependent_segment.SEGMENTID",
+          "reason": "Matching ID-like column name.",
+          "score": 1.5
+        }
+      ],
+      "candidate_tables": [
+        "dim_segment",
+        "hkg_br_segment_target",
+        "dim_target",
+        "br_campaign_segment",
+        "hkg_br_base_segment_used_by_dependent_segment"
+      ],
+      "confidence": 0.85,
+      "full_schema_context_tokens": 4682,
+      "gold_api_paths": [
+        "/data/core/ups/segment/jobs"
+      ],
+      "gold_tables": [],
+      "query": "List all segment evaluation jobs.",
+      "query_id": "example_025",
+      "score_margin": 0.0,
+      "used_gold_patterns": false
+    },
+    {
+      "api_recall_at_3": 1.0,
+      "api_recall_at_5": 1.0,
+      "candidate_apis": [
+        {
+          "id": "segment_jobs",
+          "method": "GET",
+          "path": "/data/core/ups/segment/jobs",
+          "score": 0.38,
+          "use_when": "List segment evaluation jobs and statuses."
+        },
+        {
+          "id": "merge_policies",
+          "method": "GET",
+          "path": "/data/core/ups/config/mergePolicies",
+          "score": 0.18,
+          "use_when": "List/count Real-Time Customer Profile merge policies."
+        },
+        {
+          "id": "segment_definitions",
+          "method": "GET",
+          "path": "/data/core/ups/segment/definitions",
+          "score": 0.18,
+          "use_when": "Look up segment definitions, names, statuses, and segment metadata."
+        },
+        {
+          "id": "ups_audiences",
+          "method": "GET",
+          "path": "/data/core/ups/audiences",
+          "score": 0.18,
+          "use_when": "List or look up Real-Time CDP audiences and audience metadata/counts."
+        }
+      ],
+      "candidate_context_tokens": 1198,
+      "candidate_join_hints": [
+        {
+          "path": "br_campaign_segment.SEGMENTID->dim_segment.SEGMENTID",
+          "reason": "Matching ID-like column name.",
+          "score": 1.5
+        },
+        {
+          "path": "br_campaign_segment.SEGMENTID->hkg_br_base_segment_used_by_dependent_segment.SEGMENTID",
+          "reason": "Matching ID-like column name.",
+          "score": 1.5
+        },
+        {
+          "path": "br_campaign_segment.SEGMENTID->hkg_br_collection_segment.SEGMENTID",
+          "reason": "Matching ID-like column name.",
+          "score": 1.5
+        },
+        {
+          "path": "br_campaign_segment.SEGMENTID->hkg_br_segment_property.SEGMENTID",
+          "reason": "Matching ID-like column name.",
+          "score": 1.5
+        },
+        {
+          "path": "br_campaign_segment.SEGMENTID->hkg_br_segment_target.SEGMENTID",
+          "reason": "Matching ID-like column name.",
+          "score": 1.5
+        },
+        {
+          "path": "dim_segment.SEGMENTID->br_campaign_segment.SEGMENTID",
+          "reason": "Curated: Campaign to segment bridge.",
+          "score": 1.5
+        },
+        {
+          "path": "dim_segment.SEGMENTID->hkg_br_base_segment_used_by_dependent_segment.DEPENDENTSEGMENTID",
+          "reason": "Foreign-key-looking column references table root.",
+          "score": 1.5
+        },
+        {
+          "path": "dim_segment.SEGMENTID->hkg_br_base_segment_used_by_dependent_segment.SEGMENTID",
+          "reason": "Matching ID-like column name.",
+          "score": 1.5
+        }
+      ],
+      "candidate_tables": [
+        "dim_segment",
+        "hkg_br_segment_target",
+        "dim_target",
+        "br_campaign_segment",
+        "hkg_br_base_segment_used_by_dependent_segment"
+      ],
+      "confidence": 0.85,
+      "full_schema_context_tokens": 4682,
+      "gold_api_paths": [
+        "/data/core/ups/segment/jobs"
+      ],
+      "gold_tables": [],
+      "query": "How many segment jobs are currently processing?",
+      "query_id": "example_026",
+      "score_margin": 0.0,
+      "used_gold_patterns": false
+    },
+    {
+      "api_recall_at_3": 1.0,
+      "api_recall_at_5": 1.0,
+      "candidate_apis": [
+        {
+          "id": "segment_jobs",
+          "method": "GET",
+          "path": "/data/core/ups/segment/jobs",
+          "score": 0.56,
+          "use_when": "List segment evaluation jobs and statuses."
+        },
+        {
+          "id": "audit_events",
+          "method": "GET",
+          "path": "/data/foundation/audit/events",
+          "score": 0.18,
+          "use_when": "Audit events for destination/dataset/entity changes."
+        },
+        {
+          "id": "audit_events_short",
+          "method": "GET",
+          "path": "/audit/events",
+          "score": 0.18,
+          "use_when": "Gold-example shorthand for audit events."
+        },
+        {
+          "id": "catalog_batches",
+          "method": "GET",
+          "path": "/data/foundation/catalog/batches",
+          "score": 0.18,
+          "use_when": "List/count catalog batches."
+        },
+        {
+          "id": "export_batch_failed",
+          "method": "GET",
+          "path": "/data/foundation/export/batches/{batch_id}/failed",
+          "score": 0.18,
+          "use_when": "List failed files for an export batch."
+        }
+      ],
+      "candidate_context_tokens": 1243,
+      "candidate_join_hints": [
+        {
+          "path": "br_campaign_segment.SEGMENTID->dim_segment.SEGMENTID",
+          "reason": "Matching ID-like column name.",
+          "score": 1.5
+        },
+        {
+          "path": "br_campaign_segment.SEGMENTID->hkg_br_base_segment_used_by_dependent_segment.SEGMENTID",
+          "reason": "Matching ID-like column name.",
+          "score": 1.5
+        },
+        {
+          "path": "br_campaign_segment.SEGMENTID->hkg_br_collection_segment.SEGMENTID",
+          "reason": "Matching ID-like column name.",
+          "score": 1.5
+        },
+        {
+          "path": "br_campaign_segment.SEGMENTID->hkg_br_segment_property.SEGMENTID",
+          "reason": "Matching ID-like column name.",
+          "score": 1.5
+        },
+        {
+          "path": "br_campaign_segment.SEGMENTID->hkg_br_segment_target.SEGMENTID",
+          "reason": "Matching ID-like column name.",
+          "score": 1.5
+        },
+        {
+          "path": "dim_segment.SEGMENTID->br_campaign_segment.SEGMENTID",
+          "reason": "Curated: Campaign to segment bridge.",
+          "score": 1.5
+        },
+        {
+          "path": "dim_segment.SEGMENTID->hkg_br_base_segment_used_by_dependent_segment.DEPENDENTSEGMENTID",
+          "reason": "Foreign-key-looking column references table root.",
+          "score": 1.5
+        },
+        {
+          "path": "dim_segment.SEGMENTID->hkg_br_base_segment_used_by_dependent_segment.SEGMENTID",
+          "reason": "Matching ID-like column name.",
+          "score": 1.5
+        }
+      ],
+      "candidate_tables": [
+        "dim_segment",
+        "hkg_br_segment_target",
+        "dim_target",
+        "br_campaign_segment",
+        "hkg_br_base_segment_used_by_dependent_segment"
+      ],
+      "confidence": 0.85,
+      "full_schema_context_tokens": 4682,
+      "gold_api_paths": [
+        "/data/core/ups/segment/jobs"
+      ],
+      "gold_tables": [],
+      "query": "Show all segment jobs with status 'QUEUED'.",
+      "query_id": "example_027",
+      "score_margin": 0.0,
+      "used_gold_patterns": false
+    },
+    {
+      "api_recall_at_3": 0.0,
+      "api_recall_at_5": 0.0,
+      "candidate_apis": [
+        {
+          "id": "audit_events",
+          "method": "GET",
+          "path": "/data/foundation/audit/events",
+          "score": 1.0,
+          "use_when": "Audit events for destination/dataset/entity changes."
+        },
+        {
+          "id": "audit_events_short",
+          "method": "GET",
+          "path": "/audit/events",
+          "score": 1.0,
+          "use_when": "Gold-example shorthand for audit events."
+        },
+        {
+          "id": "export_batch_failed",
+          "method": "GET",
+          "path": "/data/foundation/export/batches/{batch_id}/failed",
+          "score": 0.36,
+          "use_when": "List failed files for an export batch."
+        },
+        {
+          "id": "export_batch_files",
+          "method": "GET",
+          "path": "/data/foundation/export/batches/{batch_id}/files",
+          "score": 0.36,
+          "use_when": "List files available for download in an export batch."
+        },
+        {
+          "id": "catalog_batch_detail",
+          "method": "GET",
+          "path": "/data/foundation/catalog/batches/{batch_id}",
+          "score": 0.18,
+          "use_when": "Fetch batch details by ID."
+        }
+      ],
+      "candidate_context_tokens": 1113,
+      "candidate_join_hints": [
+        {
+          "path": "dim_segment.SEGMENTID->hkg_br_segment_target.SEGMENTID",
+          "reason": "Curated: Segment to target bridge.",
+          "score": 1.4
+        },
+        {
+          "path": "dim_target.TARGETID->hkg_br_segment_target.TARGETID",
+          "reason": "Curated: Segment to target bridge.",
+          "score": 1.4
+        },
+        {
+          "path": "br_campaign_segment.SEGMENTID->dim_segment.SEGMENTID",
+          "reason": "Matching ID-like column name.",
+          "score": 0.7
+        },
+        {
+          "path": "br_campaign_segment.SEGMENTID->hkg_br_segment_target.SEGMENTID",
+          "reason": "Matching ID-like column name.",
+          "score": 0.7
+        },
+        {
+          "path": "dim_collection.COLLECTIONID->hkg_br_blueprint_collection.COLLECTIONID",
+          "reason": "Matching ID-like column name.",
+          "score": 0.7
+        },
+        {
+          "path": "dim_collection.COLLECTIONID->hkg_br_collection_property.COLLECTIONID",
+          "reason": "Matching ID-like column name.",
+          "score": 0.7
+        },
+        {
+          "path": "dim_collection.COLLECTIONID->hkg_br_collection_segment.COLLECTIONID",
+          "reason": "Matching ID-like column name.",
+          "score": 0.7
+        },
+        {
+          "path": "dim_collection.COLLECTIONID->hkg_br_source_collection.COLLECTIONID",
+          "reason": "Matching ID-like column name.",
+          "score": 0.7
+        }
+      ],
+      "candidate_tables": [
+        "dim_collection",
+        "dim_segment",
+        "dim_target",
+        "hkg_br_segment_target"
+      ],
+      "confidence": 0.6667,
+      "full_schema_context_tokens": 4682,
+      "gold_api_paths": [
+        "/data/foundation/catalog/batches"
+      ],
+      "gold_tables": [],
+      "query": "List the most recently created batches.",
+      "query_id": "example_028",
+      "score_margin": 0.0,
+      "used_gold_patterns": false
+    },
+    {
+      "api_recall_at_3": 0.0,
+      "api_recall_at_5": 1.0,
+      "candidate_apis": [
+        {
+          "id": "export_batch_failed",
+          "method": "GET",
+          "path": "/data/foundation/export/batches/{batch_id}/failed",
+          "score": 0.36,
+          "use_when": "List failed files for an export batch."
+        },
+        {
+          "id": "audit_events",
+          "method": "GET",
+          "path": "/data/foundation/audit/events",
+          "score": 0.18,
+          "use_when": "Audit events for destination/dataset/entity changes."
+        },
+        {
+          "id": "audit_events_short",
+          "method": "GET",
+          "path": "/audit/events",
+          "score": 0.18,
+          "use_when": "Gold-example shorthand for audit events."
+        },
+        {
+          "id": "catalog_batch_detail",
+          "method": "GET",
+          "path": "/data/foundation/catalog/batches/{batch_id}",
+          "score": 0.18,
+          "use_when": "Fetch batch details by ID."
+        },
+        {
+          "id": "catalog_batches",
+          "method": "GET",
+          "path": "/data/foundation/catalog/batches",
+          "score": 0.18,
+          "use_when": "List/count catalog batches."
+        }
+      ],
+      "candidate_context_tokens": 625,
+      "candidate_join_hints": [],
+      "candidate_tables": [
+        "br_campaign_segment",
+        "dim_property",
+        "dim_target",
+        "hkg_br_base_segment_used_by_dependent_segment",
+        "hkg_br_blueprint_collection"
+      ],
+      "confidence": 0.0833,
+      "full_schema_context_tokens": 4682,
+      "gold_api_paths": [
+        "/data/foundation/catalog/batches"
+      ],
+      "gold_tables": [],
+      "query": "How many batches have status 'success'?",
+      "query_id": "example_029",
+      "score_margin": 0.0,
+      "used_gold_patterns": false
+    },
+    {
+      "api_recall_at_3": 0.0,
+      "api_recall_at_5": 0.0,
+      "candidate_apis": [
+        {
+          "id": "catalog_batch_detail",
+          "method": "GET",
+          "path": "/data/foundation/catalog/batches/{batch_id}",
+          "score": 0.36,
+          "use_when": "Fetch batch details by ID."
+        },
+        {
+          "id": "export_batch_failed",
+          "method": "GET",
+          "path": "/data/foundation/export/batches/{batch_id}/failed",
+          "score": 0.18,
+          "use_when": "List failed files for an export batch."
+        },
+        {
+          "id": "export_batch_files",
+          "method": "GET",
+          "path": "/data/foundation/export/batches/{batch_id}/files",
+          "score": 0.18,
+          "use_when": "List files available for download in an export batch."
+        },
+        {
+          "id": "schema_registry_schema",
+          "method": "GET",
+          "path": "/data/foundation/schemaregistry/tenant/schemas/{schema_id}",
+          "score": 0.18,
+          "use_when": "Fetch schema details when a concrete schema ID is known."
+        },
+        {
+          "id": "unified_tag_detail",
+          "method": "GET",
+          "path": "/unifiedtags/tags/{tag_id}",
+          "score": 0.18,
+          "use_when": "Fetch tag details when a tag ID is known."
+        }
+      ],
+      "candidate_context_tokens": 683,
+      "candidate_join_hints": [],
+      "candidate_tables": [
+        "br_campaign_segment",
+        "dim_property",
+        "dim_target",
+        "hkg_br_base_segment_used_by_dependent_segment",
+        "hkg_br_blueprint_collection"
+      ],
+      "confidence": 0.0833,
+      "full_schema_context_tokens": 4682,
+      "gold_api_paths": [
+        "/data/foundation/catalog/batches/01KP69BPA5ZKFB7HCDYPE4GN6F"
+      ],
+      "gold_tables": [],
+      "query": "Show the details of batch 01KP69BPA5ZKFB7HCDYPE4GN6F.",
+      "query_id": "example_030",
+      "score_margin": 0.0,
+      "used_gold_patterns": false
+    },
+    {
+      "api_recall_at_3": 0.0,
+      "api_recall_at_5": 0.0,
+      "candidate_apis": [
+        {
+          "id": "audit_events",
+          "method": "GET",
+          "path": "/data/foundation/audit/events",
+          "score": 1.18,
+          "use_when": "Audit events for destination/dataset/entity changes."
+        },
+        {
+          "id": "audit_events_short",
+          "method": "GET",
+          "path": "/audit/events",
+          "score": 1.18,
+          "use_when": "Gold-example shorthand for audit events."
+        },
+        {
+          "id": "export_batch_files",
+          "method": "GET",
+          "path": "/data/foundation/export/batches/{batch_id}/files",
+          "score": 0.9,
+          "use_when": "List files available for download in an export batch."
+        },
+        {
+          "id": "export_batch_failed",
+          "method": "GET",
+          "path": "/data/foundation/export/batches/{batch_id}/failed",
+          "score": 0.36,
+          "use_when": "List failed files for an export batch."
+        },
+        {
+          "id": "catalog_batch_detail",
+          "method": "GET",
+          "path": "/data/foundation/catalog/batches/{batch_id}",
+          "score": 0.18,
+          "use_when": "Fetch batch details by ID."
+        }
+      ],
+      "candidate_context_tokens": 1207,
+      "candidate_join_hints": [
+        {
+          "path": "dim_segment.SEGMENTID->hkg_br_segment_target.SEGMENTID",
+          "reason": "Curated: Segment to target bridge.",
+          "score": 1.4
+        },
+        {
+          "path": "dim_target.TARGETID->hkg_br_segment_target.TARGETID",
+          "reason": "Curated: Segment to target bridge.",
+          "score": 1.4
+        },
+        {
+          "path": "br_campaign_segment.SEGMENTID->dim_segment.SEGMENTID",
+          "reason": "Matching ID-like column name.",
+          "score": 0.7
+        },
+        {
+          "path": "br_campaign_segment.SEGMENTID->hkg_br_segment_target.SEGMENTID",
+          "reason": "Matching ID-like column name.",
+          "score": 0.7
+        },
+        {
+          "path": "dim_collection.COLLECTIONID->hkg_br_blueprint_collection.COLLECTIONID",
+          "reason": "Matching ID-like column name.",
+          "score": 0.7
+        },
+        {
+          "path": "dim_collection.COLLECTIONID->hkg_br_collection_property.COLLECTIONID",
+          "reason": "Matching ID-like column name.",
+          "score": 0.7
+        },
+        {
+          "path": "dim_collection.COLLECTIONID->hkg_br_collection_segment.COLLECTIONID",
+          "reason": "Matching ID-like column name.",
+          "score": 0.7
+        },
+        {
+          "path": "dim_collection.COLLECTIONID->hkg_br_source_collection.COLLECTIONID",
+          "reason": "Matching ID-like column name.",
+          "score": 0.7
+        }
+      ],
+      "candidate_tables": [
+        "dim_collection",
+        "dim_segment",
+        "dim_target",
+        "hkg_br_segment_target"
+      ],
+      "confidence": 0.6667,
+      "full_schema_context_tokens": 4682,
+      "gold_api_paths": [
+        "/data/foundation/export/batches/69de8a0e0cc6102b5d11f01e/files"
+      ],
+      "gold_tables": [],
+      "query": "Which files are available for download in batch 69de8a0e0cc6102b5d11f01e?",
+      "query_id": "example_031",
+      "score_margin": 0.0,
+      "used_gold_patterns": false
+    },
+    {
+      "api_recall_at_3": 0.0,
+      "api_recall_at_5": 0.0,
+      "candidate_apis": [
+        {
+          "id": "export_batch_failed",
+          "method": "GET",
+          "path": "/data/foundation/export/batches/{batch_id}/failed",
+          "score": 0.54,
+          "use_when": "List failed files for an export batch."
+        },
+        {
+          "id": "export_batch_files",
+          "method": "GET",
+          "path": "/data/foundation/export/batches/{batch_id}/files",
+          "score": 0.36,
+          "use_when": "List files available for download in an export batch."
+        },
+        {
+          "id": "audit_events",
+          "method": "GET",
+          "path": "/data/foundation/audit/events",
+          "score": 0.18,
+          "use_when": "Audit events for destination/dataset/entity changes."
+        },
+        {
+          "id": "audit_events_short",
+          "method": "GET",
+          "path": "/audit/events",
+          "score": 0.18,
+          "use_when": "Gold-example shorthand for audit events."
+        },
+        {
+          "id": "catalog_batch_detail",
+          "method": "GET",
+          "path": "/data/foundation/catalog/batches/{batch_id}",
+          "score": 0.18,
+          "use_when": "Fetch batch details by ID."
+        }
+      ],
+      "candidate_context_tokens": 666,
+      "candidate_join_hints": [],
+      "candidate_tables": [
+        "br_campaign_segment",
+        "dim_property",
+        "dim_target",
+        "hkg_br_base_segment_used_by_dependent_segment",
+        "hkg_br_blueprint_collection"
+      ],
+      "confidence": 0.0833,
+      "full_schema_context_tokens": 4682,
+      "gold_api_paths": [
+        "/data/foundation/export/batches/01KP6MNQ3X71RP6MNH6FHWGHVE/failed"
+      ],
+      "gold_tables": [],
+      "query": "Show failed files for batch 01KP6MNQ3X71RP6MNH6FHWGHVE.",
+      "query_id": "example_032",
+      "score_margin": 0.0,
+      "used_gold_patterns": false
+    },
+    {
+      "api_recall_at_3": 1.0,
+      "api_recall_at_5": 1.0,
+      "candidate_apis": [
+        {
+          "id": "observability_metrics",
+          "method": "POST",
+          "path": "/data/infrastructure/observability/insights/metrics",
+          "score": 1.0,
+          "use_when": "Query observability metric time series."
+        },
+        {
+          "id": "catalog_batches",
+          "method": "GET",
+          "path": "/data/foundation/catalog/batches",
+          "score": 0.36,
+          "use_when": "List/count catalog batches."
+        },
+        {
+          "id": "catalog_datasets",
+          "method": "GET",
+          "path": "/data/foundation/catalog/dataSets",
+          "score": 0.36,
+          "use_when": "List datasets and dataset metadata."
+        },
+        {
+          "id": "audit_events",
+          "method": "GET",
+          "path": "/data/foundation/audit/events",
+          "score": 0.18,
+          "use_when": "Audit events for destination/dataset/entity changes."
+        },
+        {
+          "id": "audit_events_short",
+          "method": "GET",
+          "path": "/audit/events",
+          "score": 0.18,
+          "use_when": "Gold-example shorthand for audit events."
+        }
+      ],
+      "candidate_context_tokens": 728,
+      "candidate_join_hints": [],
+      "candidate_tables": [
+        "br_campaign_segment",
+        "dim_property",
+        "dim_target",
+        "hkg_br_base_segment_used_by_dependent_segment",
+        "hkg_br_blueprint_collection"
+      ],
+      "confidence": 0.0833,
+      "full_schema_context_tokens": 4682,
+      "gold_api_paths": [
+        "/data/infrastructure/observability/insights/metrics"
+      ],
+      "gold_tables": [],
+      "query": "What are the daily 'timeseries.ingestion.dataset.recordsuccess.count' values between '2026-03-15' and '2026-03-31'?",
+      "query_id": "example_033",
+      "score_margin": 0.0,
+      "used_gold_patterns": false
+    },
+    {
+      "api_recall_at_3": 0.0,
+      "api_recall_at_5": 0.0,
+      "candidate_apis": [
+        {
+          "id": "ups_audiences",
+          "method": "GET",
+          "path": "/data/core/ups/audiences",
+          "score": 0.36,
+          "use_when": "List or look up Real-Time CDP audiences and audience metadata/counts."
+        },
+        {
+          "id": "audit_events",
+          "method": "GET",
+          "path": "/data/foundation/audit/events",
+          "score": 0.18,
+          "use_when": "Audit events for destination/dataset/entity changes."
+        },
+        {
+          "id": "audit_events_short",
+          "method": "GET",
+          "path": "/audit/events",
+          "score": 0.18,
+          "use_when": "Gold-example shorthand for audit events."
+        },
+        {
+          "id": "catalog_datasets",
+          "method": "GET",
+          "path": "/data/foundation/catalog/dataSets",
+          "score": 0.18,
+          "use_when": "List datasets and dataset metadata."
+        },
+        {
+          "id": "export_batch_failed",
+          "method": "GET",
+          "path": "/data/foundation/export/batches/{batch_id}/failed",
+          "score": 0.18,
+          "use_when": "List failed files for an export batch."
+        }
+      ],
+      "candidate_context_tokens": 638,
+      "candidate_join_hints": [],
+      "candidate_tables": [
+        "br_campaign_segment",
+        "dim_property",
+        "dim_target",
+        "hkg_br_base_segment_used_by_dependent_segment",
+        "hkg_br_blueprint_collection"
+      ],
+      "confidence": 0.0833,
+      "full_schema_context_tokens": 4682,
+      "gold_api_paths": [
+        "/data/infrastructure/observability/insights/metrics"
+      ],
+      "gold_tables": [],
+      "query": "Show ingestion record counts and batch success counts for the last 90 days.",
+      "query_id": "example_034",
+      "score_margin": 0.0,
+      "used_gold_patterns": false
+    }
+  ],
+  "summary": {
+    "api_recall_at_3": 0.4677,
+    "api_recall_at_5": 0.5484,
+    "avg_candidate_context_tokens": 888.5714,
+    "avg_full_schema_context_tokens": 4682,
+    "compression_ratio": 0.1898,
+    "table_recall_at_3": 0.4333,
+    "table_recall_at_5": 0.5111
+  },
+  "used_gold_patterns": false
+}

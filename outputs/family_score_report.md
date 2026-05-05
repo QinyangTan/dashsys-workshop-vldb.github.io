@@ -2,16 +2,16 @@
 
 | Family | Examples | SQL | API | Answer | Correctness | Final | Tools | Runtime | Tokens | Lowest | Next Fix |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---|---|
-| audit | 2 | 0.9500 | 1.0000 | 0.5873 | 0.8562 | 0.8226 | 2.00 | 0.0106 | 1020 | example_012, example_014 | Add a concise evidence-grounded answer template. |
-| batch | 4 | 1.0000 | 1.0000 | 0.3892 | 0.8168 | 0.7987 | 1.00 | 0.0095 | 664 | example_029, example_030, example_031 | Add a concise evidence-grounded answer template. |
-| destination_dataflow | 3 | 0.9667 | 1.0000 | 0.6073 | 0.8689 | 0.8399 | 1.67 | 0.0101 | 967 | example_032, example_004, example_005 | Add a concise evidence-grounded answer template. |
-| journey_campaign | 3 | 0.9000 | 1.0000 | 0.6681 | 0.8604 | 0.8284 | 2.00 | 0.0100 | 845 | example_001, example_002, example_000 | Add a concise evidence-grounded answer template. |
-| merge_policy | 3 | 1.0000 | 1.0000 | 0.4122 | 0.8237 | 0.8058 | 1.00 | 0.0094 | 641 | example_020, example_019, example_021 | Add a concise evidence-grounded answer template. |
-| observability | 2 | 1.0000 | 1.0000 | 0.4140 | 0.8242 | 0.8036 | 1.00 | 0.0108 | 966 | example_033, example_034 | Add a concise evidence-grounded answer template. |
-| property_field | 1 | 0.9000 | 1.0000 | 0.7598 | 0.8879 | 0.8698 | 1.00 | 0.0092 | 671 | example_008 | Mostly healthy; monitor efficiency and hidden-query generalization. |
-| schema_dataset | 6 | 0.9500 | 0.9207 | 0.6595 | 0.8540 | 0.8197 | 2.00 | 0.0113 | 1122 | example_011, example_013, example_007 | Add a concise evidence-grounded answer template. |
-| segment_audience | 7 | 0.9857 | 1.0000 | 0.4547 | 0.8307 | 0.8079 | 1.29 | 0.0100 | 803 | example_025, example_024, example_003 | Add a concise evidence-grounded answer template. |
-| tags | 4 | 1.0000 | 1.0000 | 0.4260 | 0.8278 | 0.8063 | 1.25 | 0.0098 | 700 | example_017, example_016, example_018 | Add a concise evidence-grounded answer template. |
+| audit | 2 | 0.9500 | 1.0000 | 0.5873 | 0.8562 | 0.8226 | 2.00 | 0.0108 | 1020 | example_012, example_014 | Add a concise evidence-grounded answer template. |
+| batch | 4 | 1.0000 | 1.0000 | 0.3892 | 0.8168 | 0.7987 | 1.00 | 0.0098 | 664 | example_029, example_030, example_031 | Add a concise evidence-grounded answer template. |
+| destination_dataflow | 3 | 0.9667 | 1.0000 | 0.6073 | 0.8689 | 0.8399 | 1.67 | 0.0104 | 967 | example_032, example_004, example_005 | Add a concise evidence-grounded answer template. |
+| journey_campaign | 3 | 0.9000 | 1.0000 | 0.6681 | 0.8604 | 0.8284 | 2.00 | 0.0102 | 845 | example_001, example_002, example_000 | Add a concise evidence-grounded answer template. |
+| merge_policy | 3 | 1.0000 | 1.0000 | 0.4122 | 0.8237 | 0.8058 | 1.00 | 0.0097 | 641 | example_020, example_019, example_021 | Add a concise evidence-grounded answer template. |
+| observability | 2 | 1.0000 | 1.0000 | 0.4140 | 0.8242 | 0.8036 | 1.00 | 0.0110 | 966 | example_033, example_034 | Add a concise evidence-grounded answer template. |
+| property_field | 1 | 0.9000 | 1.0000 | 0.7598 | 0.8879 | 0.8698 | 1.00 | 0.0099 | 671 | example_008 | Mostly healthy; monitor efficiency and hidden-query generalization. |
+| schema_dataset | 6 | 0.9500 | 0.9207 | 0.6595 | 0.8540 | 0.8197 | 2.00 | 0.0117 | 1122 | example_011, example_013, example_007 | Add a concise evidence-grounded answer template. |
+| segment_audience | 7 | 0.9857 | 1.0000 | 0.4547 | 0.8307 | 0.8079 | 1.29 | 0.0102 | 803 | example_025, example_024, example_003 | Add a concise evidence-grounded answer template. |
+| tags | 4 | 1.0000 | 1.0000 | 0.4260 | 0.8278 | 0.8063 | 1.25 | 0.0100 | 700 | example_017, example_016, example_018 | Add a concise evidence-grounded answer template. |
 
 ## NLP Diagnostics For Lowest Examples
 - audit: [{"candidate": "generic_sql_first", "query_id": "example_012", "rewrites": ["important_plurals->singular"], "tables": []}, {"candidate": "generic_sql_first", "query_id": "example_014", "rewrites": [], "tables": []}]

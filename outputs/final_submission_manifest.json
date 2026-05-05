@@ -460,9 +460,21 @@
       "source_dir": "[REDACTED]/Desktop/dashsys-workshop-vldb/outputs/is_the_birthday_message_journey_published/sql_first_api_verify",
       "strategy": "SQL_FIRST_API_VERIFY",
       "trajectory_json_valid": true
+    },
+    {
+      "files": {
+        "filled_system_prompt.txt": true,
+        "metadata.json": true,
+        "trajectory.json": true
+      },
+      "original_query": "List all journeys",
+      "query_id": "query_039",
+      "source_dir": "[REDACTED]/Desktop/dashsys-workshop-vldb/outputs/list_all_journeys/sql_first_api_verify",
+      "strategy": "SQL_FIRST_API_VERIFY",
+      "trajectory_json_valid": true
     }
   ],
   "source_code_zip_exists": true,
   "system_prompt_template_exists": true,
-  "total_number_of_queries": 38
+  "total_number_of_queries": 39
 }

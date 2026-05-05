@@ -30,6 +30,7 @@ def main() -> int:
     query_dirs = select_submission_query_dirs(
         discover_query_output_dirs(config.outputs_dir),
         preferred_strategy=preferred_strategy,
+        require_complete_trajectory=True,
     )
     manifest_queries = []
     for index, source_dir in enumerate(query_dirs, start=1):
@@ -89,18 +90,23 @@ def discover_query_output_dirs(outputs_dir: Path) -> list[Path]:
     return sorted(candidates, key=lambda path: str(path))
 
 
-def select_submission_query_dirs(query_dirs: list[Path], preferred_strategy: str) -> list[Path]:
+def select_submission_query_dirs(
+    query_dirs: list[Path],
+    preferred_strategy: str,
+    *,
+    require_complete_trajectory: bool = False,
+) -> list[Path]:
     grouped: dict[str, list[tuple[str | None, Path]]] = {}
     for directory in query_dirs:
         trajectory_path = directory / "trajectory.json"
         try:
             trajectory = json.loads(trajectory_path.read_text(encoding="utf-8"))
         except json.JSONDecodeError:
-            key = str(directory)
-            strategy = None
-        else:
-            key = str(trajectory.get("query_id") or trajectory.get("original_query") or directory.parent)
-            strategy = trajectory.get("strategy")
+            continue
+        if require_complete_trajectory and not required_trajectory_fields_present(trajectory):
+            continue
+        key = str(trajectory.get("query_id") or trajectory.get("original_query") or directory.parent)
+        strategy = trajectory.get("strategy")
         grouped.setdefault(key, []).append((strategy, directory))
 
     selected = []
@@ -111,6 +117,11 @@ def select_submission_query_dirs(query_dirs: list[Path], preferred_strategy: str
         else:
             selected.append(sorted((directory for _, directory in entries), key=lambda path: str(path))[0])
     return sorted(selected, key=lambda path: str(path))
+
+
+def required_trajectory_fields_present(trajectory: dict[str, Any]) -> bool:
+    required = ["final_answer", "tool_call_count", "runtime", "estimated_tokens"]
+    return all(key in trajectory for key in required)
 
 
 def scan_for_output_secrets(final_dir: Path) -> dict[str, Any]:
