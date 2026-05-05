@@ -13,18 +13,3 @@ __pycache__/
 .env
 data/data.json
 data/DBSnapshot/*.parquet
-
-# Keep top-level generated reports trackable so future agents/GPT runs can read
-# evaluation history, while ignoring bulky per-query/package artifacts.
-outputs/*
-!outputs/
-!outputs/*.md
-!outputs/*.json
-!outputs/*.csv
-outputs/eval/
-outputs/final_submission/
-outputs/source_code/
-outputs/source_code.zip
-outputs/probe*/
-outputs/threshold_runs/
-outputs/robustness_runs/

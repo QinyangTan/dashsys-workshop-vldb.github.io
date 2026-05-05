@@ -24,15 +24,15 @@ Rows are sorted from lowest final score to highest.
 | 18 | example_015 | SQL_ONLY_BASELINE | 0.4848 | 1.0000 | 0.0000 | 0.3353 | API_CALL_COUNT_MISMATCH | Emit the expected sequence of API calls or intentionally document why a call is skipped. |
 | 19 | example_031 | SQL_ONLY_BASELINE | 0.4889 | 1.0000 | 0.0000 | 0.3611 | API_CALL_COUNT_MISMATCH | Emit the expected sequence of API calls or intentionally document why a call is skipped. |
 | 20 | example_033 | SQL_ONLY_BASELINE | 0.4923 | 1.0000 | 0.0000 | 0.3716 | API_CALL_COUNT_MISMATCH | Emit the expected sequence of API calls or intentionally document why a call is skipped. |
-| 21 | example_016 | SQL_ONLY_BASELINE | 0.4932 | 1.0000 | 0.0000 | 0.3750 | API_CALL_COUNT_MISMATCH | Emit the expected sequence of API calls or intentionally document why a call is skipped. |
+| 21 | example_016 | SQL_ONLY_BASELINE | 0.4933 | 1.0000 | 0.0000 | 0.3750 | API_CALL_COUNT_MISMATCH | Emit the expected sequence of API calls or intentionally document why a call is skipped. |
 | 22 | example_024 | SQL_ONLY_BASELINE | 0.4950 | 1.0000 | 0.0000 | 0.3858 | API_CALL_COUNT_MISMATCH | Emit the expected sequence of API calls or intentionally document why a call is skipped. |
 | 23 | example_021 | SQL_ONLY_BASELINE | 0.4951 | 1.0000 | 0.0000 | 0.3780 | API_CALL_COUNT_MISMATCH | Emit the expected sequence of API calls or intentionally document why a call is skipped. |
 | 24 | example_025 | SQL_ONLY_BASELINE | 0.5012 | 1.0000 | 0.0000 | 0.4067 | API_CALL_COUNT_MISMATCH | Emit the expected sequence of API calls or intentionally document why a call is skipped. |
 | 25 | example_020 | SQL_ONLY_BASELINE | 0.5017 | 1.0000 | 0.0000 | 0.3919 | API_CALL_COUNT_MISMATCH | Emit the expected sequence of API calls or intentionally document why a call is skipped. |
 | 26 | example_018 | SQL_ONLY_BASELINE | 0.5023 | 1.0000 | 0.0000 | 0.3993 | API_CALL_COUNT_MISMATCH | Emit the expected sequence of API calls or intentionally document why a call is skipped. |
-| 27 | example_023 | SQL_ONLY_BASELINE | 0.5041 | 1.0000 | 0.0000 | 0.4163 | API_CALL_COUNT_MISMATCH | Emit the expected sequence of API calls or intentionally document why a call is skipped. |
+| 27 | example_023 | SQL_ONLY_BASELINE | 0.5042 | 1.0000 | 0.0000 | 0.4163 | API_CALL_COUNT_MISMATCH | Emit the expected sequence of API calls or intentionally document why a call is skipped. |
 | 28 | example_012 | SQL_ONLY_BASELINE | 0.5050 | 1.0000 | 0.0000 | 0.4163 | API_CALL_COUNT_MISMATCH | Emit the expected sequence of API calls or intentionally document why a call is skipped. |
-| 29 | example_000 | LLM_FREE_AGENT_BASELINE | 0.5062 | 0.0000 | 1.0000 | 0.7922 | SQL_COLUMN_MISMATCH | Align the selected projection/aliases with the requested fields and known gold-style columns. |
+| 29 | example_000 | LLM_FREE_AGENT_BASELINE | 0.5063 | 0.0000 | 1.0000 | 0.7922 | SQL_COLUMN_MISMATCH | Align the selected projection/aliases with the requested fields and known gold-style columns. |
 | 30 | example_029 | SQL_ONLY_BASELINE | 0.5084 | 1.0000 | 0.0000 | 0.4156 | API_CALL_COUNT_MISMATCH | Emit the expected sequence of API calls or intentionally document why a call is skipped. |
 | 31 | example_026 | SQL_ONLY_BASELINE | 0.5094 | 1.0000 | 0.0000 | 0.4218 | API_CALL_COUNT_MISMATCH | Emit the expected sequence of API calls or intentionally document why a call is skipped. |
 | 32 | example_034 | SQL_ONLY_BASELINE | 0.5123 | 1.0000 | 0.0000 | 0.4283 | API_CALL_COUNT_MISMATCH | Emit the expected sequence of API calls or intentionally document why a call is skipped. |
@@ -45,11 +45,11 @@ Rows are sorted from lowest final score to highest.
 | 39 | example_001 | SQL_ONLY_BASELINE | 0.5220 | 0.9000 | 0.0000 | 0.6011 | API_CALL_COUNT_MISMATCH | Emit the expected sequence of API calls or intentionally document why a call is skipped. |
 | 40 | example_003 | DETERMINISTIC_ROUTER_SELECTED_METADATA | 0.5275 | 0.9000 | 0.0000 | 0.6245 | API_CALL_COUNT_MISMATCH | Emit the expected sequence of API calls or intentionally document why a call is skipped. |
 | 41 | example_003 | SQL_ONLY_BASELINE | 0.5276 | 0.9000 | 0.0000 | 0.6245 | API_CALL_COUNT_MISMATCH | Emit the expected sequence of API calls or intentionally document why a call is skipped. |
-| 42 | example_002 | DETERMINISTIC_ROUTER_SELECTED_METADATA | 0.5353 | 0.9000 | 0.0000 | 0.6419 | API_CALL_COUNT_MISMATCH | Emit the expected sequence of API calls or intentionally document why a call is skipped. |
+| 42 | example_002 | DETERMINISTIC_ROUTER_SELECTED_METADATA | 0.5354 | 0.9000 | 0.0000 | 0.6419 | API_CALL_COUNT_MISMATCH | Emit the expected sequence of API calls or intentionally document why a call is skipped. |
 | 43 | example_002 | SQL_ONLY_BASELINE | 0.5354 | 0.9000 | 0.0000 | 0.6419 | API_CALL_COUNT_MISMATCH | Emit the expected sequence of API calls or intentionally document why a call is skipped. |
 | 44 | example_010 | LLM_FREE_AGENT_BASELINE | 0.5587 | 0.0000 | 1.0000 | 0.9694 | SQL_COLUMN_MISMATCH | Align the selected projection/aliases with the requested fields and known gold-style columns. |
 | 45 | example_014 | DETERMINISTIC_ROUTER_SELECTED_METADATA | 0.5611 | 0.9000 | 0.0000 | 0.7283 | API_CALL_COUNT_MISMATCH | Emit the expected sequence of API calls or intentionally document why a call is skipped. |
-| 46 | example_014 | SQL_ONLY_BASELINE | 0.5611 | 0.9000 | 0.0000 | 0.7283 | API_CALL_COUNT_MISMATCH | Emit the expected sequence of API calls or intentionally document why a call is skipped. |
+| 46 | example_014 | SQL_ONLY_BASELINE | 0.5612 | 0.9000 | 0.0000 | 0.7283 | API_CALL_COUNT_MISMATCH | Emit the expected sequence of API calls or intentionally document why a call is skipped. |
 | 47 | example_005 | SQL_ONLY_BASELINE | 0.5799 | 1.0000 | 0.0000 | 0.6677 | API_CALL_COUNT_MISMATCH | Emit the expected sequence of API calls or intentionally document why a call is skipped. |
 | 48 | example_007 | DETERMINISTIC_ROUTER_SELECTED_METADATA | 0.5911 | 0.9000 | 0.0000 | 0.8333 | API_CALL_COUNT_MISMATCH | Emit the expected sequence of API calls or intentionally document why a call is skipped. |
 | 49 | example_007 | SQL_ONLY_BASELINE | 0.5911 | 0.9000 | 0.0000 | 0.8333 | API_CALL_COUNT_MISMATCH | Emit the expected sequence of API calls or intentionally document why a call is skipped. |
@@ -86,7 +86,7 @@ Rows are sorted from lowest final score to highest.
 | 80 | example_015 | LLM_FREE_AGENT_BASELINE | 0.7947 | 1.0000 | 1.0000 | 0.4154 | ANSWER_TOO_GENERIC | Add a query-family answer template that names concrete SQL/API evidence. |
 | 81 | example_015 | TEMPLATE_FIRST | 0.7949 | 1.0000 | 1.0000 | 0.4154 | ANSWER_TOO_GENERIC | Add a query-family answer template that names concrete SQL/API evidence. |
 | 82 | example_029 | DETERMINISTIC_ROUTER_SELECTED_METADATA | 0.7951 | 1.0000 | 1.0000 | 0.3725 | ANSWER_TOO_GENERIC | Add a query-family answer template that names concrete SQL/API evidence. |
-| 83 | example_027 | LLM_FREE_AGENT_BASELINE | 0.7952 | 1.0000 | 1.0000 | 0.4241 | ANSWER_TOO_GENERIC | Add a query-family answer template that names concrete SQL/API evidence. |
+| 83 | example_027 | LLM_FREE_AGENT_BASELINE | 0.7953 | 1.0000 | 1.0000 | 0.4241 | ANSWER_TOO_GENERIC | Add a query-family answer template that names concrete SQL/API evidence. |
 | 84 | example_027 | TEMPLATE_FIRST | 0.7954 | 1.0000 | 1.0000 | 0.4241 | ANSWER_TOO_GENERIC | Add a query-family answer template that names concrete SQL/API evidence. |
 | 85 | example_007 | SQL_FIRST_API_VERIFY | 0.7959 | 0.9000 | 0.7760 | 0.7902 | API_PATH_MISMATCH | Add endpoint selection rules or endpoint catalog coverage for this query family. |
 | 86 | example_030 | SQL_FIRST_API_VERIFY | 0.7963 | 1.0000 | 1.0000 | 0.3823 | ANSWER_TOO_GENERIC | Add a query-family answer template that names concrete SQL/API evidence. |
@@ -98,7 +98,7 @@ Rows are sorted from lowest final score to highest.
 | 92 | example_023 | LLM_FREE_AGENT_BASELINE | 0.7972 | 1.0000 | 1.0000 | 0.4419 | ANSWER_TOO_GENERIC | Add a query-family answer template that names concrete SQL/API evidence. |
 | 93 | example_033 | SQL_FIRST_API_VERIFY | 0.7973 | 1.0000 | 1.0000 | 0.3951 | ANSWER_TOO_GENERIC | Add a query-family answer template that names concrete SQL/API evidence. |
 | 94 | example_033 | DETERMINISTIC_ROUTER_SELECTED_METADATA | 0.7978 | 1.0000 | 1.0000 | 0.3951 | ANSWER_TOO_GENERIC | Add a query-family answer template that names concrete SQL/API evidence. |
-| 95 | example_026 | LLM_FREE_AGENT_BASELINE | 0.7978 | 1.0000 | 1.0000 | 0.4308 | ANSWER_TOO_GENERIC | Add a query-family answer template that names concrete SQL/API evidence. |
+| 95 | example_026 | LLM_FREE_AGENT_BASELINE | 0.7979 | 1.0000 | 1.0000 | 0.4308 | ANSWER_TOO_GENERIC | Add a query-family answer template that names concrete SQL/API evidence. |
 | 96 | example_026 | TEMPLATE_FIRST | 0.7980 | 1.0000 | 1.0000 | 0.4308 | ANSWER_TOO_GENERIC | Add a query-family answer template that names concrete SQL/API evidence. |
 | 97 | example_025 | SQL_FIRST_API_VERIFY | 0.7991 | 1.0000 | 1.0000 | 0.3912 | ANSWER_TOO_GENERIC | Add a query-family answer template that names concrete SQL/API evidence. |
 | 98 | example_025 | DETERMINISTIC_ROUTER_SELECTED_METADATA | 0.7996 | 1.0000 | 1.0000 | 0.3912 | ANSWER_TOO_GENERIC | Add a query-family answer template that names concrete SQL/API evidence. |
@@ -131,8 +131,8 @@ Rows are sorted from lowest final score to highest.
 | 125 | example_016 | SQL_FIRST_API_VERIFY | 0.8070 | 1.0000 | 1.0000 | 0.4161 | ANSWER_TOO_GENERIC | Add a query-family answer template that names concrete SQL/API evidence. |
 | 126 | example_018 | SQL_FIRST_API_VERIFY | 0.8073 | 1.0000 | 1.0000 | 0.4195 | ANSWER_TOO_GENERIC | Add a query-family answer template that names concrete SQL/API evidence. |
 | 127 | example_006 | DETERMINISTIC_ROUTER_SELECTED_METADATA | 0.8074 | 1.0000 | 0.7480 | 0.7234 | API_CALL_COUNT_MISMATCH | Emit the expected sequence of API calls or intentionally document why a call is skipped. |
-| 128 | example_006 | TEMPLATE_FIRST | 0.8074 | 1.0000 | 0.7480 | 0.7234 | API_CALL_COUNT_MISMATCH | Emit the expected sequence of API calls or intentionally document why a call is skipped. |
-| 129 | example_016 | DETERMINISTIC_ROUTER_SELECTED_METADATA | 0.8075 | 1.0000 | 1.0000 | 0.4161 | ANSWER_TOO_GENERIC | Add a query-family answer template that names concrete SQL/API evidence. |
+| 128 | example_016 | DETERMINISTIC_ROUTER_SELECTED_METADATA | 0.8075 | 1.0000 | 1.0000 | 0.4161 | ANSWER_TOO_GENERIC | Add a query-family answer template that names concrete SQL/API evidence. |
+| 129 | example_006 | TEMPLATE_FIRST | 0.8075 | 1.0000 | 0.7480 | 0.7234 | API_CALL_COUNT_MISMATCH | Emit the expected sequence of API calls or intentionally document why a call is skipped. |
 | 130 | example_016 | TEMPLATE_FIRST | 0.8076 | 1.0000 | 1.0000 | 0.4161 | ANSWER_TOO_GENERIC | Add a query-family answer template that names concrete SQL/API evidence. |
 | 131 | example_018 | DETERMINISTIC_ROUTER_SELECTED_METADATA | 0.8078 | 1.0000 | 1.0000 | 0.4195 | ANSWER_TOO_GENERIC | Add a query-family answer template that names concrete SQL/API evidence. |
 | 132 | example_015 | SQL_FIRST_API_VERIFY | 0.8078 | 1.0000 | 1.0000 | 0.4154 | ANSWER_TOO_GENERIC | Add a query-family answer template that names concrete SQL/API evidence. |
@@ -1072,7 +1072,7 @@ Generated answer: Values for timeseries.ingestion.dataset.recordsuccess.count be
 
 Gold answer: Between March 15 and March 31, 2026, the record success count was 0 for all days except March 29th (152,120 records) and March 31st (2,701 records). The data shows virtually no ingestion activity for the first two weeks of the period, with a sudden increase near the end of the month.
 
-### example_016 / SQL_ONLY_BASELINE / 0.4932
+### example_016 / SQL_ONLY_BASELINE / 0.4933
 
 Query: List all tags in this sandbox.
 
@@ -1276,7 +1276,7 @@ Generated answer: Details for the tag named 'cool' require live API evidence, in
 
 Gold answer: I notice a discrepancy: the question asks for a tag named 'cool', but the API response shows details for a tag named 'sublist' (ID: 51175a7f-aa60-4533-bef1-717b3cef7818). The tag 'sublist' belongs to the Uncategorized category in the Adobe organization 87891E4066602D250A495F91@AdobeOrg. If you intended to look up a different tag named 'cool', that information isn't in the evidence provided.
 
-### example_023 / SQL_ONLY_BASELINE / 0.5041
+### example_023 / SQL_ONLY_BASELINE / 0.5042
 
 Query: List all segment definitions.
 
@@ -1349,7 +1349,7 @@ Generated answer: Based on the SQL evidence, 1 audience(s) match: Gender: Male (
 
 Gold answer: Based on the evidence, one audience has been newly mapped to a destination in the last 3 months: **Gender: Male**, which was mapped to Amazon S3 on March 29, 2026. This is confirmed by both the SQL query showing the segment-to-destination mapping and the audit log entry recording the activation creation event.
 
-### example_000 / LLM_FREE_AGENT_BASELINE / 0.5062
+### example_000 / LLM_FREE_AGENT_BASELINE / 0.5063
 
 Query: When was the journey 'Birthday Message' published?
 
@@ -1844,7 +1844,7 @@ Generated answer: Based on the evidence provided, there is no data available to 
 
 Gold answer: Based on the evidence provided, there is no data available to answer this question. The SQL query returned zero rows, the API call to retrieve audiences failed with a 400 error, and the flow service data that was successfully retrieved does not contain information about audiences connected to the SMS Opt-In destination.
 
-### example_002 / DETERMINISTIC_ROUTER_SELECTED_METADATA / 0.5353
+### example_002 / DETERMINISTIC_ROUTER_SELECTED_METADATA / 0.5354
 
 Query: List all journeys
 
@@ -2001,7 +2001,7 @@ Generated answer: Based on the evidence provided, no entities were created by do
 
 Gold answer: Based on the evidence provided, no entities were created by download. The SQL query returned zero results, and the audit log shows only a Segment entity that was created by a user, not by a download process.
 
-### example_014 / SQL_ONLY_BASELINE / 0.5611
+### example_014 / SQL_ONLY_BASELINE / 0.5612
 
 Query: Show me all entities created by download
 
@@ -3614,7 +3614,7 @@ Generated answer: The batch count requires live API evidence. Live API verificat
 
 Gold answer: Based on the API response provided, there is **1 batch** with status 'success'.
 
-### example_027 / LLM_FREE_AGENT_BASELINE / 0.7952
+### example_027 / LLM_FREE_AGENT_BASELINE / 0.7953
 
 Query: Show all segment jobs with status 'QUEUED'.
 
@@ -4174,7 +4174,7 @@ Generated answer: Values for timeseries.ingestion.dataset.recordsuccess.count be
 
 Gold answer: Between March 15 and March 31, 2026, the record success count was 0 for all days except March 29th (152,120 records) and March 31st (2,701 records). The data shows virtually no ingestion activity for the first two weeks of the period, with a sudden increase near the end of the month.
 
-### example_026 / LLM_FREE_AGENT_BASELINE / 0.7978
+### example_026 / LLM_FREE_AGENT_BASELINE / 0.7979
 
 Query: How many segment jobs are currently processing?
 
@@ -5654,7 +5654,49 @@ Generated answer: Based on the evidence provided, 2 datasets have been ingested 
 
 Gold answer: Based on the evidence provided, **2 datasets** have been ingested using the same schema in the prod sandbox. These datasets both use the "Journey Inbound External Segment Profile Schema."
 
-### example_006 / TEMPLATE_FIRST / 0.8074
+### example_016 / DETERMINISTIC_ROUTER_SELECTED_METADATA / 0.8075
+
+Query: List all tags in this sandbox.
+
+Failure category: `ANSWER_TOO_GENERIC`
+
+Recommended fix: Add a query-family answer template that names concrete SQL/API evidence.
+
+Generated SQL:
+```sql
+
+```
+
+Gold SQL:
+```sql
+
+```
+
+Generated API:
+```json
+[
+  {
+    "method": "GET",
+    "path": "/unifiedtags/tags",
+    "params": {
+      "limit": "25"
+    }
+  }
+]
+```
+
+Gold API:
+```json
+[
+  "GET /unifiedtags/tags?limit=25"
+]
+```
+
+Generated answer: The requested tag list requires live API evidence. Live API verification was not executed because Adobe credentials are unavailable.
+
+Gold answer: Based on the API response, the sandbox contains at least two tags: "AI-Generated" and "cool". The response appears to be truncated, so there may be additional tags not shown in the evidence.
+
+### example_006 / TEMPLATE_FIRST / 0.8075
 
 Query: How many datasets have been ingested using the same schema in the prod sandbox?
 
@@ -5705,48 +5747,6 @@ Gold API:
 Generated answer: Based on the evidence provided, 2 datasets have been ingested using the same schema. These datasets use "Journey Inbound External Segment Profile Schema". Live API verification was not executed because Adobe credentials are unavailable.
 
 Gold answer: Based on the evidence provided, **2 datasets** have been ingested using the same schema in the prod sandbox. These datasets both use the "Journey Inbound External Segment Profile Schema."
-
-### example_016 / DETERMINISTIC_ROUTER_SELECTED_METADATA / 0.8075
-
-Query: List all tags in this sandbox.
-
-Failure category: `ANSWER_TOO_GENERIC`
-
-Recommended fix: Add a query-family answer template that names concrete SQL/API evidence.
-
-Generated SQL:
-```sql
-
-```
-
-Gold SQL:
-```sql
-
-```
-
-Generated API:
-```json
-[
-  {
-    "method": "GET",
-    "path": "/unifiedtags/tags",
-    "params": {
-      "limit": "25"
-    }
-  }
-]
-```
-
-Gold API:
-```json
-[
-  "GET /unifiedtags/tags?limit=25"
-]
-```
-
-Generated answer: The requested tag list requires live API evidence. Live API verification was not executed because Adobe credentials are unavailable.
-
-Gold answer: Based on the API response, the sandbox contains at least two tags: "AI-Generated" and "cool". The response appears to be truncated, so there may be additional tags not shown in the evidence.
 
 ### example_016 / TEMPLATE_FIRST / 0.8076
 

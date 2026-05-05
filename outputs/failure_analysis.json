@@ -509,7 +509,7 @@
     "answer_score": 0.375,
     "api_score": 0.0,
     "failure_category": "API_CALL_COUNT_MISMATCH",
-    "final_score": 0.4932,
+    "final_score": 0.4933,
     "generated_answer": "The requested tag list requires live API evidence. API evidence was not requested.",
     "generated_api": [],
     "generated_sql": "SELECT \"SEGMENTID\", \"CAMPAIGNID\", \"LABELSSEGMENT\", \"LABELSCAMPAIGN\" FROM \"br_campaign_segment\"",
@@ -623,7 +623,7 @@
     "answer_score": 0.4163,
     "api_score": 0.0,
     "failure_category": "API_CALL_COUNT_MISMATCH",
-    "final_score": 0.5041,
+    "final_score": 0.5042,
     "generated_answer": "The requested segment definition list requires live Adobe API evidence with definition names, IDs, and pagination counts. API evidence was not requested.",
     "generated_api": [],
     "generated_sql": "SELECT \"SEGMENTID\", \"UPDATEDTIME\", \"ISACCOUNTSEGMENT\", \"NAME\", \"EVALUATIONCOMPLETEDTIME\", \"LABELSSEGMENT\", \"LIFECYCLESTATUS\", \"CREATEDTIME\" FROM \"dim_segment\"",
@@ -661,7 +661,7 @@
     "answer_score": 0.7922,
     "api_score": 1.0,
     "failure_category": "SQL_COLUMN_MISMATCH",
-    "final_score": 0.5062,
+    "final_score": 0.5063,
     "generated_answer": "The journey \"Birthday Message\" has not been published. The database shows a null published_time for this journey, and live API verification was not executed because Adobe credentials are unavailable.",
     "generated_api": [
       {
@@ -919,7 +919,7 @@
     "answer_score": 0.6419,
     "api_score": 0.0,
     "failure_category": "API_CALL_COUNT_MISMATCH",
-    "final_score": 0.5353,
+    "final_score": 0.5354,
     "generated_answer": "Based on the available evidence, there are 2 journeys found in the database: Birthday Message and Gold Tier Welcome Email. API evidence was not requested.",
     "generated_api": [],
     "generated_sql": "SELECT CAMPAIGN.\"NAME\" AS CAMPAIGNNAME, CAMPAIGN.\"CAMPAIGNID\" AS CAMPAIGNID FROM \"dim_campaign\" AS CAMPAIGN",
@@ -1004,7 +1004,7 @@
     "answer_score": 0.7283,
     "api_score": 0.0,
     "failure_category": "API_CALL_COUNT_MISMATCH",
-    "final_score": 0.5611,
+    "final_score": 0.5612,
     "generated_answer": "Based on the evidence provided, no entities were created by download. The SQL query returned zero rows, and API evidence was not requested.",
     "generated_api": [],
     "generated_sql": "SELECT DISTINCT C.\"COLLECTIONID\" AS collection_id, C.\"NAME\" AS collection_name, C.\"CREATEDTIME\" AS created_time FROM \"dim_collection\" AS C WHERE C.\"CREATEDBY\" ILIKE '%download%'",
@@ -1989,7 +1989,7 @@
     "answer_score": 0.4241,
     "api_score": 1.0,
     "failure_category": "ANSWER_TOO_GENERIC",
-    "final_score": 0.7952,
+    "final_score": 0.7953,
     "generated_answer": "Segment evaluation job IDs, statuses, sandbox, and segment counts require live Adobe API evidence. Live API verification was not executed because Adobe credentials are unavailable.",
     "generated_api": [
       {
@@ -2357,7 +2357,7 @@
     "answer_score": 0.4308,
     "api_score": 1.0,
     "failure_category": "ANSWER_TOO_GENERIC",
-    "final_score": 0.7978,
+    "final_score": 0.7979,
     "generated_answer": "The segment evaluation job count requires live Adobe API evidence. Live API verification was not executed because Adobe credentials are unavailable.",
     "generated_api": [
       {
@@ -3288,35 +3288,6 @@
     "strategy": "DETERMINISTIC_ROUTER_SELECTED_METADATA"
   },
   {
-    "answer_score": 0.7234,
-    "api_score": 0.748,
-    "failure_category": "API_CALL_COUNT_MISMATCH",
-    "final_score": 0.8074,
-    "generated_answer": "Based on the evidence provided, 2 datasets have been ingested using the same schema. These datasets use \"Journey Inbound External Segment Profile Schema\". Live API verification was not executed because Adobe credentials are unavailable.",
-    "generated_api": [
-      {
-        "method": "GET",
-        "params": {
-          "limit": "25",
-          "property": "schema.name"
-        },
-        "path": "/data/foundation/catalog/dataSets"
-      }
-    ],
-    "generated_sql": "SELECT S.\"BLUEPRINTID\" AS blueprint_id, S.\"NAME\" AS blueprint_name, COUNT(DISTINCT DS.\"COLLECTIONID\") AS collection_count FROM \"dim_collection\" AS D JOIN \"hkg_br_blueprint_collection\" AS DS ON D.\"COLLECTIONID\" = DS.\"COLLECTIONID\" JOIN \"dim_blueprint\" AS S ON DS.\"BLUEPRINTID\" = S.\"BLUEPRINTID\" GROUP BY S.\"BLUEPRINTID\", S.\"NAME\" HAVING COUNT(DISTINCT DS.\"COLLECTIONID\") > 1",
-    "gold_answer": "Based on the evidence provided, **2 datasets** have been ingested using the same schema in the prod sandbox. These datasets both use the \"Journey Inbound External Segment Profile Schema.\"",
-    "gold_api": [
-      "GET /data/foundation/catalog/dataSets?limit=25&property=schema.name",
-      "GET /data/foundation/schemaregistry/tenant/schemas/{schema_id}"
-    ],
-    "gold_sql": "SELECT S.blueprintid AS blueprint_id,\n       S.name AS blueprint_name,\n       COUNT(DISTINCT DS.collectionid) AS collection_count\nFROM dim_collection AS D\nJOIN hkg_br_blueprint_collection AS DS ON D.collectionid = DS.collectionid\nJOIN dim_blueprint AS S ON DS.blueprintid = S.blueprintid\nGROUP BY S.blueprintid,\n         S.name\nHAVING COUNT(DISTINCT DS.collectionid) > 1",
-    "query": "How many datasets have been ingested using the same schema in the prod sandbox?",
-    "query_id": "example_006",
-    "recommended_fix": "Emit the expected sequence of API calls or intentionally document why a call is skipped.",
-    "sql_score": 1.0,
-    "strategy": "TEMPLATE_FIRST"
-  },
-  {
     "answer_score": 0.4161,
     "api_score": 1.0,
     "failure_category": "ANSWER_TOO_GENERIC",
@@ -3342,6 +3313,35 @@
     "recommended_fix": "Add a query-family answer template that names concrete SQL/API evidence.",
     "sql_score": 1.0,
     "strategy": "DETERMINISTIC_ROUTER_SELECTED_METADATA"
+  },
+  {
+    "answer_score": 0.7234,
+    "api_score": 0.748,
+    "failure_category": "API_CALL_COUNT_MISMATCH",
+    "final_score": 0.8075,
+    "generated_answer": "Based on the evidence provided, 2 datasets have been ingested using the same schema. These datasets use \"Journey Inbound External Segment Profile Schema\". Live API verification was not executed because Adobe credentials are unavailable.",
+    "generated_api": [
+      {
+        "method": "GET",
+        "params": {
+          "limit": "25",
+          "property": "schema.name"
+        },
+        "path": "/data/foundation/catalog/dataSets"
+      }
+    ],
+    "generated_sql": "SELECT S.\"BLUEPRINTID\" AS blueprint_id, S.\"NAME\" AS blueprint_name, COUNT(DISTINCT DS.\"COLLECTIONID\") AS collection_count FROM \"dim_collection\" AS D JOIN \"hkg_br_blueprint_collection\" AS DS ON D.\"COLLECTIONID\" = DS.\"COLLECTIONID\" JOIN \"dim_blueprint\" AS S ON DS.\"BLUEPRINTID\" = S.\"BLUEPRINTID\" GROUP BY S.\"BLUEPRINTID\", S.\"NAME\" HAVING COUNT(DISTINCT DS.\"COLLECTIONID\") > 1",
+    "gold_answer": "Based on the evidence provided, **2 datasets** have been ingested using the same schema in the prod sandbox. These datasets both use the \"Journey Inbound External Segment Profile Schema.\"",
+    "gold_api": [
+      "GET /data/foundation/catalog/dataSets?limit=25&property=schema.name",
+      "GET /data/foundation/schemaregistry/tenant/schemas/{schema_id}"
+    ],
+    "gold_sql": "SELECT S.blueprintid AS blueprint_id,\n       S.name AS blueprint_name,\n       COUNT(DISTINCT DS.collectionid) AS collection_count\nFROM dim_collection AS D\nJOIN hkg_br_blueprint_collection AS DS ON D.collectionid = DS.collectionid\nJOIN dim_blueprint AS S ON DS.blueprintid = S.blueprintid\nGROUP BY S.blueprintid,\n         S.name\nHAVING COUNT(DISTINCT DS.collectionid) > 1",
+    "query": "How many datasets have been ingested using the same schema in the prod sandbox?",
+    "query_id": "example_006",
+    "recommended_fix": "Emit the expected sequence of API calls or intentionally document why a call is skipped.",
+    "sql_score": 1.0,
+    "strategy": "TEMPLATE_FIRST"
   },
   {
     "answer_score": 0.4161,

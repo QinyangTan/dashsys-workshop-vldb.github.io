@@ -4,14 +4,14 @@
 
 | System | Description | Normal correctness | Strict correctness | Final score | Tool calls | Tokens | LLM status |
 | --- | --- | ---: | ---: | ---: | ---: | ---: | --- |
-| REAL_LLM_TWO_TOOLS_BASELINE | Real naive LLM with execute_sql/call_api only |  |  |  |  |  | skipped |
+| REAL_LLM_TWO_TOOLS_BASELINE | Real naive LLM with execute_sql/call_api only |  |  |  |  |  | run |
 | LLM_FREE_AGENT_BASELINE | Deterministic approximation of a broad LLM agent | 0.6707 | 0.4879 | 0.4533 | 2.1143 | 975.9429 | n/a |
 | SQL_ONLY_BASELINE | Local DB only | 0.5763 | 0.2983 | 0.2799 | 1.0 | 708.4571 | n/a |
 | SQL_FIRST_API_VERIFY | Current deterministic optimized backend | 0.8407 | 0.6743 | 0.649 | 1.4571 | 851.7714 | n/a |
 | CANDIDATE_GUIDED_LLM_SQL | Optional candidate-context LLM SQL with fallback |  |  |  |  |  | n/a |
 | FULL_SCHEMA_LLM_SQL | Optional full-schema LLM SQL with fallback |  |  |  |  |  | n/a |
 | LLM_SQL_FIRST_API_VERIFY | Optional LLM SQL plus deterministic API verification |  |  |  |  |  | n/a |
-| LLM_CONTROLLER_OPTIMIZED_AGENT | Optional LLM controller with optimized backend tool |  |  |  |  |  | skipped |
+| LLM_CONTROLLER_OPTIMIZED_AGENT | Optional LLM controller with optimized backend tool |  |  |  |  |  | run |
 
 ## Improvement: Optimized vs Naive
 
@@ -24,7 +24,7 @@
 | final score | 0.4533 | 0.649 | 0.1957 | 0.4317 |
 | tool calls | 2.1143 | 1.4571 | -0.6572 | -0.3108 |
 | tokens | 975.9429 | 851.7714 | -124.1715 | -0.1272 |
-| runtime | 0.0178 | 0.0104 | -0.0074 | -0.4157 |
+| runtime | 0.0156 | 0.0089 | -0.0067 | -0.4295 |
 
 ## Technique Contribution
 
@@ -70,10 +70,10 @@ flowchart LR
 | `example_004` | 0.8355 | 0.835 | -0.0005 | optimized path uses validated templates/evidence policy/checkpoints |
 | `example_020` | 0.7878 | 0.8008 | 0.013 | optimized path uses validated templates/evidence policy/checkpoints |
 | `example_022` | 0.8014 | 0.8144 | 0.013 | optimized path uses validated templates/evidence policy/checkpoints |
+| `example_026` | 0.7979 | 0.8109 | 0.013 | optimized path uses validated templates/evidence policy/checkpoints |
 | `example_015` | 0.7947 | 0.8078 | 0.0131 | optimized path uses validated templates/evidence policy/checkpoints |
-| `example_026` | 0.7978 | 0.8109 | 0.0131 | optimized path uses validated templates/evidence policy/checkpoints |
 | `example_034` | 0.7969 | 0.81 | 0.0131 | optimized path uses validated templates/evidence policy/checkpoints |
 | `example_029` | 0.7811 | 0.7945 | 0.0134 | optimized path uses validated templates/evidence policy/checkpoints |
 | `example_017` | 0.7897 | 0.8032 | 0.0135 | optimized path uses validated templates/evidence policy/checkpoints |
+| `example_027` | 0.7953 | 0.8088 | 0.0135 | optimized path uses validated templates/evidence policy/checkpoints |
 | `example_033` | 0.7838 | 0.7973 | 0.0135 | optimized path uses validated templates/evidence policy/checkpoints |
-| `example_018` | 0.7937 | 0.8073 | 0.0136 | optimized path uses validated templates/evidence policy/checkpoints |
