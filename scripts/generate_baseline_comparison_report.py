@@ -74,6 +74,10 @@ def generate_report(config: Config) -> dict[str, Any]:
     optimized = strict_summary.get("SQL_FIRST_API_VERIFY") or normal_summary.get("SQL_FIRST_API_VERIFY") or {}
     naive = strict_summary.get("LLM_FREE_AGENT_BASELINE") or normal_summary.get("LLM_FREE_AGENT_BASELINE") or {}
     improvement = improvement_rows(naive, optimized)
+    successful_real = successful_real_llm_rows(llm)
+    failed_real = failed_real_llm_rows(llm)
+    deterministic = deterministic_approximation_rows(systems)
+    optimized_systems = optimized_system_rows(systems)
     return {
         "normal_available": bool(normal),
         "strict_available": bool(strict),
@@ -91,7 +95,11 @@ def generate_report(config: Config) -> dict[str, Any]:
         ],
         "mermaid": comparison_mermaid(),
         "failure_comparison": failure_comparison(normal),
-        "failed_real_llm_tool_loops": failed_real_llm_rows(llm),
+        "successful_real_llm_tool_loops": successful_real,
+        "failed_real_llm_tool_loops": failed_real,
+        "deterministic_approximation_baselines": deterministic,
+        "optimized_systems": optimized_systems,
+        "real_llm_tool_loop_warning": bool(failed_real and not successful_real),
     }
 
 
@@ -149,6 +157,34 @@ def failed_real_llm_rows(payload: dict[str, Any]) -> list[dict[str, Any]]:
         and row.get("real_llm_called")
         and not row.get("valid_agent_run")
     ]
+
+
+def successful_real_llm_rows(payload: dict[str, Any]) -> list[dict[str, Any]]:
+    if not payload or payload.get("skipped"):
+        return []
+    return [
+        row for row in payload.get("rows", [])
+        if row.get("system") == "REAL_LLM_TWO_TOOLS_BASELINE"
+        and row.get("real_llm_called")
+        and row.get("valid_agent_run")
+        and row.get("tool_calls_executed")
+    ]
+
+
+def deterministic_approximation_rows(systems: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    names = {"LLM_FREE_AGENT_BASELINE", "SQL_ONLY_BASELINE"}
+    return [row for row in systems if row.get("system") in names]
+
+
+def optimized_system_rows(systems: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    names = {
+        "SQL_FIRST_API_VERIFY",
+        "CANDIDATE_GUIDED_LLM_SQL",
+        "FULL_SCHEMA_LLM_SQL",
+        "LLM_SQL_FIRST_API_VERIFY",
+        "LLM_CONTROLLER_OPTIMIZED_AGENT",
+    }
+    return [row for row in systems if row.get("system") in names]
 
 
 def improvement_rows(naive: dict[str, Any], optimized: dict[str, Any]) -> list[dict[str, Any]]:
@@ -245,6 +281,21 @@ def render_markdown(report: dict[str, Any]) -> str:
                 status=status.get("status", "n/a"),
             )
         )
+    successful_real = report.get("successful_real_llm_tool_loops", [])
+    if successful_real:
+        lines.extend(
+            [
+                "",
+                "## Successful Real LLM Tool Loops",
+                "",
+                "| Query ID | Tool calls | Tool calls executed? | Valid run? |",
+                "| --- | ---: | --- | --- |",
+            ]
+        )
+        for row in successful_real[:20]:
+            lines.append(
+                f"| `{row.get('query_id')}` | {row.get('tool_call_count')} | {row.get('tool_calls_executed')} | {row.get('valid_agent_run')} |"
+            )
     failed_real = report.get("failed_real_llm_tool_loops", [])
     if failed_real:
         lines.extend(
@@ -252,7 +303,11 @@ def render_markdown(report: dict[str, Any]) -> str:
                 "",
                 "## Failed Real LLM Tool Loops",
                 "",
-                "Real LLM called but tool loop failed. These rows are not treated as successful real tool-using baseline runs.",
+                "REAL_LLM_TWO_TOOLS_BASELINE was attempted with a real LLM, but no valid tool-using run completed."
+                if report.get("real_llm_tool_loop_warning")
+                else "Some real LLM calls did not complete valid tool-using runs.",
+                "",
+                "These rows are not treated as successful real tool-using baseline runs.",
                 "",
                 "| Query ID | Tool calls | Tool calls executed? | Failure reason |",
                 "| --- | ---: | --- | --- |",

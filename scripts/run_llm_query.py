@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import sys
 from pathlib import Path
 
@@ -12,6 +13,7 @@ if str(ROOT) not in sys.path:
 
 from dashagent.config import Config
 from dashagent.executor import AgentExecutor, slugify
+from dashagent.llm_client import get_llm_client
 from dashagent.llm_tool_agent import run_optimized_llm_controller_agent, run_real_llm_two_tools_baseline
 
 
@@ -19,8 +21,12 @@ def main() -> int:
     parser = argparse.ArgumentParser(description="Run a DASHSys query through deterministic, optimized LLM, or naive LLM baseline modes.")
     parser.add_argument("query")
     parser.add_argument("--mode", choices=["deterministic", "optimized", "baseline", "candidate-sql", "full-schema-sql"], default="optimized")
+    parser.add_argument("--provider", choices=["openai", "openrouter"], help="Optional LLM provider override for LLM modes.")
     args = parser.parse_args()
+    if args.provider:
+        os.environ["LLM_PROVIDER"] = args.provider
     config = Config.from_env(ROOT)
+    llm_client = get_llm_client(args.provider) if args.provider else None
     qid = slugify(args.query)
     if args.mode == "deterministic":
         result = AgentExecutor(config).run(args.query, strategy="SQL_FIRST_API_VERIFY", query_id=qid)
@@ -32,12 +38,19 @@ def main() -> int:
         result = AgentExecutor(config).run(args.query, strategy="FULL_SCHEMA_LLM_SQL", query_id=qid)
         summary = _summary(args.mode, result["final_answer"], result["trajectory"], result["output_dir"], False, True)
     elif args.mode == "baseline":
-        result = run_real_llm_two_tools_baseline(args.query, config=config)
+        result = run_real_llm_two_tools_baseline(args.query, config=config, llm_client=llm_client)
         summary = _summary(args.mode, result.get("final_answer", ""), result.get("trajectory", {}), None, result.get("real_llm_used", False), result.get("backend_used", False))
         summary["skipped"] = result.get("skipped", False)
         summary["skipped_reason"] = result.get("skipped_reason")
+        summary["tool_calls_executed"] = result.get("tool_calls_executed", False)
+        summary["valid_agent_run"] = result.get("valid_agent_run", False)
+        summary["skipped_or_failed"] = result.get("skipped_or_failed", False)
+        summary["failure_reason"] = result.get("failure_reason", "")
+        summary["llm_turn_count"] = result.get("trajectory", {}).get("llm_turn_count", len(result.get("llm_turns", [])))
+        summary["provider"] = result.get("llm_provider", summary.get("provider"))
+        summary["model"] = result.get("llm_model")
     else:
-        result = run_optimized_llm_controller_agent(args.query, config=config)
+        result = run_optimized_llm_controller_agent(args.query, config=config, llm_client=llm_client)
         summary = _summary(args.mode, result.get("final_answer", ""), result.get("trajectory", {}), None, result.get("real_llm_used", False), result.get("backend_used", False))
         summary["skipped"] = result.get("skipped", False)
         summary["skipped_reason"] = result.get("skipped_reason")

@@ -6,24 +6,32 @@ from dashagent.llm_tool_agent import run_real_llm_two_tools_baseline
 
 
 class FakeLLMClient:
-    def __init__(self, responses):
+    def __init__(self, responses, provider="fake"):
         self.responses = list(responses)
         self.calls = []
+        self.provider = provider
 
     def available(self) -> bool:
         return True
 
     def provider_name(self) -> str:
-        return "fake"
+        return self.provider
 
     def model_name(self) -> str:
         return "fake-model"
 
-    def generate(self, system_prompt, user_prompt, tools=None):
-        self.calls.append({"system_prompt": system_prompt, "user_prompt": user_prompt, "tools": tools})
+    def generate_messages(self, messages, tools=None, tool_choice=None):
+        self.calls.append({"messages": list(messages), "tools": tools, "tool_choice": tool_choice})
         if self.responses:
             return self.responses.pop(0)
-        return {"ok": True, "content": '{"tool_calls":[],"final_answer":"Done."}', "tool_calls": []}
+        return {"ok": True, "content": "Done.", "tool_calls": [], "finish_reason": "stop"}
+
+    def generate(self, system_prompt, user_prompt, tools=None):
+        return self.generate_messages(
+            [{"role": "system", "content": system_prompt}, {"role": "user", "content": user_prompt}],
+            tools=tools,
+            tool_choice="auto" if tools else None,
+        )
 
 
 def test_real_llm_two_tools_baseline_skips_without_key(monkeypatch, tiny_project):
@@ -56,6 +64,10 @@ def test_native_tool_call_executes_sql_and_finishes(tiny_project):
     assert result["valid_agent_run"] is True
     assert result["tool_call_count"] == 1
     assert result["llm_tool_calls"][0]["validation"]["ok"] is True
+    assert result["llm_tool_calls"][0]["tool_name"] == "execute_sql"
+    second_call_messages = client.calls[1]["messages"]
+    assert any(message.get("role") == "assistant" and message.get("tool_calls") for message in second_call_messages)
+    assert any(message.get("role") == "tool" and message.get("tool_call_id") == "call_1" for message in second_call_messages)
 
 
 def test_json_tool_call_executes_sql(tiny_project):
@@ -89,7 +101,7 @@ def test_invalid_first_response_retries_then_succeeds(tiny_project):
     result = run_real_llm_two_tools_baseline("How many campaigns are there?", config=tiny_project, llm_client=client)
     assert result["valid_agent_run"] is True
     assert len(client.calls) >= 3
-    assert "STRICT FORMAT" in client.calls[1]["system_prompt"]
+    assert client.calls[1]["tool_choice"] == {"type": "function", "function": {"name": "execute_sql"}}
 
 
 def test_invalid_after_retry_is_failed_baseline(tiny_project):
@@ -104,7 +116,21 @@ def test_invalid_after_retry_is_failed_baseline(tiny_project):
     assert result["tool_calls_executed"] is False
     assert result["valid_agent_run"] is False
     assert result["skipped_or_failed"] is True
-    assert result["failure_reason"] == "invalid_tool_call_format_after_retry"
+    assert result["failure_reason"] == "no_valid_tool_call_after_native_retry"
+
+
+def test_openrouter_no_tool_calls_reports_model_limitation(tiny_project):
+    client = FakeLLMClient(
+        [
+            {"ok": True, "content": "I can answer directly.", "tool_calls": []},
+            {"ok": True, "content": "Still no tool call.", "tool_calls": []},
+        ],
+        provider="openrouter",
+    )
+    result = run_real_llm_two_tools_baseline("List all journeys", config=tiny_project, llm_client=client)
+    assert result["valid_agent_run"] is False
+    assert result["tool_calls_executed"] is False
+    assert result["failure_reason"] == "model_did_not_return_tool_calls"
 
 
 def test_destructive_sql_is_blocked_and_not_successful(tiny_project):

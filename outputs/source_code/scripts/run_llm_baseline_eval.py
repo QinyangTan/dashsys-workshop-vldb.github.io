@@ -13,6 +13,7 @@ if str(ROOT) not in sys.path:
 
 from dashagent.config import Config
 from dashagent.eval_harness import EvalHarness, score_answer
+from dashagent.llm_client import get_llm_client
 from dashagent.llm_tool_agent import run_optimized_llm_controller_agent, run_real_llm_two_tools_baseline
 
 
@@ -21,10 +22,14 @@ def main() -> int:
     config.outputs_dir.mkdir(parents=True, exist_ok=True)
     harness = EvalHarness(config)
     examples = harness.load_examples()
-    if not os.getenv("OPENAI_API_KEY"):
+    client = get_llm_client()
+    if not client.available():
+        skipped_probe = client.generate_messages([])
+        reason = skipped_probe.get("reason", "LLM provider API key is not set")
         payload = {
             "skipped": True,
-            "reason": "OPENAI_API_KEY is not set",
+            "reason": reason,
+            "provider": os.getenv("LLM_PROVIDER", "openai"),
             "rows": [],
             "systems": ["REAL_LLM_TWO_TOOLS_BASELINE", "LLM_CONTROLLER_OPTIMIZED_AGENT"],
         }
@@ -57,11 +62,14 @@ def main() -> int:
                     "runtime": round(elapsed, 4),
                     "skipped": result.get("skipped", False),
                     "real_llm_called": result.get("real_llm_called", bool(result.get("real_llm_used"))),
+                    "provider": result.get("llm_provider"),
+                    "model": result.get("llm_model"),
                     "tool_calls_executed": result.get("tool_calls_executed", result.get("tool_call_count", 0) > 0),
                     "valid_agent_run": valid_agent_run,
                     "skipped_or_failed": result.get("skipped_or_failed", result.get("skipped", False) or not valid_agent_run),
                     "failure_reason": result.get("failure_reason", result.get("skipped_reason", "")),
                     "llm_turn_count": result.get("trajectory", {}).get("llm_turn_count", len(result.get("llm_turns", []))),
+                    "llm_tool_calls": result.get("llm_tool_calls", result.get("trajectory", {}).get("llm_tool_calls", [])),
                     "validation_results": result.get("validation_results", result.get("trajectory", {}).get("validation_results", [])),
                     "execution_previews": result.get("execution_previews", result.get("trajectory", {}).get("execution_previews", [])),
                     "final_answer": result.get("final_answer", ""),

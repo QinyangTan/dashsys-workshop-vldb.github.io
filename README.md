@@ -2,7 +2,7 @@
 
 This project builds a DASHSys Systems Track agent for natural-language question answering over a local DuckDB/parquet snapshot and Adobe REST APIs.
 
-The default deterministic strategy is `SQL_FIRST_API_VERIFY`. The newer LLM layer is optional: when `OPENAI_API_KEY` is available, a real LLM can help with prompt routing, final response writing, and NL-to-SQL experiments. When no key is available, all LLM modes skip or fall back safely and the deterministic backend still works.
+The default deterministic strategy is `SQL_FIRST_API_VERIFY`. The newer LLM layer is optional: when an OpenAI or OpenRouter key is available, a real LLM can help with prompt routing, final response writing, and NL-to-SQL experiments. When no key is available, all LLM modes skip or fall back safely and the deterministic backend still works.
 
 ## 1. What the System Does
 
@@ -69,12 +69,24 @@ export ACCESS_TOKEN=...
 export ADOBE_BASE_URL=https://platform.adobe.io
 ```
 
-Real LLM integration is also optional:
+Real LLM integration is also optional. OpenAI remains the default provider:
 
 ```bash
+export LLM_PROVIDER=openai
 export OPENAI_API_KEY=...
 export OPENAI_MODEL=gpt-4o-mini
 ```
+
+OpenRouter is also supported through its OpenAI-compatible chat completions API:
+
+```bash
+export LLM_PROVIDER=openrouter
+export OPENROUTER_API_KEY="..."
+export OPENROUTER_MODEL="openai/gpt-4o-mini"
+export OPENROUTER_BASE_URL=https://openrouter.ai/api/v1
+```
+
+OpenRouter support is optional. Not all OpenRouter models support native tool/function calling; for `REAL_LLM_TWO_TOOLS_BASELINE`, use a model with reliable tool calling.
 
 No credentials are required for tests. Secrets are redacted from trajectories and reports.
 
@@ -107,12 +119,14 @@ Commands:
 python3 scripts/run_llm_query.py "Explain how checkpoints work" --mode optimized
 python3 scripts/run_llm_query.py "Is the 'Birthday Message' journey published?" --mode deterministic
 python3 scripts/run_llm_query.py "Is the 'Birthday Message' journey published?" --mode baseline
+python3 scripts/run_llm_query.py "List all journeys" --mode baseline --provider openrouter
+python3 scripts/run_llm_query.py "Is the 'Birthday Message' journey published?" --mode baseline --provider openrouter
 python3 scripts/run_llm_query.py "Is the 'Birthday Message' journey published?" --mode candidate-sql
 python3 scripts/run_llm_query.py "Is the 'Birthday Message' journey published?" --mode full-schema-sql
 python3 scripts/run_llm_baseline_eval.py
 ```
 
-If `OPENAI_API_KEY` is missing, real LLM modes report `skipped` or fall back to `SQL_FIRST_API_VERIFY`.
+If the selected provider key is missing, real LLM modes report `skipped` or fall back to `SQL_FIRST_API_VERIFY`.
 
 ## 6. LLM NL-To-SQL
 

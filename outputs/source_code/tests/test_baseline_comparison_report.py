@@ -56,6 +56,8 @@ def test_failed_real_llm_baseline_is_not_marked_successful(tiny_project):
     assert real_status["status"] == "real_llm_called_but_tool_loop_failed"
     assert real_status["valid_rows"] == 0
     assert report["failed_real_llm_tool_loops"]
+    assert report["real_llm_tool_loop_warning"] is True
+    assert not report["successful_real_llm_tool_loops"]
 
 
 def test_valid_real_llm_baseline_is_marked_successful(tiny_project):
@@ -87,3 +89,5 @@ def test_valid_real_llm_baseline_is_marked_successful(tiny_project):
     real_status = next(row for row in report["systems"] if row["system"] == "REAL_LLM_TWO_TOOLS_BASELINE")["llm_status"]
     assert real_status["status"] == "valid_tool_agent_run"
     assert real_status["valid_rows"] == 1
+    assert report["successful_real_llm_tool_loops"]
+    assert not report["failed_real_llm_tool_loops"]

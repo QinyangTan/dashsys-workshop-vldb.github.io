@@ -17,6 +17,7 @@ def generate_sql_with_llm(
 ) -> dict[str, Any]:
     client = llm_client or get_llm_client()
     if not client.available():
+        reason = client.generate_messages([]).get("reason", "LLM provider API key is not set")
         return {
             "ok": False,
             "sql": "",
@@ -25,7 +26,7 @@ def generate_sql_with_llm(
             "model": client.model_name(),
             "mode": mode,
             "skipped": True,
-            "error": "OPENAI_API_KEY is not set",
+            "error": reason,
         }
     system_prompt = (
         "You generate read-only DuckDB SQL for DASHSys. Use only the provided schema. "
@@ -71,6 +72,7 @@ def repair_sql_with_llm(
 ) -> dict[str, Any]:
     client = llm_client or get_llm_client()
     if not client.available():
+        reason = client.generate_messages([]).get("reason", "LLM provider API key is not set")
         return {
             "ok": False,
             "sql": "",
@@ -79,7 +81,7 @@ def repair_sql_with_llm(
             "model": client.model_name(),
             "mode": "repair",
             "skipped": True,
-            "error": "OPENAI_API_KEY is not set",
+            "error": reason,
         }
     system_prompt = (
         "Repair invalid read-only DuckDB SQL for DASHSys using only the provided schema and validator errors. "

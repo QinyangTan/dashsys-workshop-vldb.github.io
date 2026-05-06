@@ -1,5 +1,5 @@
 {
-  "answer_time": 0.0005425420822575688,
+  "answer_time": 0.0003749170573428273,
   "api_call_count": 1,
   "checkpoints": [
     {
@@ -15,7 +15,7 @@
       },
       "stage": "input",
       "technique": "raw user query capture",
-      "timestamp": "2026-05-05T21:27:52.242756+00:00"
+      "timestamp": "2026-05-06T02:39:05.672689+00:00"
     },
     {
       "checkpoint_id": "checkpoint_00_prompt_router",
@@ -45,7 +45,7 @@
       },
       "stage": "prompt routing",
       "technique": "LLM_DIRECT / LOCAL_DB_ONLY / SQL_PLUS_API / API_ONLY routing policy",
-      "timestamp": "2026-05-05T21:27:52.242804+00:00"
+      "timestamp": "2026-05-06T02:39:05.672724+00:00"
     },
     {
       "checkpoint_id": "checkpoint_simple_prompt_gate",
@@ -64,7 +64,7 @@
       },
       "stage": "input routing",
       "technique": "simple prompt gate",
-      "timestamp": "2026-05-05T21:27:52.242827+00:00"
+      "timestamp": "2026-05-06T02:39:05.672741+00:00"
     },
     {
       "checkpoint_id": "checkpoint_02_query_normalization",
@@ -88,7 +88,7 @@
       },
       "stage": "normalization",
       "technique": "data cleaning / query normalization",
-      "timestamp": "2026-05-05T21:27:52.242886+00:00"
+      "timestamp": "2026-05-06T02:39:05.672778+00:00"
     },
     {
       "checkpoint_id": "checkpoint_03_query_tokens",
@@ -110,7 +110,7 @@
       },
       "stage": "tokenization",
       "technique": "domain-aware tokenization/entity extraction",
-      "timestamp": "2026-05-05T21:27:52.242951+00:00"
+      "timestamp": "2026-05-06T02:39:05.672818+00:00"
     },
     {
       "checkpoint_id": "checkpoint_04_relevance_scoring",
@@ -167,7 +167,7 @@
       },
       "stage": "context selection",
       "technique": "attention-style relevance scoring",
-      "timestamp": "2026-05-05T21:27:52.244067+00:00"
+      "timestamp": "2026-05-06T02:39:05.673478+00:00"
     },
     {
       "checkpoint_id": "checkpoint_05_query_analysis",
@@ -196,7 +196,7 @@
       },
       "stage": "routing",
       "technique": "branch prediction / QueryAnalysis",
-      "timestamp": "2026-05-05T21:27:52.244074+00:00"
+      "timestamp": "2026-05-06T02:39:05.673482+00:00"
     },
     {
       "checkpoint_id": "checkpoint_06_lookup_path",
@@ -248,7 +248,7 @@
       },
       "stage": "path prediction",
       "technique": "TLB-style lookup path prediction",
-      "timestamp": "2026-05-05T21:27:52.244078+00:00"
+      "timestamp": "2026-05-06T02:39:05.673485+00:00"
     },
     {
       "checkpoint_id": "checkpoint_07_context_card",
@@ -312,7 +312,7 @@
       },
       "stage": "metadata packing",
       "technique": "huge-page-style compact context card",
-      "timestamp": "2026-05-05T21:27:52.247072+00:00"
+      "timestamp": "2026-05-06T02:39:05.675486+00:00"
     },
     {
       "checkpoint_id": "checkpoint_08_candidate_plans",
@@ -340,7 +340,7 @@
       },
       "stage": "planning",
       "technique": "pre-execution plan ensemble",
-      "timestamp": "2026-05-05T21:27:52.247312+00:00"
+      "timestamp": "2026-05-06T02:39:05.675629+00:00"
     },
     {
       "checkpoint_id": "checkpoint_09_plan_optimization",
@@ -368,7 +368,7 @@
       },
       "stage": "optimization",
       "technique": "compiler-style plan optimization",
-      "timestamp": "2026-05-05T21:27:52.247324+00:00"
+      "timestamp": "2026-05-06T02:39:05.675637+00:00"
     },
     {
       "checkpoint_id": "checkpoint_10_evidence_policy",
@@ -394,7 +394,7 @@
       },
       "stage": "evidence policy",
       "technique": "API_REQUIRED/API_OPTIONAL/API_SKIP policy",
-      "timestamp": "2026-05-05T21:27:52.247329+00:00"
+      "timestamp": "2026-05-06T02:39:05.675639+00:00"
     },
     {
       "checkpoint_id": "checkpoint_11_call_budget",
@@ -430,7 +430,7 @@
       },
       "stage": "efficiency control",
       "technique": "tool-call budgeting",
-      "timestamp": "2026-05-05T21:27:52.247346+00:00"
+      "timestamp": "2026-05-06T02:39:05.675650+00:00"
     },
     {
       "checkpoint_id": "checkpoint_12_validation",
@@ -474,7 +474,7 @@
       },
       "stage": "validation",
       "technique": "SQL/API safety validation",
-      "timestamp": "2026-05-05T21:27:52.249793+00:00"
+      "timestamp": "2026-05-06T02:39:05.677528+00:00"
     },
     {
       "checkpoint_id": "checkpoint_13_tool_execution",
@@ -516,7 +516,7 @@
       },
       "stage": "execution",
       "technique": "SQL/API tool execution",
-      "timestamp": "2026-05-05T21:27:52.249801+00:00"
+      "timestamp": "2026-05-06T02:39:05.677539+00:00"
     },
     {
       "checkpoint_id": "checkpoint_14_evidence_bus",
@@ -532,7 +532,7 @@
       },
       "stage": "evidence forwarding",
       "technique": "operand forwarding / EvidenceBus",
-      "timestamp": "2026-05-05T21:27:52.249806+00:00"
+      "timestamp": "2026-05-06T02:39:05.677542+00:00"
     },
     {
       "checkpoint_id": "checkpoint_15_answer_slots",
@@ -567,7 +567,7 @@
       },
       "stage": "answer synthesis",
       "technique": "structured answer slot extraction",
-      "timestamp": "2026-05-05T21:27:52.250238+00:00"
+      "timestamp": "2026-05-06T02:39:05.677827+00:00"
     },
     {
       "checkpoint_id": "checkpoint_16_answer_verification",
@@ -598,7 +598,7 @@
       },
       "stage": "answer verification",
       "technique": "claim verification / groundedness checking",
-      "timestamp": "2026-05-05T21:27:52.250245+00:00"
+      "timestamp": "2026-05-06T02:39:05.677833+00:00"
     },
     {
       "checkpoint_id": "checkpoint_17_answer_reranking",
@@ -616,7 +616,7 @@
       },
       "stage": "answer selection",
       "technique": "deterministic answer reranking",
-      "timestamp": "2026-05-05T21:27:52.250249+00:00"
+      "timestamp": "2026-05-06T02:39:05.677835+00:00"
     },
     {
       "checkpoint_id": "checkpoint_18_final_answer",
@@ -634,20 +634,20 @@
       },
       "stage": "final response",
       "technique": "concise grounded final response",
-      "timestamp": "2026-05-05T21:27:52.250277+00:00"
+      "timestamp": "2026-05-06T02:39:05.677860+00:00"
     }
   ],
   "domain_type": "SEGMENT_AUDIENCE",
   "errors": [],
   "estimated_tokens": 701,
-  "execution_time": 0.0003450419753789902,
+  "execution_time": 0.0002649999223649502,
   "final_answer": "Segment definition details require live Adobe API evidence with definition names, IDs, and counts. Live API verification was not executed because Adobe credentials are unavailable.",
   "original_query": "How many segment definitions exist in this sandbox?",
-  "planning_time": 0.0002708330284804106,
-  "preprocessing_time": 0.004246041993610561,
+  "planning_time": 0.00016212498303502798,
+  "preprocessing_time": 0.002745457924902439,
   "query_id": "how_many_segment_definitions_exist_in_this_sandb",
   "route_type": "API_ONLY",
-  "runtime": 0.01253004209138453,
+  "runtime": 0.012163041974417865,
   "sql_call_count": 0,
   "steps": [
     {
@@ -793,10 +793,10 @@
   ],
   "strategy": "SQL_FIRST_API_VERIFY",
   "timings": {
-    "answer_time": 0.0005425420822575688,
-    "execution_time": 0.0003450419753789902,
-    "planning_time": 0.0002708330284804106,
-    "preprocessing_time": 0.004246041993610561
+    "answer_time": 0.0003749170573428273,
+    "execution_time": 0.0002649999223649502,
+    "planning_time": 0.00016212498303502798,
+    "preprocessing_time": 0.002745457924902439
   },
   "tool_call_count": 1
 }
