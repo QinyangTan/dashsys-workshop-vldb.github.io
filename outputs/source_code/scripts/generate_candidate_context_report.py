@@ -4,6 +4,7 @@ from __future__ import annotations
 import json
 import re
 import sys
+from collections import Counter
 from pathlib import Path
 from typing import Any
 
@@ -11,7 +12,7 @@ ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-from dashagent.candidate_context_builder import build_candidate_context, build_full_schema_context
+from dashagent.candidate_context_builder import build_candidate_context, build_full_schema_context, choose_context_mode
 from dashagent.config import Config
 from dashagent.endpoint_catalog import EndpointCatalog
 from dashagent.eval_harness import EvalHarness, extract_api_calls
@@ -43,8 +44,13 @@ def generate_candidate_context_report(config: Config) -> dict[str, Any]:
     api_recall3 = []
     api_recall5 = []
     candidate_tokens = []
+    miss_analysis = []
+    context_modes = Counter()
     for example in examples:
         context = build_candidate_context(example.query, executor.schema_index, executor.endpoint_catalog)
+        context_mode = choose_context_mode(context)
+        context["context_mode"] = context_mode
+        context_modes[context_mode] += 1
         candidate_tokens.append(context.get("estimated_tokens", 0))
         gold_tables = extract_sql_tables(example.gold_sql)
         gold_apis = [call.get("path") for call in extract_api_calls(example.gold_api)]
@@ -58,6 +64,8 @@ def generate_candidate_context_report(config: Config) -> dict[str, Any]:
             "candidate_apis": context.get("candidate_apis", []),
             "confidence": context.get("confidence"),
             "score_margin": context.get("score_margin"),
+            "context_mode": context_mode,
+            "recommended_context_mode": context_mode,
             "used_gold_patterns": context.get("used_gold_patterns", False),
             "candidate_context_tokens": context.get("estimated_tokens", 0),
             "full_schema_context_tokens": full_tokens,
@@ -78,6 +86,38 @@ def generate_candidate_context_report(config: Config) -> dict[str, Any]:
             api_recall5.append(r5)
             row["api_recall_at_3"] = r3
             row["api_recall_at_5"] = r5
+        missing_gold_tables = sorted(
+            normalize_table_name(item)
+            for item in gold_tables
+            if normalize_table_name(item) not in {normalize_table_name(candidate) for candidate in tables}
+        )
+        missing_gold_apis = sorted(
+            api for api in gold_apis
+            if api not in set(apis)
+        )
+        row["missing_gold_tables"] = missing_gold_tables
+        row["missing_gold_apis"] = missing_gold_apis
+        risky = (
+            row.get("table_recall_at_3", 1.0) < 1.0
+            or row.get("table_recall_at_5", 1.0) < 1.0
+            or row.get("api_recall_at_3", 1.0) < 1.0
+            or (context.get("confidence") or 0) < 0.4
+            or (context.get("score_margin") or 0) == 0
+        )
+        if risky:
+            miss_analysis.append(
+                {
+                    "query_id": example.query_id,
+                    "query": example.query,
+                    "missing_gold_tables": missing_gold_tables,
+                    "missing_gold_apis": missing_gold_apis,
+                    "candidate_tables": tables,
+                    "candidate_apis": apis,
+                    "confidence": context.get("confidence"),
+                    "score_margin": context.get("score_margin"),
+                    "recommended_context_mode": context_mode,
+                }
+            )
         rows.append(row)
     avg_candidate = avg(candidate_tokens)
     return {
@@ -91,7 +131,15 @@ def generate_candidate_context_report(config: Config) -> dict[str, Any]:
             "table_recall_at_5": avg(table_recall5),
             "api_recall_at_3": avg(api_recall3),
             "api_recall_at_5": avg(api_recall5),
+            "candidate_low_confidence_count": sum(1 for row in rows if (row.get("confidence") or 0) < 0.4),
+            "candidate_zero_margin_count": sum(1 for row in rows if (row.get("score_margin") or 0) == 0),
+            "percent_low_confidence": round(sum(1 for row in rows if (row.get("confidence") or 0) < 0.4) / len(rows), 4) if rows else 0.0,
+            "percent_zero_margin": round(sum(1 for row in rows if (row.get("score_margin") or 0) == 0) / len(rows), 4) if rows else 0.0,
+            "recommended_fallback_rate": round(sum(1 for row in rows if row.get("context_mode") in {"hybrid", "full_schema"}) / len(rows), 4) if rows else 0.0,
+            "context_mode_distribution": dict(context_modes),
         },
+        "candidate_miss_analysis": miss_analysis,
+        "curated_join_hint_audit": curated_join_hint_audit(executor.schema_index),
         "rows": rows,
     }
 
@@ -125,6 +173,34 @@ def avg(values: list[float | int]) -> float:
     return round(sum(values) / len(values), 4) if values else 0.0
 
 
+def curated_join_hint_audit(schema_index: Any) -> dict[str, Any]:
+    rows = []
+    for hint in schema_index.join_hints:
+        reason = hint.reason
+        if reason.startswith("Curated:"):
+            source = "manual general rule"
+        elif "Matching ID-like" in reason:
+            source = "schema-level relationship"
+        elif "Foreign-key-looking" in reason:
+            source = "naming convention"
+        elif hint.left_table in schema_index.bridge_tables or hint.right_table in schema_index.bridge_tables:
+            source = "bridge-table heuristic"
+        else:
+            source = "schema-level relationship"
+        rows.append(
+            {
+                **hint.to_dict(),
+                "source": source,
+                "used_gold_patterns": False,
+            }
+        )
+    return {
+        "used_gold_patterns": False,
+        "count": len(rows),
+        "rows": rows,
+    }
+
+
 def render_markdown(report: dict[str, Any]) -> str:
     lines = [
         "# Candidate Context Report",
@@ -141,16 +217,45 @@ def render_markdown(report: dict[str, Any]) -> str:
     lines.extend(
         [
             "",
+            "## Candidate Miss Analysis",
+            "",
+            "| Query ID | Missing tables | Missing APIs | Confidence | Margin | Recommended mode |",
+            "| --- | --- | --- | ---: | ---: | --- |",
+        ]
+    )
+    for row in report.get("candidate_miss_analysis", [])[:50]:
+        lines.append(
+            f"| `{row.get('query_id')}` | {', '.join(row.get('missing_gold_tables', []))} | "
+            f"{', '.join(row.get('missing_gold_apis', []))} | {row.get('confidence')} | {row.get('score_margin')} | {row.get('recommended_context_mode')} |"
+        )
+    lines.extend(
+        [
+            "",
+            "## Curated Join Hint Audit",
+            "",
+            f"Used gold patterns: {report.get('curated_join_hint_audit', {}).get('used_gold_patterns')}",
+            "",
+            "| Left | Right | Source | Reason |",
+            "| --- | --- | --- | --- |",
+        ]
+    )
+    for row in report.get("curated_join_hint_audit", {}).get("rows", [])[:80]:
+        lines.append(
+            f"| {row.get('left_table')}.{row.get('left_column')} | {row.get('right_table')}.{row.get('right_column')} | {row.get('source')} | {row.get('reason')} |"
+        )
+    lines.extend(
+        [
+            "",
             "## Per Example",
             "",
-            "| Query ID | Tables | APIs | Confidence | Used gold patterns |",
-            "| --- | --- | --- | ---: | --- |",
+            "| Query ID | Tables | APIs | Confidence | Context mode | Used gold patterns |",
+            "| --- | --- | --- | ---: | --- | --- |",
         ]
     )
     for row in report.get("rows", [])[:50]:
         tables = ", ".join(row.get("candidate_tables", [])[:5])
         apis = ", ".join(api.get("id", "") for api in row.get("candidate_apis", [])[:5])
-        lines.append(f"| `{row.get('query_id')}` | {tables} | {apis} | {row.get('confidence')} | {row.get('used_gold_patterns')} |")
+        lines.append(f"| `{row.get('query_id')}` | {tables} | {apis} | {row.get('confidence')} | {row.get('context_mode')} | {row.get('used_gold_patterns')} |")
     return "\n".join(lines) + "\n"
 
 

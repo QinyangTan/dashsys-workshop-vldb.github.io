@@ -26,7 +26,7 @@ from .cache import (
     sql_result_cache_key,
     write_cache_manifest,
 )
-from .candidate_context_builder import build_candidate_context, build_full_schema_context
+from .candidate_context_builder import build_adaptive_context, build_candidate_context, build_full_schema_context
 from .call_budget import budget_for_strategy
 from .checkpoints import CheckpointLogger
 from .config import Config, DEFAULT_CONFIG
@@ -618,12 +618,11 @@ class AgentExecutor:
 
         prefer_full_schema = strategy == "FULL_SCHEMA_LLM_SQL"
         candidate_context = None
+        context_mode = "full_schema" if prefer_full_schema else "candidate"
         if not prefer_full_schema:
-            candidate_context = build_candidate_context(query, self.schema_index, self.endpoint_catalog)
-            prefer_full_schema = (
-                candidate_context.get("confidence", 0.0) < 0.45
-                or candidate_context.get("score_margin", 0.0) < 0.15
-            )
+            candidate_context = build_adaptive_context(query, self.schema_index, self.endpoint_catalog)
+            context_mode = candidate_context.get("context_mode", "candidate")
+            prefer_full_schema = context_mode == "full_schema"
         schema_context = (
             build_full_schema_context(self.schema_index, self.endpoint_catalog)
             if prefer_full_schema
@@ -639,6 +638,7 @@ class AgentExecutor:
                 "strategy": strategy,
                 "candidate_confidence": candidate_context.get("confidence") if candidate_context else None,
                 "candidate_score_margin": candidate_context.get("score_margin") if candidate_context else None,
+                "context_mode": context_mode,
             },
             output={
                 "ok": generation.get("ok"),
@@ -646,6 +646,7 @@ class AgentExecutor:
                 "provider": generation.get("provider"),
                 "model": generation.get("model"),
                 "mode": generation.get("mode"),
+                "context_mode": context_mode,
                 "sql": generation.get("sql"),
                 "error": generation.get("error"),
             },

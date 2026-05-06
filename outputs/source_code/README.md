@@ -86,7 +86,7 @@ export OPENROUTER_MODEL="openai/gpt-4o-mini"
 export OPENROUTER_BASE_URL=https://openrouter.ai/api/v1
 ```
 
-OpenRouter support is optional. Not all OpenRouter models support native tool/function calling; for `REAL_LLM_TWO_TOOLS_BASELINE`, use a model with reliable tool calling.
+OpenRouter support is optional. Not all OpenRouter models support native tool/function calling; for the real two-tool baselines, use a model with reliable tool calling.
 
 No credentials are required for tests. Secrets are redacted from trajectories and reports.
 
@@ -110,7 +110,9 @@ Main modes:
 
 - Deterministic backend: no LLM key required; uses `SQL_FIRST_API_VERIFY`.
 - Optimized LLM controller: LLM routes or calls the optimized backend tool, then writes a grounded final answer.
-- Naive real LLM baseline: LLM only gets `execute_sql` and `call_api` in a bounded multi-turn loop.
+- Raw real LLM baseline: `RAW_REAL_LLM_TWO_TOOLS_BASELINE`; the LLM only gets `execute_sql` and `call_api` with minimal affordance.
+- Guided real LLM baseline: `GUIDED_REAL_LLM_TWO_TOOLS_BASELINE`; the same two tools plus schema/API affordance, endpoint repair, validation feedback, and guardrails.
+- Backward-compatible baseline: `REAL_LLM_TWO_TOOLS_BASELINE` remains an alias for the raw baseline concept.
 - LLM SQL strategies: LLM can generate SQL from candidate or full schema context, then validation/repair/fallback runs before execution.
 
 Commands:
@@ -119,8 +121,9 @@ Commands:
 python3 scripts/run_llm_query.py "Explain how checkpoints work" --mode optimized
 python3 scripts/run_llm_query.py "Is the 'Birthday Message' journey published?" --mode deterministic
 python3 scripts/run_llm_query.py "Is the 'Birthday Message' journey published?" --mode baseline
+python3 scripts/run_llm_query.py "Is the 'Birthday Message' journey published?" --mode guided-baseline
 python3 scripts/run_llm_query.py "List all journeys" --mode baseline --provider openrouter
-python3 scripts/run_llm_query.py "Is the 'Birthday Message' journey published?" --mode baseline --provider openrouter
+python3 scripts/run_llm_query.py "Is the 'Birthday Message' journey published?" --mode guided-baseline --provider openrouter
 python3 scripts/run_llm_query.py "Is the 'Birthday Message' journey published?" --mode candidate-sql
 python3 scripts/run_llm_query.py "Is the 'Birthday Message' journey published?" --mode full-schema-sql
 python3 scripts/run_llm_baseline_eval.py
@@ -136,7 +139,7 @@ Optional strategies:
 - `FULL_SCHEMA_LLM_SQL`
 - `LLM_SQL_FIRST_API_VERIFY`
 
-Candidate context is retrieval only. It narrows likely tables, columns, joins, and APIs, but it does not decide the final SQL or answer. If candidate confidence is low or validation fails, the system falls back to full schema and then to deterministic `SQL_FIRST_API_VERIFY`.
+Candidate context is retrieval only. It narrows likely tables, columns, joins, and APIs, but it does not decide the final SQL or answer. Adaptive context policy records one of `candidate`, `expanded_candidate`, `hybrid`, or `full_schema`. If confidence is low, margin is zero, or validation fails, the system expands context and then falls back to deterministic `SQL_FIRST_API_VERIFY`.
 
 Run an optional LLM strategy:
 
@@ -160,7 +163,7 @@ Outputs:
 - `outputs/candidate_context_report.md`
 - `outputs/candidate_context_report.json`
 
-The report includes candidate context token size, full-schema token size, compression ratio, and recall@k when gold SQL/API exists.
+The report includes candidate context token size, full-schema token size, compression ratio, recall@k when gold SQL/API exists, candidate miss analysis, recommended context mode, and a curated join-hint audit. Gold is used only for report recall, not for candidate selection.
 
 ## 8. Strict Evaluation
 
@@ -201,7 +204,7 @@ Outputs:
 - `outputs/baseline_comparison_report.json`
 - `outputs/llm_baseline_comparison.md`
 
-The real LLM baseline is marked skipped when no `OPENAI_API_KEY` is available.
+The real LLM baselines are marked skipped when the selected provider key is unavailable. Reports keep raw and guided baselines separate, separate failed tool loops from successful ones, and include tool execution vs evidence availability fields. Dry-run API calls count as tool invocations, but they do not count as live evidence when Adobe credentials are unavailable.
 
 ## 10. Visualize Prompt-To-Answer Data Flow
 

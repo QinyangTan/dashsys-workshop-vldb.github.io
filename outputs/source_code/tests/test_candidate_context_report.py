@@ -8,6 +8,9 @@ def test_candidate_context_report_parseable(tiny_project):
     assert report["examples"] >= 1
     assert report["used_gold_patterns"] is False
     assert "compression_ratio" in report["summary"]
+    assert "context_mode_distribution" in report["summary"]
+    assert "candidate_miss_analysis" in report
+    assert report["curated_join_hint_audit"]["used_gold_patterns"] is False
 
 
 def test_table_recall_normalizes_case_quotes_and_prefixes():

@@ -4,7 +4,9 @@
 
 | System | Description | Normal correctness | Strict correctness | Final score | Tool calls | Tokens | LLM status |
 | --- | --- | ---: | ---: | ---: | ---: | ---: | --- |
-| REAL_LLM_TWO_TOOLS_BASELINE | Real naive LLM with execute_sql/call_api only |  |  |  |  |  | mixed_valid_and_failed_tool_agent_runs |
+| RAW_REAL_LLM_TWO_TOOLS_BASELINE | Raw real LLM with execute_sql/call_api only |  |  |  |  |  | mixed_valid_and_failed_tool_agent_runs |
+| GUIDED_REAL_LLM_TWO_TOOLS_BASELINE | Guided real LLM with execute_sql/call_api plus schema/API affordances |  |  |  |  |  | valid_tool_agent_run |
+| REAL_LLM_TWO_TOOLS_BASELINE | Backward-compatible alias for the raw real LLM baseline |  |  |  |  |  | not_run |
 | LLM_FREE_AGENT_BASELINE | Deterministic approximation of a broad LLM agent | 0.6707 | 0.4879 | 0.4533 | 2.1143 | 975.9429 | n/a |
 | SQL_ONLY_BASELINE | Local DB only | 0.5763 | 0.2983 | 0.2799 | 1.0 | 708.4571 | n/a |
 | SQL_FIRST_API_VERIFY | Current deterministic optimized backend | 0.8407 | 0.6743 | 0.649 | 1.4571 | 851.7714 | n/a |
@@ -13,30 +15,58 @@
 | LLM_SQL_FIRST_API_VERIFY | Optional LLM SQL plus deterministic API verification |  |  |  |  |  | n/a |
 | LLM_CONTROLLER_OPTIMIZED_AGENT | Optional LLM controller with optimized backend tool |  |  |  |  |  | valid_tool_agent_run |
 
+## Raw vs Guided Real LLM Tool Loops
+
+| Variant | Rows | Successful | Failed | Valid run rate | Tool execution success rate | Avg valid tool calls | Avg invalid tool calls | Avg endpoint repairs | Avg schema hints |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| Raw | 35 | 34 | 1 | 0.9714 | 0.9714 | 1.5882 | 0.5429 | 0.0 | 0.0 |
+| Guided | 35 | 35 | 0 | 1.0 | 1.0 | 1.7429 | 0.0286 | 0.9429 | 0.0 |
+
+## Tool Failure Categories
+
+| Category | Raw | Guided |
+| --- | ---: | ---: |
+| dry_run_only_api_count | 21 | 36 |
+| duplicate_invalid_call_count | 0 | 0 |
+| max_turns_exceeded_count | 1 | 0 |
+| no_final_answer_count | 1 | 0 |
+| schema_introspection_failure_count | 5 | 0 |
+| unknown_column_count | 3 | 0 |
+| unknown_endpoint_count | 0 | 1 |
+| unknown_table_count | 16 | 0 |
+| unsupported_negative_answer_count | 4 | 0 |
+
+## Token And Runtime Efficiency
+
+| Variant | Avg prompt/context tokens | Avg runtime | Avg tool calls |
+| --- | ---: | ---: | ---: |
+| Raw | 1318.3429 | 4.0898 | 1.6571 |
+| Guided | 2057.3429 | 4.1965 | 1.7429 |
+
 ## Successful Real LLM Tool Loops
 
 | Query ID | Tool calls | Tool calls executed? | Valid run? |
 | --- | ---: | --- | --- |
 | `example_000` | 2 | True | True |
+| `example_000` | 2 | True | True |
 | `example_001` | 2 | True | True |
+| `example_001` | 1 | True | True |
+| `example_002` | 1 | True | True |
 | `example_002` | 1 | True | True |
 | `example_003` | 1 | True | True |
+| `example_003` | 2 | True | True |
 | `example_004` | 4 | True | True |
+| `example_004` | 2 | True | True |
+| `example_005` | 1 | True | True |
 | `example_005` | 1 | True | True |
 | `example_006` | 2 | True | True |
+| `example_006` | 1 | True | True |
 | `example_007` | 2 | True | True |
+| `example_007` | 1 | True | True |
 | `example_008` | 1 | True | True |
-| `example_010` | 1 | True | True |
-| `example_012` | 1 | True | True |
-| `example_013` | 4 | True | True |
-| `example_014` | 1 | True | True |
-| `example_015` | 1 | True | True |
-| `example_016` | 1 | True | True |
-| `example_017` | 2 | True | True |
-| `example_018` | 1 | True | True |
-| `example_019` | 1 | True | True |
-| `example_020` | 1 | True | True |
-| `example_021` | 1 | True | True |
+| `example_008` | 1 | True | True |
+| `example_009` | 1 | True | True |
+| `example_009` | 4 | True | True |
 
 ## Failed Real LLM Tool Loops
 
@@ -46,10 +76,7 @@ These rows are not treated as successful real tool-using baseline runs.
 
 | Query ID | Tool calls | Tool calls executed? | Failure reason |
 | --- | ---: | --- | --- |
-| `example_009` | 3 | False | no_valid_tool_calls_executed |
-| `example_011` | 4 | False | no_valid_tool_calls_executed |
-| `example_031` | 3 | False | no_valid_tool_calls_executed |
-| `example_033` | 3 | False | no_valid_tool_calls_executed |
+| `example_033` | 4 | False | no_valid_tool_calls_executed |
 
 ## Improvement: Optimized vs Naive
 

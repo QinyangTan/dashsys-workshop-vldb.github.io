@@ -11,17 +11,25 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 from dashagent.config import Config
+from dashagent.llm_tool_agent import (
+    GUIDED_REAL_LLM_TWO_TOOLS_BASELINE,
+    LLM_CONTROLLER_OPTIMIZED_AGENT,
+    RAW_REAL_LLM_TWO_TOOLS_BASELINE,
+    REAL_LLM_TWO_TOOLS_BASELINE,
+)
 
 
 SYSTEMS = [
-    ("REAL_LLM_TWO_TOOLS_BASELINE", "Real naive LLM with execute_sql/call_api only"),
+    (RAW_REAL_LLM_TWO_TOOLS_BASELINE, "Raw real LLM with execute_sql/call_api only"),
+    (GUIDED_REAL_LLM_TWO_TOOLS_BASELINE, "Guided real LLM with execute_sql/call_api plus schema/API affordances"),
+    (REAL_LLM_TWO_TOOLS_BASELINE, "Backward-compatible alias for the raw real LLM baseline"),
     ("LLM_FREE_AGENT_BASELINE", "Deterministic approximation of a broad LLM agent"),
     ("SQL_ONLY_BASELINE", "Local DB only"),
     ("SQL_FIRST_API_VERIFY", "Current deterministic optimized backend"),
     ("CANDIDATE_GUIDED_LLM_SQL", "Optional candidate-context LLM SQL with fallback"),
     ("FULL_SCHEMA_LLM_SQL", "Optional full-schema LLM SQL with fallback"),
     ("LLM_SQL_FIRST_API_VERIFY", "Optional LLM SQL plus deterministic API verification"),
-    ("LLM_CONTROLLER_OPTIMIZED_AGENT", "Optional LLM controller with optimized backend tool"),
+    (LLM_CONTROLLER_OPTIMIZED_AGENT, "Optional LLM controller with optimized backend tool"),
 ]
 
 TECHNIQUES = [
@@ -76,6 +84,8 @@ def generate_report(config: Config) -> dict[str, Any]:
     improvement = improvement_rows(naive, optimized)
     successful_real = successful_real_llm_rows(llm)
     failed_real = failed_real_llm_rows(llm)
+    raw_rows = llm_rows(llm, RAW_REAL_LLM_TWO_TOOLS_BASELINE)
+    guided_rows = llm_rows(llm, GUIDED_REAL_LLM_TWO_TOOLS_BASELINE)
     deterministic = deterministic_approximation_rows(systems)
     optimized_systems = optimized_system_rows(systems)
     return {
@@ -97,6 +107,16 @@ def generate_report(config: Config) -> dict[str, Any]:
         "failure_comparison": failure_comparison(normal),
         "successful_real_llm_tool_loops": successful_real,
         "failed_real_llm_tool_loops": failed_real,
+        "raw_real_llm_tool_loops": summarize_llm_rows(raw_rows),
+        "guided_real_llm_tool_loops": summarize_llm_rows(guided_rows),
+        "failure_category_summary": {
+            "raw": aggregate_failure_categories(raw_rows),
+            "guided": aggregate_failure_categories(guided_rows),
+        },
+        "efficiency_comparison": {
+            "raw": efficiency_summary(raw_rows),
+            "guided": efficiency_summary(guided_rows),
+        },
         "deterministic_approximation_baselines": deterministic,
         "optimized_systems": optimized_systems,
         "real_llm_tool_loop_warning": bool(failed_real and not successful_real),
@@ -117,7 +137,7 @@ def summary_rows(payload: dict[str, Any]) -> dict[str, dict[str, Any]]:
 
 
 def llm_status(system: str, payload: dict[str, Any]) -> dict[str, Any]:
-    if system not in {"REAL_LLM_TWO_TOOLS_BASELINE", "LLM_CONTROLLER_OPTIMIZED_AGENT"}:
+    if system not in {REAL_LLM_TWO_TOOLS_BASELINE, RAW_REAL_LLM_TWO_TOOLS_BASELINE, GUIDED_REAL_LLM_TWO_TOOLS_BASELINE, LLM_CONTROLLER_OPTIMIZED_AGENT}:
         return {"applicable": False}
     if not payload:
         return {"applicable": True, "status": "not_run"}
@@ -127,7 +147,7 @@ def llm_status(system: str, payload: dict[str, Any]) -> dict[str, Any]:
     valid_rows = [row for row in rows if row.get("valid_agent_run")]
     failed_rows = [row for row in rows if row.get("skipped_or_failed") and not row.get("valid_agent_run")]
     real_called_failures = [row for row in failed_rows if row.get("real_llm_called")]
-    if system == "REAL_LLM_TWO_TOOLS_BASELINE":
+    if system in {REAL_LLM_TWO_TOOLS_BASELINE, RAW_REAL_LLM_TWO_TOOLS_BASELINE, GUIDED_REAL_LLM_TWO_TOOLS_BASELINE}:
         if real_called_failures and not valid_rows:
             status = "real_llm_called_but_tool_loop_failed"
         elif valid_rows and not failed_rows:
@@ -153,7 +173,7 @@ def failed_real_llm_rows(payload: dict[str, Any]) -> list[dict[str, Any]]:
         return []
     return [
         row for row in payload.get("rows", [])
-        if row.get("system") == "REAL_LLM_TWO_TOOLS_BASELINE"
+        if row.get("system") in {REAL_LLM_TWO_TOOLS_BASELINE, RAW_REAL_LLM_TWO_TOOLS_BASELINE, GUIDED_REAL_LLM_TWO_TOOLS_BASELINE}
         and row.get("real_llm_called")
         and not row.get("valid_agent_run")
     ]
@@ -164,11 +184,65 @@ def successful_real_llm_rows(payload: dict[str, Any]) -> list[dict[str, Any]]:
         return []
     return [
         row for row in payload.get("rows", [])
-        if row.get("system") == "REAL_LLM_TWO_TOOLS_BASELINE"
+        if row.get("system") in {REAL_LLM_TWO_TOOLS_BASELINE, RAW_REAL_LLM_TWO_TOOLS_BASELINE, GUIDED_REAL_LLM_TWO_TOOLS_BASELINE}
         and row.get("real_llm_called")
         and row.get("valid_agent_run")
         and row.get("tool_calls_executed")
     ]
+
+
+def llm_rows(payload: dict[str, Any], system: str) -> list[dict[str, Any]]:
+    if not payload or payload.get("skipped"):
+        return []
+    return [row for row in payload.get("rows", []) if row.get("system") == system]
+
+
+def summarize_llm_rows(rows: list[dict[str, Any]]) -> dict[str, Any]:
+    valid = [row for row in rows if row.get("valid_agent_run")]
+    failed = [row for row in rows if row.get("skipped_or_failed") and not row.get("valid_agent_run")]
+    return {
+        "rows": len(rows),
+        "successful_count": len(valid),
+        "failed_count": len(failed),
+        "valid_agent_run_rate": round(len(valid) / len(rows), 4) if rows else 0.0,
+        "tool_execution_success_rate": round(sum(bool(row.get("tool_calls_executed")) for row in rows) / len(rows), 4) if rows else 0.0,
+        "avg_valid_tool_calls": avg([row.get("tool_call_count", 0) for row in valid]),
+        "avg_invalid_tool_calls": avg([row.get("invalid_tool_call_count", 0) for row in rows]),
+        "avg_endpoint_repairs": avg([row.get("repaired_endpoint_count", 0) for row in rows]),
+        "avg_schema_hint_injections": avg([row.get("schema_hint_injected", 0) for row in rows]),
+        "avg_successful_evidence_count": avg([row.get("successful_evidence_count", 0) for row in rows]),
+    }
+
+
+def aggregate_failure_categories(rows: list[dict[str, Any]]) -> dict[str, int]:
+    totals: dict[str, int] = {
+        "unknown_table_count": 0,
+        "unknown_column_count": 0,
+        "unknown_endpoint_count": 0,
+        "schema_introspection_failure_count": 0,
+        "duplicate_invalid_call_count": 0,
+        "dry_run_only_api_count": 0,
+        "unsupported_negative_answer_count": 0,
+        "max_turns_exceeded_count": 0,
+        "no_final_answer_count": 0,
+    }
+    for row in rows:
+        categories = row.get("failure_categories") or {}
+        for key in totals:
+            totals[key] += int(row.get(key, categories.get(key, 0)) or 0)
+    return totals
+
+
+def efficiency_summary(rows: list[dict[str, Any]]) -> dict[str, Any]:
+    return {
+        "avg_prompt_context_tokens": avg([row.get("prompt_context_tokens", 0) for row in rows]),
+        "avg_runtime": avg([row.get("runtime", 0) for row in rows]),
+        "avg_tool_calls": avg([row.get("tool_call_count", 0) for row in rows]),
+    }
+
+
+def avg(values: list[float | int]) -> float:
+    return round(sum(values) / len(values), 4) if values else 0.0
 
 
 def deterministic_approximation_rows(systems: list[dict[str, Any]]) -> list[dict[str, Any]]:
@@ -281,6 +355,48 @@ def render_markdown(report: dict[str, Any]) -> str:
                 status=status.get("status", "n/a"),
             )
         )
+    lines.extend(
+        [
+            "",
+            "## Raw vs Guided Real LLM Tool Loops",
+            "",
+            "| Variant | Rows | Successful | Failed | Valid run rate | Tool execution success rate | Avg valid tool calls | Avg invalid tool calls | Avg endpoint repairs | Avg schema hints |",
+            "| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |",
+        ]
+    )
+    for label, key in [("Raw", "raw_real_llm_tool_loops"), ("Guided", "guided_real_llm_tool_loops")]:
+        item = report.get(key, {})
+        lines.append(
+            f"| {label} | {item.get('rows', 0)} | {item.get('successful_count', 0)} | {item.get('failed_count', 0)} | "
+            f"{item.get('valid_agent_run_rate', 0)} | {item.get('tool_execution_success_rate', 0)} | "
+            f"{item.get('avg_valid_tool_calls', 0)} | {item.get('avg_invalid_tool_calls', 0)} | "
+            f"{item.get('avg_endpoint_repairs', 0)} | {item.get('avg_schema_hint_injections', 0)} |"
+        )
+    lines.extend(
+        [
+            "",
+            "## Tool Failure Categories",
+            "",
+            "| Category | Raw | Guided |",
+            "| --- | ---: | ---: |",
+        ]
+    )
+    raw_failures = report.get("failure_category_summary", {}).get("raw", {})
+    guided_failures = report.get("failure_category_summary", {}).get("guided", {})
+    for key in sorted(set(raw_failures) | set(guided_failures)):
+        lines.append(f"| {key} | {raw_failures.get(key, 0)} | {guided_failures.get(key, 0)} |")
+    lines.extend(
+        [
+            "",
+            "## Token And Runtime Efficiency",
+            "",
+            "| Variant | Avg prompt/context tokens | Avg runtime | Avg tool calls |",
+            "| --- | ---: | ---: | ---: |",
+        ]
+    )
+    for label, key in [("Raw", "raw"), ("Guided", "guided")]:
+        item = report.get("efficiency_comparison", {}).get(key, {})
+        lines.append(f"| {label} | {item.get('avg_prompt_context_tokens', 0)} | {item.get('avg_runtime', 0)} | {item.get('avg_tool_calls', 0)} |")
     successful_real = report.get("successful_real_llm_tool_loops", [])
     if successful_real:
         lines.extend(

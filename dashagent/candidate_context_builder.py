@@ -90,8 +90,71 @@ def build_candidate_context(
         "used_gold_patterns": False,
         "notes": notes,
     }
+    payload["context_mode"] = choose_context_mode(payload)
     payload["estimated_tokens"] = estimate_tokens(payload)
     return payload
+
+
+def choose_context_mode(candidate_context: dict[str, Any]) -> str:
+    confidence = float(candidate_context.get("confidence") or 0.0)
+    margin = float(candidate_context.get("score_margin") or 0.0)
+    has_candidates = bool(candidate_context.get("candidate_tables") or candidate_context.get("candidate_apis"))
+    if not has_candidates:
+        return "full_schema"
+    if confidence >= 0.75 and margin > 0:
+        return "candidate"
+    if 0.4 <= confidence < 0.75 and margin > 0:
+        return "expanded_candidate"
+    return "hybrid"
+
+
+def build_adaptive_context(
+    query: str,
+    schema_index: SchemaIndex,
+    endpoint_catalog: EndpointCatalog,
+) -> dict[str, Any]:
+    initial = build_candidate_context(query, schema_index, endpoint_catalog)
+    mode = choose_context_mode(initial)
+    if mode == "candidate":
+        initial["context_mode"] = mode
+        return initial
+    if mode == "expanded_candidate":
+        expanded = build_candidate_context(
+            query,
+            schema_index,
+            endpoint_catalog,
+            top_k_tables=8,
+            top_k_columns=20,
+            top_k_joins=12,
+            top_k_apis=8,
+        )
+        expanded["context_mode"] = mode
+        expanded["notes"] = list(expanded.get("notes", [])) + ["Expanded candidate context selected by adaptive policy."]
+        expanded["estimated_tokens"] = estimate_tokens(expanded)
+        return expanded
+    if mode == "hybrid":
+        hybrid = dict(initial)
+        hybrid["context_mode"] = "hybrid"
+        hybrid["all_table_names"] = sorted(schema_index.tables)
+        hybrid["endpoint_summaries"] = [
+            {
+                "id": endpoint.id,
+                "method": endpoint.method,
+                "path": endpoint.path,
+                "use_when": endpoint.use_when,
+            }
+            for endpoint in endpoint_catalog.endpoints
+        ]
+        hybrid["notes"] = list(hybrid.get("notes", [])) + [
+            "Hybrid context keeps candidates first but exposes all table names and endpoint summaries."
+        ]
+        hybrid["estimated_tokens"] = estimate_tokens(hybrid)
+        return hybrid
+    full = build_full_schema_context(schema_index, endpoint_catalog)
+    full["context_mode"] = "full_schema"
+    full["query"] = query
+    full["estimated_tokens"] = estimate_tokens(full)
+    return full
 
 
 def _with_fallback_tables(items: list[RelevanceItem], schema_index: SchemaIndex, top_k: int) -> list[RelevanceItem]:

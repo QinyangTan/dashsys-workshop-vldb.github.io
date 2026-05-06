@@ -91,3 +91,51 @@ def test_valid_real_llm_baseline_is_marked_successful(tiny_project):
     assert real_status["valid_rows"] == 1
     assert report["successful_real_llm_tool_loops"]
     assert not report["failed_real_llm_tool_loops"]
+
+
+def test_raw_and_guided_baseline_metrics_are_separate(tiny_project):
+    tiny_project.outputs_dir.mkdir(parents=True, exist_ok=True)
+    (tiny_project.outputs_dir / "eval_results.json").write_text(
+        json.dumps({"summary": {"by_strategy": {}}, "rows": []}),
+        encoding="utf-8",
+    )
+    (tiny_project.outputs_dir / "llm_baseline_eval.json").write_text(
+        json.dumps(
+            {
+                "skipped": False,
+                "rows": [
+                    {
+                        "query_id": "example_raw",
+                        "system": "RAW_REAL_LLM_TWO_TOOLS_BASELINE",
+                        "real_llm_called": True,
+                        "tool_calls_executed": False,
+                        "valid_agent_run": False,
+                        "skipped_or_failed": True,
+                        "invalid_tool_call_count": 2,
+                        "failure_categories": {"unknown_table_count": 1},
+                        "tool_call_count": 2,
+                    },
+                    {
+                        "query_id": "example_guided",
+                        "system": "GUIDED_REAL_LLM_TWO_TOOLS_BASELINE",
+                        "real_llm_called": True,
+                        "tool_calls_executed": True,
+                        "valid_agent_run": True,
+                        "skipped_or_failed": False,
+                        "invalid_tool_call_count": 0,
+                        "repaired_endpoint_count": 1,
+                        "prompt_context_tokens": 1200,
+                        "runtime": 0.2,
+                        "tool_call_count": 1,
+                    },
+                ],
+            }
+        ),
+        encoding="utf-8",
+    )
+    report = generate_report(tiny_project)
+    assert report["raw_real_llm_tool_loops"]["failed_count"] == 1
+    assert report["guided_real_llm_tool_loops"]["successful_count"] == 1
+    assert report["failure_category_summary"]["raw"]["unknown_table_count"] == 1
+    assert report["guided_real_llm_tool_loops"]["avg_endpoint_repairs"] == 1
+    assert report["efficiency_comparison"]["guided"]["avg_prompt_context_tokens"] == 1200

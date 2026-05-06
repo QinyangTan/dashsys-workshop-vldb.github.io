@@ -20,7 +20,8 @@ from dashagent.llm_tool_agent import run_optimized_llm_controller_agent, run_rea
 def main() -> int:
     parser = argparse.ArgumentParser(description="Run a DASHSys query through deterministic, optimized LLM, or naive LLM baseline modes.")
     parser.add_argument("query")
-    parser.add_argument("--mode", choices=["deterministic", "optimized", "baseline", "candidate-sql", "full-schema-sql"], default="optimized")
+    parser.add_argument("--mode", choices=["deterministic", "optimized", "baseline", "guided-baseline", "candidate-sql", "full-schema-sql"], default="optimized")
+    parser.add_argument("--baseline-variant", choices=["raw", "guided"], default=None, help="Optional variant override for baseline mode.")
     parser.add_argument("--provider", choices=["openai", "openrouter"], help="Optional LLM provider override for LLM modes.")
     args = parser.parse_args()
     if args.provider:
@@ -37,15 +38,20 @@ def main() -> int:
     elif args.mode == "full-schema-sql":
         result = AgentExecutor(config).run(args.query, strategy="FULL_SCHEMA_LLM_SQL", query_id=qid)
         summary = _summary(args.mode, result["final_answer"], result["trajectory"], result["output_dir"], False, True)
-    elif args.mode == "baseline":
-        result = run_real_llm_two_tools_baseline(args.query, config=config, llm_client=llm_client)
+    elif args.mode in {"baseline", "guided-baseline"}:
+        guided = args.mode == "guided-baseline" or args.baseline_variant == "guided"
+        result = run_real_llm_two_tools_baseline(args.query, config=config, llm_client=llm_client, guided=guided)
         summary = _summary(args.mode, result.get("final_answer", ""), result.get("trajectory", {}), None, result.get("real_llm_used", False), result.get("backend_used", False))
         summary["skipped"] = result.get("skipped", False)
         summary["skipped_reason"] = result.get("skipped_reason")
+        summary["baseline_variant"] = result.get("baseline_variant")
         summary["tool_calls_executed"] = result.get("tool_calls_executed", False)
         summary["valid_agent_run"] = result.get("valid_agent_run", False)
         summary["skipped_or_failed"] = result.get("skipped_or_failed", False)
         summary["failure_reason"] = result.get("failure_reason", "")
+        summary["successful_evidence_count"] = result.get("successful_evidence_count", 0)
+        summary["invalid_tool_call_count"] = result.get("invalid_tool_call_count", 0)
+        summary["repaired_endpoint_count"] = result.get("repaired_endpoint_count", 0)
         summary["llm_turn_count"] = result.get("trajectory", {}).get("llm_turn_count", len(result.get("llm_turns", [])))
         summary["provider"] = result.get("llm_provider", summary.get("provider"))
         summary["model"] = result.get("llm_model")

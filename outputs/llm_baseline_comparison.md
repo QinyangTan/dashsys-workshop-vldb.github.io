@@ -2,8 +2,9 @@
 
 | System | Rows | Valid runs | Failed runs | Avg answer score on valid runs | Avg tool calls on valid runs |
 | --- | ---: | ---: | ---: | ---: | ---: |
-| REAL_LLM_TWO_TOOLS_BASELINE | 35 | 31 | 4 | 0.4151 | 1.55 |
-| LLM_CONTROLLER_OPTIMIZED_AGENT | 35 | 35 | 0 | 0.4710 | 1.46 |
+| RAW_REAL_LLM_TWO_TOOLS_BASELINE | 35 | 34 | 1 | 0.4206 | 1.59 |
+| GUIDED_REAL_LLM_TWO_TOOLS_BASELINE | 35 | 35 | 0 | 0.4341 | 1.74 |
+| LLM_CONTROLLER_OPTIMIZED_AGENT | 35 | 35 | 0 | 0.4743 | 1.46 |
 
 ## Failed Real LLM Tool Loops
 
@@ -11,7 +12,4 @@ These rows are real LLM calls, but they are not counted as successful real tool-
 
 | Query ID | Tool calls executed? | Failure reason |
 | --- | --- | --- |
-| `example_009` | False | no_valid_tool_calls_executed |
-| `example_011` | False | no_valid_tool_calls_executed |
-| `example_031` | False | no_valid_tool_calls_executed |
 | `example_033` | False | no_valid_tool_calls_executed |
